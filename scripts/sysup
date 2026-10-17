@@ -1,19 +1,24 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
-echo '==> APT: update metadata and packages'
+# Never silently upgrade distribution releases, kernel drivers from third-party installers, or EFI.
+echo '==> APT refresh/upgrade'
 sudo apt-get update
 sudo apt-get full-upgrade
-echo '==> Flatpak (user scope)'
-if command -v flatpak >/dev/null; then flatpak update --user; fi
+if command -v flatpak >/dev/null 2>&1; then
+  echo '==> Flatpak user apps'
+  flatpak update --user
+fi
 if command -v snap >/dev/null 2>&1; then
-  echo '==> Snap store apps (if present)'
+  echo '==> Existing Snap packages'
   sudo snap refresh
 fi
 if command -v rustup >/dev/null 2>&1; then
-  echo '==> rustup toolchains'
+  echo '==> Rust stable toolchain'
   rustup update
 fi
-echo '==> Firmware: report only (never flash automatically)'
-if command -v fwupdmgr >/dev/null; then fwupdmgr get-updates || true; fi
-echo '==> Reminder: Krita/KiCad/FreeCAD/Blender/Joplin/Thunderbird/Calibre plugins update in their app managers.'
-echo '==> No unattended firmware, NVIDIA or release upgrade.'
+if command -v fwupdmgr >/dev/null 2>&1; then
+  echo '==> Available firmware updates (report only)'
+  fwupdmgr get-updates || echo '[WARN] Firmware check unavailable; no firmware flashed.'
+fi
+echo '==> App-specific extensions are intentionally not installed or updated.'
+echo '==> NVIDIA drivers, kernel selection, GRUB, EFI and distribution upgrades remain OS/user managed.'
