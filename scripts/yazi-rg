@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+set -u
+
+read -r -p "Search text: " query
+[[ -n "$query" ]] || exit 0
+
+result="$(
+    rg \
+        --vimgrep \
+        --smart-case \
+        --hidden \
+        --glob '!.git' \
+        -- "$query" . 2>/dev/null |
+    fzf \
+        --delimiter ':' \
+        --prompt='rg> ' \
+        --preview 'bat --color=always --style=numbers --highlight-line {2} -- {1}' \
+        --preview-window='right,60%,border-left'
+)" || exit 0
+
+file="${result%%:*}"
+rest="${result#*:}"
+
+line="${rest%%:*}"
+rest="${rest#*:}"
+
+column="${rest%%:*}"
+
+if command -v hx >/dev/null 2>&1; then
+    exec hx "$file:$line:$column"
+elif command -v helix >/dev/null 2>&1; then
+    exec helix "$file:$line:$column"
+else
+    printf 'No Helix editor available (hx or helix)\n' >&2
+    exit 1
+fi

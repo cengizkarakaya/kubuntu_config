@@ -1,4 +1,3 @@
-# Native Yazi configuration; no plugin fetchers or plugin-provided linemodes.
 [mgr]
 ratio = [1, 4, 3]
 sort_by = "natural"
@@ -7,7 +6,7 @@ sort_reverse = false
 sort_dir_first = true
 show_hidden = true
 show_symlink = true
-linemode = "size"
+linemode = "size_and_mtime"
 
 [preview]
 image_delay = 50
@@ -18,6 +17,17 @@ max_height = 1000
 edit = [
     { run = "hx %s", block = true, for = "unix" },
 ]
+
 extract = [
     { run = "ya pub extract --list %s", desc = "Extract here" },
 ]
+
+[[plugin.prepend_fetchers]]
+url   = "*"
+run   = "git"
+group = "git"
+
+[[plugin.prepend_fetchers]]
+url   = "*/"
+run   = "git"
+group = "git"

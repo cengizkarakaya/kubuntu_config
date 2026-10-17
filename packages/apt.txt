@@ -1,5 +1,5 @@
-# Core applications and portable CLI tools. No optional application extensions.
-# Do not add GIMP/Blender/KiCad/FreeCAD/Dolphin plugins, Yazi packages or editor extensions.
+# Core applications and portable CLI tools. Arch Yazi plugins/flavor are managed separately.
+# Do not add GIMP/Blender/KiCad/FreeCAD/Dolphin plugins or editor extensions.
 alacritty
 bash-completion
 bat
@@ -22,6 +22,8 @@ stow
 tealdeer
 zoxide
 yazi
+kpackagetool6
+file
 7zip
 unzip
 zip
