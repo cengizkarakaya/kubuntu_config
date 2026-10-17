@@ -1,117 +1,125 @@
 # Kubuntu_Config — reproducible KDE Plasma 6 workstation
 
-A **Kubuntu** implementation of the **preferences** in
-https://github.com/cengizkarakaya/Arch_Config (pinned reference commit:
-56c882afbd385a905b419193aa72520a688d56ea). This is not a Pacman/Hyprland
-transplant. Intended for a clean Ubuntu-based Kubuntu installation using KDE Plasma 6.
+A KDE Plasma port of [Arch_Config](https://github.com/cengizkarakaya/Arch_Config)
+(reference commit `56c882afbd385a905b419193aa72520a688d56ea`).
+Designed for Kubuntu 26.04+ with **Plasma Wayland** (26.10 preferred for testing).
+No partitioning, UEFI/GRUB, kernel, NVIDIA driver or firmware mutation.
 
-## Installation
+## Install on a fresh Kubuntu desktop
 
-Log into the KDE desktop as your normal user. Keep the computer on AC power and internet.
+Log in as your **normal user**, select **Plasma (Wayland)** at the login screen,
+back up personal configurations, ensure at least 8 GiB of free disk space, and use
+a reliable network. Do not run the bootstrap with sudo.
 
-    sudo apt-get update && sudo apt-get install -y git
-    git clone https://github.com/cengizkarakaya/kubuntu_config.git
-    cd kubuntu_config
-    bash bootstrap.sh
-    bash verify.sh
+```bash
+sudo apt-get update && sudo apt-get install -y git
+git clone https://github.com/cengizkarakaya/kubuntu_config.git
+cd kubuntu_config
+bash bootstrap.sh --core-only   # fast first stage: Brave for ChatGPT
+bash bootstrap.sh               # complete setup, including pinned Polonium
+bash verify.sh
+```
 
-Brave is installed immediately after minimal prerequisites. To install only Brave first:
+`bootstrap.sh` is **fail-fast**: if a required APT/Flatpak/Rust/theme/component
+cannot be installed or verified, it exits nonzero and names the failed stage.
+Rerun the same command after resolving the error. It uses an exclusive lock to
+prevent concurrent bootstraps. Run logs and APT availability diagnostics go to
+`~/.local/state/kubuntu-config/`; no silent missing-app success.
 
-    bash bootstrap.sh --core-only
+For an X11 troubleshooting session, or a workstation where you do **not** want
+KWin changes, use `bash bootstrap.sh --skip-plasma` then
+`bash verify.sh --skip-plasma`. This **does not** enable Polonium.
+`--core-only` is deliberately limited to prerequisites and Brave.
 
-Resume later with normal bootstrap. Safe to re-run: APT is idempotent, Flatpak
-checks existing installations, portable Stow refuses conflicting files, and
-Plasma script writes named KDE keys (no mass config replacement).
+## What is installed
 
-Run updates:
+- `packages/apt.txt`: CLI, KDE, graphic/engineering, desktop and virtualization applications
+- `packages/flatpak.tsv`: Joplin, Zotero, OrcaSlicer and LocalSend
+- `scripts/install-rust.sh`: stable Rust via existing or APT-provided rustup; missing rustup is a hard error with manual recovery guidance
+- `dotfiles/`: portable Alacritty, Bat, Bottom, Fastfetch, Git, Helix, Readline, Starship, Yazi, Zellij; installed by GNU Stow without overwriting existing files
+- `shell/interactive.bash`: Arch-like aliases sourced from `~/.bashrc`
+- `themes/`: pinned Nord KDE colors, GTK Nordic, Nordzy-dark icons and verified Nerd Font
+- `plasma/`: ten workspaces, KWin shortcuts and **Polonium 1.2.1**, built from pinned upstream source
+- `scripts/sysup`: interactive OS/App/Rust updates, firmware *report only*
+- `verify.sh`: strict package inventory, dotfile links, local KWin metadata and no-add-on policy; reports untestable session behaviors
 
-    sysup
+**No optional application plug-ins or extensions are installed.**
+This includes no GIMP/Krita/FreeCAD/KiCad/Blender/Joplin/Calibre/Thunderbird
+plug-ins, no editor add-ons and no Yazi plugins or downloaded flavors.
+Previously installed user extensions are not uninstalled. Required application
+dependencies and Flatpak runtimes can still be installed by system package managers.
+**Polonium** is the sole deliberately installed KWin script, explicitly requested
+as the window tiler. See `applications/README.md`.
 
-## Repository contents
+## Polonium and Arch key bindings
 
-- bootstrap.sh: deterministic sequence and per-run log, no arbitrary driver/boot changes
-- packages/apt.txt: KDE-native and creative workstation packages
-- packages/flatpak.tsv: LocalSend, Joplin, Zotero, OrcaSlicer
-- packages/optional.txt: dev/build adjuncts (review before enabling)
-- applications/addons.tsv: **every requested third-party add-on** with installation channel and actual level of automation
-- applications/vscode-extensions.txt: optional vetted VS Code extensions
-- dotfiles/: portable Alacritty, Helix, Yazi, Zellij, Starship, Bat, Bottom, Fastfetch (Ubuntu logo), Git, Zathura and Readline snapshot from Arch_Config
-- shell/interactive.bash: Arch-like bash shortcuts, sourced from Ubuntu ~/.bashrc without overwriting the file
-- scripts/: Brave/VSCode repos, Rust toolchain, applications, Stow, KVM, default apps, safe updates, boot diagnostics
-- plasma/: KDE native settings and Kröhnkite KWin6 build from pinned source
-- themes/: KDE Nord color scheme, Nordic GTK, pinned Nordzy-dark icons, FiraCode Nerd Font with SHA256
-- hosts/: information only; never copies /boot or /etc from Arch
-- verify.sh: per-item PASS/WARN/FAIL, no changes to host
-- .github/workflows/qa.yml: remote static Bash / manifest checks
+Official upstream: https://github.com/zeroxoneafour/polonium
+Stable: `v1.2.1`; source pinned to
+`3638b1625e95877f93279527de3b82b9b09aff3a`.
+Build uses `npm ci --ignore-scripts` and local esbuild in an unprivileged
+temporary directory. No latest-HEAD scripts, automatic development snapshots
+or arbitrary remote install commands. Requires Plasma >=6.4, Wayland and
+Node.js >=20. The old Kröhnkite installation is disabled (and user-installed
+script package removed if present) after Polonium installs successfully.
 
-## What is preserved from Arch and what is not?
+Polonium's own H/J/K/L focus, Shift+H/J/K/L move and Ctrl+H/J/K/L resize
+preserve the familiar Arch pattern. `plasma/shortcuts.sh` writes KDE-global
+shortcut *configuration* with an automatic dated backup. **KGlobalAccel may
+not load file-written shortcuts in the running Wayland session.**
+After installing, **log out and log in**, and test keys in
+`System Settings > Keyboard > Shortcuts`. If needed, bind application launch
+shortcuts in the GUI; the repository does not kill/restart KDE's shortcut daemon.
 
-Preserved: Alacritty, Helix, Yazi (plugins declared in package.toml),
-Zellij, Bat, Bottom, Starship, Git, zoxide/fzf/eza CLI behavior, 10 virtual
-desktops, Nord palette, FiraCode Nerd Font, most Super shortcuts, 5/20 pixel gaps.
+Polonium 1.2.1 does **not** claim parity with every Kröhnkite behavior, nor
+with Hyprland's modal resize submap or exact 5/20px tiling gaps. See
+`plasma/shortcuts.md`.
 
-Replaced by KDE-native counterparts: Hyprland -> KWin+Kröhnkite,
-Fuzzel -> KRunner, Waybar -> Plasma panel, Thunar -> Dolphin,
-Grim/Slurp -> Spectacle, Mako -> Plasma notifications,
-Hyprlock/idle -> KScreenLocker/Power Management, Greetd -> SDDM.
-No reflector, AUR, pacman, Hyprland Lua, TLP, systemd-boot loader entry,
-Arch Intel graphics configuration, or copied host-wide dotfiles.
+## Package health and updates
 
-## Kröhnkite and keyboard shortcuts
+The APT installer resolves names before installation and tries one transaction;
+if dependency resolution fails, it falls back to individual installs to give
+a precise failure report. It verifies *every* manifest package via dpkg.
+If a package no longer exists in your chosen Kubuntu release, bootstrap reports
+it as FAIL rather than falsely declaring complete setup.
 
-Kröhnkite fork: https://github.com/KBeDevel/krohnkite-kwin6
-Pinned at fd67a3acd0a220bb6c1f41a1c7f3cc538ef19a82.
-Installer builds against the upstream npm lockfile without scripts and patches
-conflicting defaults before packaging. Intended Meta+H/J/K/L focus and
-Meta+Shift+H/J/K/L move are Kröhnkite native actions; Meta+Shift+F float.
-See plasma/shortcuts.md for all keys and known differences. Due to Plasma 6
-KGlobalAccel session state, verify shortcuts after re-login in
-System Settings > Keyboard > Shortcuts; KDE UI is authoritative.
-The Hyprland Meta+R modal resize submap does not have an exact KDE-native
-equivalent: use Kröhnkite Meta+Ctrl+H/J/K/L (no additional daemon).
+VS Code and Brave are installed from their official signed repositories.
+Flatpak apps use the Flathub remote in **user** scope. Downloads from GitHub
+for appearance assets and Polonium are pinned to revisions; the Nerd Font archive
+is additionally checked against its SHA256. This does not establish a third-party
+security audit of all npm packages or visual plugins.
 
-## Plugins are a separate, auditable installation phase
-
-A Krita/Blender/FreeCAD/KiCad/Joplin plugin is not the same as installing
-its host application. The TSV manifest distinguishes automatically attempted
-APT components from in-app managed extensions. Third-party extensions that
-depend on proprietary ABI, GPU Python wheels, per-user profiles, license or
-unverified compatibility are **not installed blindly**. Manual tasks are not
-marked installed. Follow applications/README.md and report from verify.sh.
-
-Kdenlive Whisper: choose/download the model and dependencies via Kdenlive UI
-when needed, rather than downloading gigabytes automatically.
-GIMP 2.x plug-ins must never be injected into GIMP 3.
-
-## Machine-specific tasks and security
-
-Desktop hardware: MSI Z790, i5-13600K, RTX 4080 SUPER, 64GB RAM; Linux on
-Samsung 990 Pro 2TB; future Windows 11 on separate 512GB drive.
-Neither GRUB nor EFI partition is touched by bootstrap. Read
-hosts/home-desktop.md before installing Windows; diagnose with
+```bash
+sysup                # only after a successful installation; interactive
+bash verify.sh       # read-only inventory verification
 bash scripts/dualboot-diagnostics.sh
-    bash scripts/configure-dualboot.sh           # read-only dry run, Windows first
-    bash scripts/configure-dualboot.sh --apply   # opt-in only after Windows is detected. Windows selection at boot requires
-the Windows installation and UEFI/GRUB discovery afterwards.
+```
 
-Drivers and firmware stay managed by Ubuntu; no NVIDIA runfile, no blanket
-ubuntu-drivers autoinstall, no unattended fwupd flashing. Monitor arrangement
-is saved in KDE UI with real display connector IDs, never copied from the laptop.
-Libvirt permissions/socket configured conditionally by setup-libvirt.sh.
+NVIDIA installation and CUDA remain **outside bootstrap**. Verify
+`nvidia-smi` and test Blender OptiX, media encoding and monitor behaviors
+manually. Static checks do not prove application-level GPU acceleration.
 
-Backups: Stow does not overwrite user-owned dotfiles. KDE global shortcut file
-is backed up to ~/.local/state/kubuntu-config/backups/ before targeted edits.
-No secrets, browser profile, passwords, media libraries or SSH keys are committed.
+## Host constraints and dual boot
 
-## Verify and recovery
+Workstation: i5-13600K, MSI MAG Z790, 64 GB, RTX 4080 SUPER; Kubuntu on
+Samsung 990 Pro 2 TB; optional later Windows 11 on a separate 512 GB SSD.
+Neither operating-system disk is touched by this repository. Configure the
+3440x1440 and 2560x1440 displays in KDE's actual display UI.
+See `hosts/home-desktop.md`.
 
-    bash verify.sh
-    bash bootstrap.sh --skip-plasma
-    bash scripts/dualboot-diagnostics.sh
+After Windows is installed, use the read-only diagnostics first. The
+`scripts/configure-dualboot.sh` command is dry-run by default and only
+allows GRUB OS probing after verifying Windows and an explicit typed
+confirmation. It never installs GRUB or modifies partitions. Always back up
+EFI and personal data before editing boot settings.
 
-Run logs: ~/.local/state/kubuntu-config/.
-APT unavailable names: ~/.local/state/kubuntu-config/apt-unavailable.txt.
-A FAIL is a missing core requirement; WARN means unavailable/unchecked and
-must be reviewed. This code has been statically reviewed but has **not** been
-run on the target PC; release-dependent KDE/global-shortcut integration and
-app-specific plugins need validation in a live Kubuntu desktop.
+## CI, limitations and recovery
+
+GitHub Actions checks shell syntax and static no-add-on/Polonium invariants.
+It **does not** run a genuine Kubuntu 26.10 Wayland login with the installed
+NVIDIA driver. Actual KWin behavior, Flatpak portals, plugins from previous
+installations, and application rendering still need target-machine smoke tests.
+
+On failures read `~/.local/state/kubuntu-config/bootstrap-*.log`.
+Stow refuses unmanaged files rather than replacing them. KDE shortcut
+config has backups under `~/.local/state/kubuntu-config/backups/`.
+Run `bash bootstrap.sh` again when the failed dependency is resolved.
