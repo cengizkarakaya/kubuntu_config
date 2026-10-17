@@ -35,6 +35,7 @@ if has fc-list && fc-list : family | grep -Fqi 'Fira Code'; then
 else warn font 'Fira Code apt package missing'; fi
 [[ -f "$HOME/.local/share/color-schemes/KubuntuNord.colors" ]] && ok theme KubuntuNord || fail theme 'KubuntuNord.colors missing'
 [[ -f "$HOME/.local/share/themes/Nordic/index.theme" ]] && ok theme 'Nordic GTK' || warn theme 'Nordic GTK missing'
+if [[ -f "$HOME/.local/share/icons/Nordzy-dark/index.theme" ]]; then ok theme "Nordzy-dark icons"; else warn theme "Nordzy-dark icons missing"; fi
 if has kreadconfig6; then
   val="$(kreadconfig6 --file kdeglobals --group General --key ColorScheme 2>/dev/null)"
   [[ "$val" == KubuntuNord ]] && ok kde colorscheme || warn kde "ColorScheme=$val"
