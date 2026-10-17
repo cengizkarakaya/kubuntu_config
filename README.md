@@ -35,7 +35,7 @@ Run updates:
 - packages/optional.txt: dev/build adjuncts (review before enabling)
 - applications/addons.tsv: **every requested third-party add-on** with installation channel and actual level of automation
 - applications/vscode-extensions.txt: optional vetted VS Code extensions
-- dotfiles/: portable Alacritty, Helix, Yazi, Zellij, Starship, Bat, Bottom, Git, Zathura and Readline snapshot from Arch_Config
+- dotfiles/: portable Alacritty, Helix, Yazi, Zellij, Starship, Bat, Bottom, Fastfetch (Ubuntu logo), Git, Zathura and Readline snapshot from Arch_Config
 - shell/interactive.bash: Arch-like bash shortcuts, sourced from Ubuntu ~/.bashrc without overwriting the file
 - scripts/: Brave/VSCode repos, Rust toolchain, applications, Stow, KVM, default apps, safe updates, boot diagnostics
 - plasma/: KDE native settings and Kröhnkite KWin6 build from pinned source
