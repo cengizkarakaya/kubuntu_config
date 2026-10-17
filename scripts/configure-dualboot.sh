@@ -3,7 +3,7 @@ set -Eeuo pipefail
 # Opt-in GRUB Windows discovery AFTER Windows is installed, UEFI only.
 # No partition, EFI boot-order, ESP or kernel modifications.
 apply=0
-case "$1" in --apply) apply=1 ;; --dry-run|'') ;; *) echo 'Usage: configure-dualboot.sh [--apply]'; exit 2 ;; esac
+case "${1:-}" in --apply) apply=1 ;; --dry-run|'') ;; *) echo 'Usage: configure-dualboot.sh [--apply]'; exit 2 ;; esac
 [[ -d /sys/firmware/efi ]] || { echo 'UEFI required'; exit 1; }
 command -v update-grub >/dev/null || { echo 'GRUB not installed; use UEFI firmware boot menu'; exit 1; }
 command -v os-prober >/dev/null || { echo 'Install os-prober manually: sudo apt install os-prober'; exit 1; }
