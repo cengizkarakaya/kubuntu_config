@@ -1,6 +1,6 @@
 # Portable Arch shell preferences, without overwriting Ubuntu .bashrc.
 case "$-" in *i*) ;; *) return ;; esac
-export EDITOR=hx VISUAL=hx SUDO_EDITOR=hx PATH="$HOME/.local/bin:$PATH"
+export EDITOR=hx VISUAL=hx SUDO_EDITOR=hx PATH="$HOME/.cargo/bin:$HOME/.local/bin:$PATH"
 HISTSIZE=10000 HISTFILESIZE=20000 HISTCONTROL=erasedups:ignorespace
 HISTTIMEFORMAT='%F %T '
 shopt -s histappend cmdhist
