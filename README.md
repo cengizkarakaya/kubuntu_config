@@ -46,7 +46,9 @@ KWin changes, use `bash bootstrap.sh --skip-plasma` then
 **No optional application plug-ins or extensions are installed.**
 This includes no GIMP/Krita/FreeCAD/KiCad/Blender/Joplin/Calibre/Thunderbird
 plug-ins, no editor add-ons and no Yazi plugins or downloaded flavors.
-Previously installed user extensions are not uninstalled. Required application
+Previously installed user extensions are not uninstalled; only obsolete Stow
+symlinks to this repository's retired Yazi add-on files are cleaned up.
+Required application
 dependencies and Flatpak runtimes can still be installed by system package managers.
 **Polonium** is the sole deliberately installed KWin script, explicitly requested
 as the window tiler. See `applications/README.md`.
