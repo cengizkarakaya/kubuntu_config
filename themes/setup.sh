@@ -29,4 +29,5 @@ if command -v kwriteconfig6 >/dev/null; then
 fi
 command -v plasma-apply-colorscheme >/dev/null && plasma-apply-colorscheme KubuntuNord || true
 command -v gsettings >/dev/null && gsettings set org.gnome.desktop.interface gtk-theme Nordic || true
-echo 'Nord palette, verified Nerd Font and Nordic GTK applied. Nordzy icons/cursors pending manual KDE review.'
+bash "$ROOT/themes/install-nordzy-icons.sh" || echo '[WARN] Nordzy icons could not be installed; retained KDE fallback'
+echo 'Nord palette, Nerd Font, Nordic GTK and Nordzy icons (if successful) are configured; Nordzy cursor remains optional.'
