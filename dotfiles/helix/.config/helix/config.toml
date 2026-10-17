@@ -1,0 +1,84 @@
+theme = "nord-dark"
+
+[editor]
+line-number = "relative"
+mouse = true
+middle-click-paste = true
+
+scroll-lines = 3
+scrolloff = 6
+
+bufferline = "multiple"
+color-modes = true
+cursorline = true
+true-color = true
+
+auto-completion = true
+completion-trigger-len = 2
+auto-format = true
+
+insert-final-newline = true
+trim-trailing-whitespace = true
+
+rulers = [100]
+
+# Yalnız error seviyesindeki diagnostic'i satır sonunda göster
+end-of-line-diagnostics = "error"
+
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+
+[editor.indent-guides]
+render = true
+character = "│"
+skip-levels = 1
+
+
+[editor.statusline]
+left = [
+    "mode",
+    "spinner",
+    "file-name",
+    "read-only-indicator",
+    "file-modification-indicator"
+]
+
+center = []
+
+right = [
+    "diagnostics",
+    "selections",
+    "position",
+    "file-encoding"
+]
+
+
+[editor.lsp]
+display-messages = true
+display-progress-messages = true
+display-inlay-hints = true
+auto-signature-help = true
+
+
+[editor.file-picker]
+hidden = false
+
+
+[editor.gutters]
+layout = ["diagnostics", "line-numbers", "diff"]
+
+
+[editor.gutters.line-numbers]
+min-width = 2
+
+
+[editor.inline-diagnostics]
+cursor-line = "warning"
+other-lines = "disable"
+prefix-len = 1
+max-wrap = 10
+max-diagnostics = 1
