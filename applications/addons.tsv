@@ -1,0 +1,44 @@
+# Application | addon | method | automatic base installation
+Krita | Quick Settings Docker | verify bundled docker in Settings | no
+Krita | Ten Brushes | official plugin / author source | no
+Krita | Batch Exporter | verified Krita plugin | no
+GIMP | G'MIC-Qt | apt gimp-gmic version-checked | attempt
+GIMP | Resynthesizer 3 | verify GIMP3 build | no
+GIMP | Liquid Rescale | verify API compatibility | no
+GIMP | BIMP | verify GIMP3 build | no
+KiCad | InteractiveHtmlBom | Plugin and Content Manager | no
+KiCad | StepUp | Plugin and Content Manager | no
+KiCad | KiBuzzard | Plugin and Content Manager | no
+KiCad | Board2Pdf | Plugin and Content Manager | no
+KiCad | Archive 3D Models | Plugin and Content Manager | no
+Blender | CAD Sketcher | compatible upstream release | no
+Blender | Bool Tool | Blender Extensions | no
+Blender | LoopTools | Blender Extensions | no
+Blender | MeasureIt | Blender Extensions | no
+Blender | A.N.T. Landscape | Blender Extensions | no
+Blender | 3D Print Toolbox | Blender Extensions | no
+Kdenlive | Whisper | application speech-to-text model manager | no
+Kdenlive | Glaxnimate | apt glaxnimate; app integration check | attempt
+Kdenlive | LADSPA | apt swh-plugins | attempt
+Kdenlive | frei0r | apt frei0r-plugins | attempt
+FreeCAD | Fasteners | Addon Manager | no
+FreeCAD | KiCad StepUp | Addon Manager | no
+FreeCAD | SheetMetal | Addon Manager | no
+FreeCAD | FCGear / Gears | Addon Manager | no
+FreeCAD | Curves | Addon Manager | no
+FreeCAD | Parts Library | Addon Manager | no
+Thunderbird | ImportExportTools NG | Thunderbird Add-ons | no
+Calibre | Find Duplicates | Preferences > Plugins | no
+Calibre | Quality Check | Preferences > Plugins | no
+Calibre | Count Pages | Preferences > Plugins | no
+Calibre | Goodreads | Preferences > Plugins | no
+Inkscape | Dimensions | verified extension | no
+Joplin | Templates | Joplin Plugin Manager | no
+Joplin | Backup | Joplin Plugin Manager/bundled | no
+Joplin | Rich Markdown | Joplin Plugin Manager | no
+Joplin | Outline | Joplin Plugin Manager | no
+Joplin | Better Tables | Joplin Plugin Manager | no
+Joplin | Quick Links | Joplin Plugin Manager | no
+Joplin | Zotero Link | Joplin Plugin Manager | no
+Joplin | Math Mode | verify plugin identity and compatibility | no
+Strawberry | GStreamer codecs | apt GStreamer packages | attempt
