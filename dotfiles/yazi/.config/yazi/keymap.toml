@@ -1,0 +1,38 @@
+[mgr]
+prepend_keymap = [
+
+    { on = "H", run = "back",    desc = "Back" },
+    { on = "L", run = "forward", desc = "Forward" },
+
+    { on = "<C-u>", run = "arrow -50%", desc = "Half page up" },
+    { on = "<C-d>", run = "arrow 50%",  desc = "Half page down" },
+
+    { on = "!", run = 'shell "$SHELL" --block', desc = "Shell here", for = "unix" },
+
+    { on = [ "g", "h" ], run = "cd ~",           desc = "Home" },
+    { on = [ "g", "d" ], run = "cd ~/Downloads", desc = "Downloads" },
+    { on = [ "g", "p" ], run = "cd ~/Projects",  desc = "Projects" },
+
+{ on = [ "t", "p" ], run = "plugin toggle-pane min-preview", desc = "Preview göster/gizle" },
+{ on = [ "t", "P" ], run = "plugin toggle-pane max-preview", desc = "Preview büyüt/geri al" },
+
+{ on = "<Enter>", run = "plugin smart-enter", desc = "Dosyayı aç / klasöre gir" },
+
+{ on = "f", run = "plugin jump-to-char", desc = "Jump to char" },
+
+{ on = "F", run = "plugin smart-filter", desc = "Smart filter" },
+
+{ on = "p", run = "plugin smart-paste", desc = "Paste into hovered directory or CWD" },
+
+{ on = [ "g", "r" ], run = 'shell "$HOME/.local/bin/yazi-rg" --block', desc = "Search content with rg + fzf" },
+
+{ on = [ "c", "m" ], run = "plugin chmod", desc = "Change permissions" },
+
+{ on = "M", run = "plugin mount", desc = "Mount manager" },
+
+{ on = [ "c", "v" ], run = "plugin diff", desc = "Compare selected and hovered files" },
+
+]
+
+
+
