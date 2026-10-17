@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+if dpkg-query -W -f='${Status}' code 2>/dev/null | grep -q 'install ok installed'; then exit 0; fi
+tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
+curl -fsSL --retry 3 https://packages.microsoft.com/keys/microsoft.asc -o "$tmp/key.asc"
+gpg --batch --yes --dearmor -o "$tmp/microsoft.gpg" "$tmp/key.asc"
+sudo install -Dm644 "$tmp/microsoft.gpg" /usr/share/keyrings/microsoft.gpg
+cat > "$tmp/vscode.sources" <<'EOF'
+Types: deb
+URIs: https://packages.microsoft.com/repos/code
+Suites: stable
+Components: main
+Architectures: amd64 arm64
+Signed-By: /usr/share/keyrings/microsoft.gpg
+EOF
+sudo install -Dm644 "$tmp/vscode.sources" /etc/apt/sources.list.d/vscode.sources
+sudo apt-get update
+sudo apt-get install -y code

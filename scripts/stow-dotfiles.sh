@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
-ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
-command -v stow >/dev/null || { echo "stow missing"; exit 1; }
+ROOT="$(cd -- "$(dirname -- "$0")/.." && pwd)"
 cd "$ROOT/dotfiles"
-for module in alacritty bat bottom helix readline starship yazi zathura zellij git; do
- [[ -d "$module" ]] || continue
- if [[ "$module" == git ]] && ! command -v delta >/dev/null 2>&1; then continue; fi
- # Never blindly overwrite user-owned files; conflicts are reported.
- if ! stow --no-folding -n -v -t "$HOME" "$module" >/dev/null 2>&1; then
-   echo "CONFLICT: $module has existing files in HOME; back up/migrate manually."
-   continue
- fi
- stow --no-folding -t "$HOME" "$module"
+failed=()
+for module in alacritty bat bottom git helix readline starship yazi zathura zellij; do
+  [[ -d "$module" ]] || { failed+=("$module [not vendored]"); continue; }
+  if ! stow --no-folding -n --restow -t "$HOME" "$module" >/dev/null 2>&1; then
+    failed+=("$module [unmanaged HOME collision]"); continue
+  fi
+  stow --no-folding --restow -t "$HOME" "$module"
 done
+if (("${#failed[@]}" > 0)); then
+  printf '[WARN] Stow conflicts; no files overwritten:\n'
+  printf ' - %s\n' "${failed[@]}"
+  exit 1
+fi
