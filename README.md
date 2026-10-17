@@ -59,7 +59,9 @@ as the window tiler. See `applications/README.md`.
 Official upstream: https://github.com/zeroxoneafour/polonium
 Stable: `v1.2.1`; source pinned to
 `3638b1625e95877f93279527de3b82b9b09aff3a`.
-Build uses `npm ci --ignore-scripts` and local esbuild in an unprivileged
+Build checks the pinned `kwin-api` submodule commit
+`8fc04bd086a1445ea67783eaa33517b70e01c063`, then uses
+`npm ci --ignore-scripts` and local esbuild in an unprivileged
 temporary directory. No latest-HEAD scripts, automatic development snapshots
 or arbitrary remote install commands. Requires Plasma >=6.4, Wayland, `kpackagetool6`, `zip`, `unzip`,
 `make`, `npm`, and a supported Node.js release. The old Kröhnkite installation is disabled (and user-installed

@@ -52,7 +52,8 @@ Pinned `Polonium v1.2.1`, Git commit
 | `kwriteconfig6`, `plasmashell` | KDE base desktop; checked at install |
 | `nodejs`, `npm` | APT manifest; Node 20.19+/22.12+/24+ checked |
 | `make`, `zip`, `unzip`, `git` | Explicit APT manifest and installer checks |
-| `esbuild` and `kwin-api` | Pinned upstream npm lockfile; `npm ci --ignore-scripts` |
+| `esbuild` | Pinned upstream npm lockfile; `npm ci --ignore-scripts` |
+| `kwin-api` | **Required upstream Git submodule**, pinned to `8fc04bd086a1445ea67783eaa33517b70e01c063`; fetched and verified before npm |
 | DBus saver | Optional upstream feature **disabled by default** (`UseDBusSaver=false`); not required to tile windows |
 | Other KWin add-ons | None; Polonium self-contained KWin script |
 
