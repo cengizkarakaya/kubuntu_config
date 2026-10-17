@@ -96,9 +96,10 @@ bash verify.sh       # read-only inventory verification
 bash scripts/dualboot-diagnostics.sh
 ```
 
-NVIDIA installation and CUDA remain **outside bootstrap**. Verify
-`nvidia-smi` and test Blender OptiX, media encoding and monitor behaviors
-manually. Static checks do not prove application-level GPU acceleration.
+NVIDIA installation and CUDA remain **outside bootstrap**. Run
+`bash scripts/gpu-diagnostics.sh` for safe, read-only NVIDIA/Vulkan/OpenGL
+inventory. This is not a real Blender OptiX, CUDA, NVENC or multimonitor
+stability test; validate these in the applications manually. Static checks do not prove application-level GPU acceleration.
 
 ## Host constraints and dual boot
 
