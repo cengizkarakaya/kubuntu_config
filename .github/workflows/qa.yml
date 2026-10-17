@@ -1,0 +1,27 @@
+name: Static bootstrap checks
+on:
+  push:
+  pull_request:
+jobs:
+  bash:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Syntax check scripts
+        run: |
+          find . -name '*.sh' -type f -print0 | xargs -0 -r -n1 bash -n
+          bash -n scripts/sysup
+          bash -n scripts/kubuntu-power-menu
+      - name: Validate manifests
+        run: |
+          test -s packages/apt.txt
+          test -s packages/flatpak.tsv
+          test -s applications/addons.tsv
+          test -s themes/KubuntuNord.colors
+          python3 - <<'PY'
+          from pathlib import Path
+          rows=[r.split('\t') for r in Path('applications/addons.tsv').read_text().splitlines() if r and not r.startswith('#')]
+          assert all(len(r)==5 for r in rows)
+          assert len(rows)>=35
+          print('Add-on rows:',len(rows))
+          PY

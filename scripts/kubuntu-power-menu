@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+if command -v qdbus6 >/dev/null 2>&1; then
+  qdbus6 org.kde.LogoutPrompt /LogoutPrompt promptAll
+elif command -v qdbus >/dev/null 2>&1; then
+  qdbus org.kde.LogoutPrompt /LogoutPrompt promptAll
+else
+  echo 'KDE LogoutPrompt client unavailable; use application launcher Power/Leave.' >&2
+  exit 1
+fi

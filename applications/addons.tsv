@@ -1,44 +1,44 @@
-# Application | addon | method | automatic base installation
-Krita | Quick Settings Docker | verify bundled docker in Settings | no
-Krita | Ten Brushes | official plugin / author source | no
-Krita | Batch Exporter | verified Krita plugin | no
-GIMP | G'MIC-Qt | apt gimp-gmic version-checked | attempt
-GIMP | Resynthesizer 3 | verify GIMP3 build | no
-GIMP | Liquid Rescale | verify API compatibility | no
-GIMP | BIMP | verify GIMP3 build | no
-KiCad | InteractiveHtmlBom | Plugin and Content Manager | no
-KiCad | StepUp | Plugin and Content Manager | no
-KiCad | KiBuzzard | Plugin and Content Manager | no
-KiCad | Board2Pdf | Plugin and Content Manager | no
-KiCad | Archive 3D Models | Plugin and Content Manager | no
-Blender | CAD Sketcher | compatible upstream release | no
-Blender | Bool Tool | Blender Extensions | no
-Blender | LoopTools | Blender Extensions | no
-Blender | MeasureIt | Blender Extensions | no
-Blender | A.N.T. Landscape | Blender Extensions | no
-Blender | 3D Print Toolbox | Blender Extensions | no
-Kdenlive | Whisper | application speech-to-text model manager | no
-Kdenlive | Glaxnimate | apt glaxnimate; app integration check | attempt
-Kdenlive | LADSPA | apt swh-plugins | attempt
-Kdenlive | frei0r | apt frei0r-plugins | attempt
-FreeCAD | Fasteners | Addon Manager | no
-FreeCAD | KiCad StepUp | Addon Manager | no
-FreeCAD | SheetMetal | Addon Manager | no
-FreeCAD | FCGear / Gears | Addon Manager | no
-FreeCAD | Curves | Addon Manager | no
-FreeCAD | Parts Library | Addon Manager | no
-Thunderbird | ImportExportTools NG | Thunderbird Add-ons | no
-Calibre | Find Duplicates | Preferences > Plugins | no
-Calibre | Quality Check | Preferences > Plugins | no
-Calibre | Count Pages | Preferences > Plugins | no
-Calibre | Goodreads | Preferences > Plugins | no
-Inkscape | Dimensions | verified extension | no
-Joplin | Templates | Joplin Plugin Manager | no
-Joplin | Backup | Joplin Plugin Manager/bundled | no
-Joplin | Rich Markdown | Joplin Plugin Manager | no
-Joplin | Outline | Joplin Plugin Manager | no
-Joplin | Better Tables | Joplin Plugin Manager | no
-Joplin | Quick Links | Joplin Plugin Manager | no
-Joplin | Zotero Link | Joplin Plugin Manager | no
-Joplin | Math Mode | verify plugin identity and compatibility | no
-Strawberry | GStreamer codecs | apt GStreamer packages | attempt
+# app<TAB>addon<TAB>installer<TAB>bootstrap_status<TAB>notes
+Krita	Quick Settings Docker	bundled	VERIFY_IN_APP	Settings > Dockers; title/version may vary
+Krita	Ten Brushes	plugin-manager	MANUAL	Use Krita-compatible release from trusted author; do not install arbitrary archives
+Krita	Batch Exporter	plugin-manager	MANUAL	Verify Krita and Python plugin API version
+GIMP	G'MIC-Qt	apt:gimp-gmic	APT_ATTEMPT	Check Filters > G'MIC-Qt; correct GIMP 3 host required
+GIMP	Resynthesizer 3	GIMP3-port	MANUAL	GIMP 2 plugin is incompatible with GIMP 3; verify trusted 3.x port
+GIMP	Liquid Rescale	GIMP3-port	MANUAL	No assumed 3.x binary compatibility
+GIMP	BIMP	GIMP3-port	MANUAL	Legacy GIMP 2.x plugin must not be copied to GIMP 3
+KiCad	InteractiveHtmlBom	PCM	MANUAL	Tools > Plugin and Content Manager; search iBOM
+KiCad	StepUp	PCM	MANUAL	Use KiCad StepUp with compatible FreeCAD
+KiCad	KiBuzzard	PCM	MANUAL	Install through verified PCM vendor
+KiCad	Board2Pdf	PCM	MANUAL	Inspect plugin README / supported major KiCad version
+KiCad	Archive 3D Models	PCM	MANUAL	Inspect exact plugin identity and current version
+Blender	CAD Sketcher	author-release	MANUAL	Check Blender release compatibility; not all major releases supported
+Blender	Bool Tool	extensions.blender.org	MANUAL	Edit > Preferences > Get Extensions
+Blender	LoopTools	extensions.blender.org	MANUAL	Edit > Preferences > Get Extensions
+Blender	MeasureIt	extensions.blender.org	MANUAL	Edit > Preferences > Get Extensions
+Blender	A.N.T. Landscape	extensions.blender.org	MANUAL	Edit > Preferences > Get Extensions
+Blender	3D Print Toolbox	extensions.blender.org	MANUAL	Edit > Preferences > Get Extensions
+Kdenlive	Whisper	in-app	USER_DOWNLOAD	Settings > Configure Kdenlive > Speech To Text; download model/deps on demand
+Kdenlive	Glaxnimate	apt:glaxnimate	APT_ATTEMPT	Verify Kdenlive Animation Editor integration in UI
+Kdenlive	LADSPA	apt:swh-plugins	APT_ATTEMPT	Verify MLT/LADSPA bridge for selected effects
+Kdenlive	frei0r	apt:frei0r-plugins	APT_ATTEMPT	Effects > video effects after restart
+FreeCAD	Fasteners	Addon Manager	MANUAL	Tools > Addon Manager; workbench selection
+FreeCAD	KiCad StepUp	Addon Manager	MANUAL	Match KiCad major version
+FreeCAD	SheetMetal	Addon Manager	MANUAL	Compatible version of SheetMetal Workbench
+FreeCAD	FCGear / Gears	Addon Manager	MANUAL	Exact plugin name may differ
+FreeCAD	Curves	Addon Manager	MANUAL	Curves Workbench
+FreeCAD	Parts Library	Addon Manager	MANUAL	May be large dataset; explicit approval
+Thunderbird	ImportExportTools NG	Add-ons Manager	MANUAL	Extensions > search official add-on
+Calibre	Find Duplicates	Preferences > Plugins	MANUAL	Import via Calibre official plugin index
+Calibre	Quality Check	Preferences > Plugins	MANUAL	Import via Calibre official plugin index
+Calibre	Count Pages	Preferences > Plugins	MANUAL	Import via Calibre official plugin index
+Calibre	Goodreads	Preferences > Plugins	MANUAL	Check Goodreads/metadata plugin name and API support
+Strawberry	GStreamer plugins	APT packages	APT_ATTEMPT	base/good/bad/ugly/libav packages
+Inkscape	Dimensions	inkscape extension	MANUAL	Validate version and extension author
+Joplin	Templates	Plugin Manager	MANUAL	Use desktop app Plugins UI
+Joplin	Backup	bundled-or-Plugin Manager	VERIFY_IN_APP	Check bundled Backup installed/enabled
+Joplin	Rich Markdown	Plugin Manager	MANUAL	Search official plugin registry
+Joplin	Outline	Plugin Manager	MANUAL	Search official plugin registry
+Joplin	Better Tables	Plugin Manager	MANUAL	Search official plugin registry
+Joplin	Quick Links	Plugin Manager	MANUAL	Search official plugin registry
+Joplin	Zotero Link	Plugin Manager	MANUAL	Verify plugin registry identity
+Joplin	Math Mode	Plugin Manager	MANUAL	Verify plugin exists and supports current Joplin
