@@ -41,7 +41,7 @@ else
   grep -Fq '"version": "1.2.1"' package.json || { echo '[FAIL] Unexpected Polonium version' >&2; exit 1; }
   # Upstream pins kwin-api as a Git submodule (gitlink), not as an npm registry
   # package. Verify URL and exact submodule commit before any npm build.
-  grep -Fxq '	url = https://github.com/zeroxoneafour/kwin-api' .gitmodules || {
+  grep -Fq 'url = https://github.com/zeroxoneafour/kwin-api' .gitmodules || {
     echo '[FAIL] Unexpected Polonium kwin-api submodule URL' >&2; exit 1;
   }
   git submodule update --init --depth 1 -- kwin-api
