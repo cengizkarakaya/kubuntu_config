@@ -1,5 +1,0 @@
-# Optional, reviewed VS Code Marketplace extensions, not a forced install
-rust-lang.rust-analyzer
-vadimcn.vscode-lldb
-tamasfe.even-better-toml
-usernamehw.errorlens

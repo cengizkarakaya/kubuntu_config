@@ -1,11 +1,5 @@
-# Optional non-core tools to install only when needed.
-# rustup preferred for fresh Rust toolchains: consult https://rustup.rs/
-# apt names and availability depend on Ubuntu release.
-rustup
-# nodejs npm make 7zip are Krohnkite build-time dependencies
-nodejs
-npm
-make
-7zip
-# Plasma/KWin scripting introspection tools
+# Reference only. Not installed automatically.
+# Rust toolchain is handled by scripts/install-rust.sh (APT or preinstalled rustup).
+# Polonium builds from pinned stable source with nodejs/npm/make/zip.
+# No application add-ons or extensions are listed or installed.
 qt6-tools-dev-tools

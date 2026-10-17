@@ -1,5 +1,5 @@
-# Ubuntu packages; no AUR, Pacman, TLP, greetd, firmware or laptop drivers.
-# Portable terminal tools
+# Core applications and portable CLI tools. No optional application extensions.
+# Do not add GIMP/Blender/KiCad/FreeCAD/Dolphin plugins, Yazi packages or editor extensions.
 alacritty
 bash-completion
 bat
@@ -23,10 +23,7 @@ tealdeer
 zellij
 zoxide
 yazi
-zathura
-zathura-pdf-poppler
 7zip
-p7zip-full
 unzip
 zip
 git
@@ -39,9 +36,8 @@ make
 clang
 cmake
 lldb
-# KDE-native UI
+# KDE-native applications
 dolphin
-dolphin-plugins
 ark
 spectacle
 okular
@@ -50,7 +46,7 @@ kdeconnect
 plasma-systemmonitor
 kde-config-gtk-style
 xdg-utils
-# media and diagnostics
+# Media/diagnostics; codecs are provided by primary apps/system, not optional add-ons
 ffmpeg
 ffmpegthumbnailer
 imagemagick
@@ -63,17 +59,12 @@ smartmontools
 usbutils
 mesa-utils
 vulkan-tools
-# work and engineering
+# Work and engineering programs without their optional add-ons
 krita
 gimp
-gimp-gmic
 kicad
-kicad-packages3d
 blender
 kdenlive
-glaxnimate
-frei0r-plugins
-swh-plugins
 freecad
 thunderbird
 libreoffice
@@ -85,23 +76,16 @@ handbrake
 keepassxc
 qbittorrent
 meshlab
-# virtualization
+# Virtualization
 virt-manager
 qemu-system-x86
 qemu-utils
 libvirt-daemon-system
 libvirt-clients
 ovmf
-# GStreamer full codecs
-gstreamer1.0-plugins-base
-gstreamer1.0-plugins-good
-gstreamer1.0-plugins-bad
-gstreamer1.0-plugins-ugly
-gstreamer1.0-libav
-# font and app infrastructure
+# Fonts and Flatpak runtime
 fonts-firacode
 fontconfig
 python3
 python3-venv
 flatpak
-plasma-discover-backend-flatpak
