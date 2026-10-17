@@ -12,9 +12,9 @@ Installed automatically:
 - Pinned Nordzy-dark SVG icons, installed locally without running upstream installer
 
 Not automatically installed:
-- Nordzy icon/cursor and third-party Plasma global theme from KDE Store:
+- Nordzy cursor and third-party Plasma global theme from KDE Store:
   compatibility and installer payload must be reviewed before activation.
-  Fallback is KDE's built-in Breeze/Breeze Dark icons/cursor.
+  Fallback for the cursor is KDE's built-in Breeze cursor; Nordzy-dark icons are installed separately.
 - Global Plasma theme, panel layout, monitor positioning: manage with KDE Settings.
   Never symlink ~/.config/plasmashellrc, kscreen profiles or plasma-org.kde.plasma.desktop-appletsrc.
 
