@@ -39,6 +39,16 @@ else
   [[ "$(git rev-parse HEAD)" == "$REV" ]] || { echo '[FAIL] Unexpected Polonium revision' >&2; exit 1; }
   [[ -f package-lock.json && -f Makefile ]] || { echo '[FAIL] Expected upstream build files missing' >&2; exit 1; }
   grep -Fq '"version": "1.2.1"' package.json || { echo '[FAIL] Unexpected Polonium version' >&2; exit 1; }
+  # Upstream pins kwin-api as a Git submodule (gitlink), not as an npm registry
+  # package. Verify URL and exact submodule commit before any npm build.
+  grep -Fxq '	url = https://github.com/zeroxoneafour/kwin-api' .gitmodules || {
+    echo '[FAIL] Unexpected Polonium kwin-api submodule URL' >&2; exit 1;
+  }
+  git submodule update --init --depth 1 -- kwin-api
+  expected_api='8fc04bd086a1445ea67783eaa33517b70e01c063'
+  [[ "$(git -C kwin-api rev-parse HEAD)" == "$expected_api" && -f kwin-api/package.json ]] || {
+    echo '[FAIL] Polonium kwin-api submodule missing or at wrong revision' >&2; exit 1;
+  }
   # Lockfile pins dependency contents. Do not run third-party npm install/postinstall scripts.
   npm ci --ignore-scripts --no-audit --no-fund
   [[ -x node_modules/.bin/esbuild ]] || { echo '[FAIL] Local esbuild binary missing' >&2; exit 1; }
