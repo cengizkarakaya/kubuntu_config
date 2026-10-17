@@ -1,0 +1,61 @@
+"$schema" = "https://starship.rs/config-schema.json"
+
+add_newline = false
+scan_timeout = 20
+
+palette = "nord"
+
+format = """
+$directory\
+$git_branch\
+$git_status\
+$rust\
+$cmd_duration\
+$line_break\
+$character"""
+
+[palettes.nord]
+nord0  = "#2E3440"
+nord1  = "#3B4252"
+nord2  = "#434C5E"
+nord3  = "#4C566A"
+nord4  = "#D8DEE9"
+nord5  = "#E5E9F0"
+nord6  = "#ECEFF4"
+nord7  = "#8FBCBB"
+nord8  = "#88C0D0"
+nord9  = "#81A1C1"
+nord10 = "#5E81AC"
+nord11 = "#BF616A"
+nord12 = "#D08770"
+nord13 = "#EBCB8B"
+nord14 = "#A3BE8C"
+nord15 = "#B48EAD"
+
+[directory]
+truncation_length = 3
+truncate_to_repo = true
+style = "bold nord8"
+
+[git_branch]
+symbol = " "
+format = "[$symbol$branch]($style) "
+style = "bold nord15"
+
+[git_status]
+style = "bold nord13"
+
+[rust]
+symbol = " "
+format = "[$symbol$version]($style) "
+version_format = "${raw}"
+style = "bold nord11"
+
+[cmd_duration]
+min_time = 2000
+format = "took [$duration]($style) "
+style = "bold nord9"
+
+[character]
+success_symbol = "[❯](bold nord14)"
+error_symbol = "[❯](bold nord11)"
