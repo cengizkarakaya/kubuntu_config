@@ -39,19 +39,18 @@ KWin changes, use `bash bootstrap.sh --skip-plasma` then
 - `scripts/setup-yazi-apt.sh`: official signed stable Yazi APT source (Yazi is not in the default Kubuntu archive)
 - `scripts/install-zellij.sh`: pinned Zellij 0.45.1 compiled through Cargo in user scope (not an Ubuntu APT package)
 - `dotfiles/`: portable Alacritty, Bat, Bottom, Fastfetch, Git, Helix, Readline, Starship, Yazi, Zellij; installed by GNU Stow without overwriting existing files
+- `scripts/install-yazi-plugins.sh`: restores all 10 Arch Yazi plugins and the pinned Nord flavor through `ya pkg install`; `scripts/yazi-rg` restores search hotkey functionality
 - `shell/interactive.bash`: Arch-like aliases sourced from `~/.bashrc`
 - `themes/`: pinned Nord KDE colors, GTK Nordic, Nordzy-dark icons and verified Nerd Font
 - `plasma/`: ten workspaces, KWin shortcuts and **Polonium 1.2.1**, built from pinned upstream source
 - `scripts/sysup`: interactive OS/App/Rust updates, firmware *report only*
 - `verify.sh`: strict package inventory, dotfile links, local KWin metadata and no-add-on policy; reports untestable session behaviors
 
-**No optional application plug-ins or extensions are installed.**
-This includes no GIMP/Krita/FreeCAD/KiCad/Blender/Joplin/Calibre/Thunderbird
-plug-ins, no editor add-ons and no Yazi plugins or downloaded flavors.
-Previously installed user extensions are not uninstalled; only obsolete Stow
-symlinks to this repository's retired Yazi add-on files are cleaned up.
-Required application
-dependencies and Flatpak runtimes can still be installed by system package managers.
+**Yazi is the only exception to the no-optional-add-ons policy.**
+Its 10 pinned plugins, Nord flavor, Lua setup, search helper and shortcuts
+are restored from Arch_Config. Other optional application/editor extensions
+remain disabled. Previously installed user extensions are not uninstalled.
+Required system dependencies and Flatpak runtimes may still be installed.
 **Polonium** is the sole deliberately installed KWin script, explicitly requested
 as the window tiler. See `applications/README.md`.
 
@@ -62,8 +61,8 @@ Stable: `v1.2.1`; source pinned to
 `3638b1625e95877f93279527de3b82b9b09aff3a`.
 Build uses `npm ci --ignore-scripts` and local esbuild in an unprivileged
 temporary directory. No latest-HEAD scripts, automatic development snapshots
-or arbitrary remote install commands. Requires Plasma >=6.4, Wayland and
-Node.js >=20. The old Kröhnkite installation is disabled (and user-installed
+or arbitrary remote install commands. Requires Plasma >=6.4, Wayland, `kpackagetool6`, `zip`, `unzip`,
+`make`, `npm`, and a supported Node.js release. The old Kröhnkite installation is disabled (and user-installed
 script package removed if present) after Polonium installs successfully.
 
 Polonium's own H/J/K/L focus, Shift+H/J/K/L move and Ctrl+H/J/K/L resize
@@ -135,3 +134,20 @@ On failures read `~/.local/state/kubuntu-config/bootstrap-*.log`.
 Stow refuses unmanaged files rather than replacing them. KDE shortcut
 config has backups under `~/.local/state/kubuntu-config/backups/`.
 Run `bash bootstrap.sh` again when the failed dependency is resolved.
+
+## Arch configuration parity
+
+Arch_Config baseline is pinned at commit
+`56c882afbd385a905b419193aa72520a688d56ea`.
+Alacritty, Bat, Bottom, Git, Helix, Readline, Starship and Zellij dotfiles are
+byte-for-byte identical. Yazi's `init.lua`, `keymap.toml`,
+`package.toml` and `theme.toml` are byte-for-byte identical.
+Yazi's `yazi.toml` differs only by using `hx` in place of
+`/usr/bin/helix` (Ubuntu executable compatibility); its functional settings
+are preserved. The `yazi-rg` script likewise uses `hx` with `helix`
+fallback instead of assuming the Arch path.
+Fastfetch differs only in the OS logo `arch` -> `ubuntu`.
+Hyprland, Waybar, Fuzzel and other compositor/desktop-specific settings
+cannot be copied verbatim into KWin/Plasma. Zathura's Arch config is
+not part of the present installed-app manifest; no unrelated app was added.
+See `docs/arch-parity.md`.
