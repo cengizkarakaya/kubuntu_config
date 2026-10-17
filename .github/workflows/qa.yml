@@ -32,6 +32,10 @@ jobs:
               "gstreamer1.0-libav","zathura-pdf-poppler"
           }
           assert not pkg & forbidden, pkg & forbidden
+          assert 'yazi' in pkg and 'zellij' not in pkg
+          assert 'setup-yazi-apt.sh' in (root / 'bootstrap.sh').read_text()
+          assert 'install-zellij.sh' in (root / 'bootstrap.sh').read_text()
+          assert 'cargo install --locked --version 0.45.1 zellij' in (root / 'scripts/install-zellij.sh').read_text()
           removed = [
               "plasma/install-krohnkite.sh", "applications/addons.tsv",
               "applications/vscode-extensions.txt", "scripts/install-vscode-extensions.sh",

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+export PATH="$HOME/.cargo/bin:$HOME/.local/bin:$PATH"
 CORE_ONLY=0
 SKIP_PLASMA=0
 for arg in "$@"; do
@@ -49,8 +50,10 @@ stage 'Brave browser' bash "$ROOT/scripts/install-brave.sh"
 command -v brave-browser >/dev/null || { echo '[FAIL] Brave was not installed' >&2; exit 1; }
 if ((CORE_ONLY)); then echo '[OK] Core-only finished. Run bash bootstrap.sh to continue.'; exit 0; fi
 stage 'VS Code' bash "$ROOT/scripts/install-vscode.sh"
+stage 'Official Yazi stable repository' bash "$ROOT/scripts/setup-yazi-apt.sh"
 stage 'APT package manifest' bash "$ROOT/scripts/install-apt.sh" "$ROOT/packages/apt.txt"
 stage 'Rust toolchain' bash "$ROOT/scripts/install-rust.sh"
+stage 'Zellij via pinned Cargo crate' bash "$ROOT/scripts/install-zellij.sh"
 stage 'libvirt setup' bash "$ROOT/scripts/setup-libvirt.sh"
 stage 'Flatpak applications' bash "$ROOT/scripts/install-flatpaks.sh"
 stage 'Retired managed add-on links' bash "$ROOT/scripts/clean-obsolete-symlinks.sh"
