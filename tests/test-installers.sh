@@ -57,12 +57,24 @@ if bash "$ROOT/scripts/install-flatpaks.sh"; then
   echo '[FAIL] Flatpak installer accepted an unavailable app' >&2; exit 1
 fi
 echo '[PASS] Flatpak installer fails on missing apps'
-mkdir -p "$HOME/.config/yazi"
+# Re-enable the single authorized application-extension path: pinned Arch Yazi.
+mkdir -p "$HOME/.config/yazi" "$HOME/.local/bin"
 ln -s "$ROOT/dotfiles/yazi/.config/yazi/package.toml" "$HOME/.config/yazi/package.toml"
-printf 'personal settings\n' > "$HOME/.config/yazi/init.lua"
-ln -s "$work/external-theme" "$HOME/.config/yazi/theme.toml"
-bash "$ROOT/scripts/clean-obsolete-symlinks.sh"
-[[ ! -L "$HOME/.config/yazi/package.toml" ]]
-[[ -f "$HOME/.config/yazi/init.lua" ]]
-[[ -L "$HOME/.config/yazi/theme.toml" ]]
-echo '[PASS] Old Stow links cleaned without touching unrelated user files'
+touch "$HOME/.local/bin/yazi-rg"
+chmod +x "$HOME/.local/bin/yazi-rg"
+for cmd in yazi ya git rg fzf bat zoxide; do
+  cat > "$work/mock-bin/$cmd" <<'EOF'
+#!/usr/bin/env bash
+if [[ "${0##*/}" == ya && "${1:-}" == pkg && "${2:-}" == install ]]; then
+  printf '%s\\n' 'yazi pkg install' >> "$MOCK_LOG"
+  for p in git full-border toggle-pane smart-enter jump-to-char smart-filter smart-paste chmod mount diff; do
+    mkdir -p "$HOME/.config/yazi/plugins/$p.yazi"
+  done
+  mkdir -p "$HOME/.config/yazi/flavors/nord.yazi"
+fi
+EOF
+  chmod +x "$work/mock-bin/$cmd"
+done
+bash "$ROOT/scripts/install-yazi-plugins.sh"
+grep -q 'yazi pkg install' "$MOCK_LOG"
+echo '[PASS] The authorized Yazi plugin installer uses the pinned Arch manifest and verifies 10 plugins + Nord flavor'

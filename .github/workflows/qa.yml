@@ -40,20 +40,34 @@ jobs:
           removed = [
               "plasma/install-krohnkite.sh", "applications/addons.tsv",
               "applications/vscode-extensions.txt", "scripts/install-vscode-extensions.sh",
-              "scripts/install-yazi-plugins.sh", "dotfiles/yazi/.config/yazi/package.toml",
-              "dotfiles/yazi/.config/yazi/init.lua", "dotfiles/yazi/.config/yazi/theme.toml",
+              "scripts/clean-obsolete-symlinks.sh",
           ]
           assert all(not (root / x).exists() for x in removed)
-          for x in ["dotfiles/yazi/.config/yazi/keymap.toml",
-                    "dotfiles/yazi/.config/yazi/yazi.toml"]:
-              active = [s.split("#", 1)[0].strip().lower() for s in (root / x).read_text().splitlines()]
-              assert not any(s.startswith("[plugin.") or 'run = "plugin ' in s for s in active), x
+          import tomllib
+          yazi_dir = root / "dotfiles/yazi/.config/yazi"
+          with (yazi_dir / "package.toml").open("rb") as f:
+              locked = tomllib.load(f)
+          expected = ["git", "full-border", "toggle-pane", "smart-enter",
+                      "jump-to-char", "smart-filter", "smart-paste", "chmod", "mount", "diff"]
+          assert [x["use"] for x in locked["plugin"]["deps"]] == [f"yazi-rs/plugins:{x}" for x in expected]
+          assert len(locked["flavor"]["deps"]) == 1
+          assert locked["flavor"]["deps"][0]["use"] == "AdithyanA2005/nord"
+          for x in locked["plugin"]["deps"] + locked["flavor"]["deps"]:
+              assert x["rev"] and x["hash"]
+          assert (yazi_dir / "init.lua").is_file()
+          assert '[flavor]' in (yazi_dir / "theme.toml").read_text()
+          keymap = (yazi_dir / "keymap.toml").read_text()
+          assert all(f'plugin {x}' in keymap for x in
+                     ["toggle-pane", "smart-enter", "jump-to-char", "smart-filter",
+                      "smart-paste", "chmod", "mount", "diff"])
+          assert 'yazi-rg' in keymap
+          assert (root / "scripts/install-yazi-plugins.sh").is_file()
           bootstrap = (root / "bootstrap.sh").read_text()
           assert "install-polonium.sh" in bootstrap and "install-krohnkite.sh" not in bootstrap
-          assert "install-yazi-plugins.sh" not in bootstrap
+          assert "install-yazi-plugins.sh" in bootstrap
           polonium = (root / "plasma/install-polonium.sh").read_text()
           assert "3638b1625e95877f93279527de3b82b9b09aff3a" in polonium
           assert "npm ci --ignore-scripts" in polonium
           assert "krohnkiteEnabled false" in polonium
-          print("Plugin-free app manifests and pinned Polonium: OK")
+          print("Yazi Arch plugins/flavor preserved; other app add-ons disabled; pinned Polonium: OK")
           PY
