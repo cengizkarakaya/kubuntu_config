@@ -1,4 +1,10 @@
 git
+starship
+git-delta
+github-cli
+rustc
+cargo
+rust-analyzer
 curl
 wget
 ca-certificates
