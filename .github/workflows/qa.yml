@@ -35,7 +35,8 @@ jobs:
           assert 'yazi' in pkg and 'zellij' not in pkg
           assert 'setup-yazi-apt.sh' in (root / 'bootstrap.sh').read_text()
           assert 'install-zellij.sh' in (root / 'bootstrap.sh').read_text()
-          assert 'cargo install --locked --version 0.45.1 zellij' in (root / 'scripts/install-zellij.sh').read_text()
+          assert "VERSION='0.45.1'" in (root / 'scripts/install-zellij.sh').read_text()
+          assert 'cargo install --locked --version "$VERSION" zellij' in (root / 'scripts/install-zellij.sh').read_text()
           removed = [
               "plasma/install-krohnkite.sh", "applications/addons.tsv",
               "applications/vscode-extensions.txt", "scripts/install-vscode-extensions.sh",
