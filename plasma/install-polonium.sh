@@ -6,13 +6,19 @@ REPO='https://github.com/zeroxoneafour/polonium.git'
 VERSION='1.2.1'
 REV='3638b1625e95877f93279527de3b82b9b09aff3a'
 [[ "${XDG_SESSION_TYPE:-}" == wayland ]] || { echo '[FAIL] Polonium requires Plasma Wayland (X11 unsupported)' >&2; exit 1; }
-for command_name in git npm node make zip kpackagetool6 kwriteconfig6 plasmashell; do
+for command_name in git npm node make zip unzip kpackagetool6 kwriteconfig6 plasmashell; do
   command -v "$command_name" >/dev/null || { echo "[FAIL] Polonium requires $command_name" >&2; exit 1; }
 done
-node_ver="$(node -p 'process.versions.node.split(".")[0]')"
-[[ "$node_ver" =~ ^[0-9]+$ ]] && ((node_ver >= 20)) || {
-  echo '[FAIL] Polonium build needs Node.js >= 20' >&2; exit 1;
-}
+node_ver="$(node -p 'process.versions.node')"
+node_major="${node_ver%%.*}"
+node_minor="${node_ver#*.}"; node_minor="${node_minor%%.*}"
+# Vite 8 in the upstream npm workspace requires Node 20.19+ or 22.12+.
+if ! { [[ "$node_major" == 20 && "$node_minor" =~ ^[0-9]+$ && "$node_minor" -ge 19 ]] ||
+        [[ "$node_major" == 22 && "$node_minor" =~ ^[0-9]+$ && "$node_minor" -ge 12 ]] ||
+        [[ "$node_major" =~ ^[0-9]+$ && "$node_major" -ge 24 ]]; }; then
+  echo "[FAIL] Polonium build requires Node 20.19+, 22.12+ or 24+; found $node_ver" >&2
+  exit 1
+fi
 plasma_version="$(plasmashell --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?' | head -n1 || true)"
 [[ -n "$plasma_version" ]] && dpkg --compare-versions "$plasma_version" ge 6.4 || {
   echo "[FAIL] Polonium requires Plasma >= 6.4; found: ${plasma_version:-unknown}" >&2; exit 1;

@@ -25,7 +25,7 @@ fi
 for cmd in brave-browser code git stow alacritty bat fzf rg zoxide starship dolphin spectacle kwriteconfig6 kreadconfig6 flatpak; do
   if has "$cmd"; then ok command "$cmd"; else fail command "$cmd"; fi
 done
-for cmd in hx yazi zellij btm eza fd fdfind gh mpv; do
+for cmd in hx yazi ya zellij btm eza fd fdfind gh mpv file; do
   has "$cmd" && ok command "$cmd" || fail command "$cmd"
 done
 for cmd in rustup rustc cargo; do
@@ -38,6 +38,9 @@ if has node; then
   node_major="$(node -p 'process.versions.node.split(".")[0]' 2>/dev/null)"
   [[ "$node_major" =~ ^[0-9]+$ ]] && ((node_major>=20)) && ok node "Node.js major $node_major" || fail node 'Node.js >=20 required for Polonium builds'
 else fail node 'node missing'; fi
+for cmd in make zip unzip npm kpackagetool6; do
+  has "$cmd" && ok dependency "Polonium: $cmd" || fail dependency "Polonium requires $cmd"
+done
 missing_apt=0
 while IFS= read -r pkg; do
   [[ -n "$pkg" && "$pkg" != \#* ]] || continue
@@ -90,13 +93,28 @@ for module in alacritty bat bottom fastfetch git helix readline starship yazi ze
     else fail symlink "$module: $rel"; fi
   done < <(find "$root" -type f -print0)
 done
-# Guard against accidentally reintroducing optional plugins into repo manifests.
-for obsolete in applications/addons.tsv applications/vscode-extensions.txt scripts/install-vscode-extensions.sh scripts/install-yazi-plugins.sh dotfiles/yazi/.config/yazi/package.toml dotfiles/yazi/.config/yazi/init.lua dotfiles/yazi/.config/yazi/theme.toml plasma/install-krohnkite.sh; do
+# Only Yazi add-ons are permitted; all other optional application add-on manifests remain absent.
+for obsolete in applications/addons.tsv applications/vscode-extensions.txt scripts/install-vscode-extensions.sh plasma/install-krohnkite.sh; do
   [[ ! -e "$ROOT/$obsolete" ]] && ok no-addons "$obsolete absent" || fail no-addons "$obsolete should not be shipped"
 done
-if sed '/^[[:space:]]*#/d' "$ROOT/dotfiles/yazi/.config/yazi/yazi.toml" "$ROOT/dotfiles/yazi/.config/yazi/keymap.toml" | grep -Eiq '(^|[[:space:]])plugin([[:space:].]|$)'; then
-  fail no-addons 'Yazi references plugin commands'
-else ok no-addons 'Yazi uses built-in actions only'; fi
+yazi_manifest="$ROOT/dotfiles/yazi/.config/yazi/package.toml"
+if [[ -s "$yazi_manifest" ]]; then
+  n="$(grep -c '^\[\[plugin.deps\]\]' "$yazi_manifest" || true)"
+  [[ "$n" == 10 ]] && ok yazi '10 Arch plugins declared' || fail yazi "Expected 10 plugins, found $n"
+  if grep -Fq 'use = "AdithyanA2005/nord"' "$yazi_manifest"; then
+    ok yazi 'Pinned Nord flavor declared'
+  else fail yazi 'Pinned Nord flavor missing'; fi
+  for name in git full-border toggle-pane smart-enter jump-to-char smart-filter smart-paste chmod mount diff; do
+    if [[ -d "$HOME/.config/yazi/plugins/$name.yazi" ]]; then
+      ok yazi "plugin $name installed"
+    else fail yazi "plugin $name not installed"; fi
+  done
+  [[ -d "$HOME/.config/yazi/flavors/nord.yazi" ]] && ok yazi 'Nord flavor installed' || fail yazi 'Nord flavor not installed'
+else fail yazi 'Yazi plugin manifest absent'; fi
+for name in init.lua package.toml theme.toml keymap.toml yazi.toml; do
+  [[ -L "$HOME/.config/yazi/$name" ]] && ok yazi "Stow-linked $name" || fail yazi "Not linked: $name"
+done
+[[ -x "$HOME/.local/bin/yazi-rg" ]] && ok yazi 'rg/fzf search helper installed' || fail yazi 'rg/fzf search helper missing'
 if has nvidia-smi && nvidia-smi -L >/dev/null 2>&1; then
   ok graphics 'NVIDIA driver responds; application GPU functions NOT tested'
 else warn graphics 'NVIDIA driver/GPU not confirmed; Ubuntu controls driver installation'; fi
