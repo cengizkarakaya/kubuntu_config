@@ -39,7 +39,7 @@ Run updates:
 - shell/interactive.bash: Arch-like bash shortcuts, sourced from Ubuntu ~/.bashrc without overwriting the file
 - scripts/: Brave/VSCode repos, Rust toolchain, applications, Stow, KVM, default apps, safe updates, boot diagnostics
 - plasma/: KDE native settings and Kröhnkite KWin6 build from pinned source
-- themes/: KDE Nord color scheme, Nordic GTK, FiraCode Nerd Font with SHA256
+- themes/: KDE Nord color scheme, Nordic GTK, pinned Nordzy-dark icons, FiraCode Nerd Font with SHA256
 - hosts/: information only; never copies /boot or /etc from Arch
 - verify.sh: per-item PASS/WARN/FAIL, no changes to host
 - .github/workflows/qa.yml: remote static Bash / manifest checks
