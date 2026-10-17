@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+echo "APT update"
+sudo apt-get update
+sudo apt-get full-upgrade
+if command -v flatpak >/dev/null; then
+  echo "Flatpak user update"
+  flatpak update --user
+  echo "Flatpak system update"
+  sudo flatpak update
+fi
+if command -v fwupdmgr >/dev/null; then
+  echo "Firmware updates: fwupdmgr get-updates (review devices; no forced flashing)"
+  fwupdmgr get-updates || true
+fi
+echo "App-managed plugins (Joplin, Krita, KiCad, FreeCAD, Blender, Thunderbird, Calibre) must be updated within their plugin managers."
