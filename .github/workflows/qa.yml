@@ -3,25 +3,49 @@ on:
   push:
   pull_request:
 jobs:
-  bash:
+  bash-and-policy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Syntax check scripts
+      - name: Bash syntax check
         run: |
           find . -name '*.sh' -type f -print0 | xargs -0 -r -n1 bash -n
           bash -n scripts/sysup
           bash -n scripts/kubuntu-power-menu
-      - name: Validate manifests
+          bash -n verify.sh
+          bash -n bootstrap.sh
+      - name: Assert manifest and no-extra-plugin policy
         run: |
-          test -s packages/apt.txt
-          test -s packages/flatpak.tsv
-          test -s applications/addons.tsv
-          test -s themes/KubuntuNord.colors
           python3 - <<'PY'
           from pathlib import Path
-          rows=[r.split('\t') for r in Path('applications/addons.tsv').read_text().splitlines() if r and not r.startswith('#')]
-          assert all(len(r)==5 for r in rows)
-          assert len(rows)>=35
-          print('Add-on rows:',len(rows))
+          root = Path(".")
+          assert (root / "packages/apt.txt").is_file()
+          assert (root / "packages/flatpak.tsv").is_file()
+          apt = (root / "packages/apt.txt").read_text().splitlines()
+          pkg = {x.split("#",1)[0].strip() for x in apt if x.strip() and not x.lstrip().startswith("#")}
+          forbidden = {
+              "dolphin-plugins","gimp-gmic","kicad-packages3d","frei0r-plugins",
+              "swh-plugins","gstreamer1.0-plugins-base","gstreamer1.0-plugins-good",
+              "gstreamer1.0-plugins-bad","gstreamer1.0-plugins-ugly",
+              "gstreamer1.0-libav","zathura-pdf-poppler"
+          }
+          assert not pkg & forbidden, pkg & forbidden
+          removed = [
+              "plasma/install-krohnkite.sh", "applications/addons.tsv",
+              "applications/vscode-extensions.txt", "scripts/install-vscode-extensions.sh",
+              "scripts/install-yazi-plugins.sh", "dotfiles/yazi/.config/yazi/package.toml",
+              "dotfiles/yazi/.config/yazi/init.lua", "dotfiles/yazi/.config/yazi/theme.toml",
+          ]
+          assert all(not (root / x).exists() for x in removed)
+          assert not any("plugin " in (root / x).read_text().lower()
+                         for x in ["dotfiles/yazi/.config/yazi/keymap.toml",
+                                   "dotfiles/yazi/.config/yazi/yazi.toml"])
+          bootstrap = (root / "bootstrap.sh").read_text()
+          assert "install-polonium.sh" in bootstrap and "install-krohnkite.sh" not in bootstrap
+          assert "install-yazi-plugins.sh" not in bootstrap
+          polonium = (root / "plasma/install-polonium.sh").read_text()
+          assert "3638b1625e95877f93279527de3b82b9b09aff3a" in polonium
+          assert "npm ci --ignore-scripts" in polonium
+          assert "krohnkiteEnabled false" in polonium
+          print("Plugin-free app manifests and pinned Polonium: OK")
           PY

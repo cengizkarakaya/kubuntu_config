@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
-# Never silently upgrade distribution releases, kernel drivers from third-party installers, or EFI.
-echo '==> APT refresh/upgrade'
+echo '==> APT refresh and full upgrade (package removal prohibited)'
 sudo apt-get update
-sudo apt-get full-upgrade
+sudo apt-get full-upgrade --no-remove
 if command -v flatpak >/dev/null 2>&1; then
-  echo '==> Flatpak user apps'
+  echo '==> Flatpak user applications and runtimes'
   flatpak update --user
 fi
 if command -v snap >/dev/null 2>&1; then
@@ -13,12 +12,12 @@ if command -v snap >/dev/null 2>&1; then
   sudo snap refresh
 fi
 if command -v rustup >/dev/null 2>&1; then
-  echo '==> Rust stable toolchain'
+  echo '==> Rust toolchain'
   rustup update
 fi
 if command -v fwupdmgr >/dev/null 2>&1; then
-  echo '==> Available firmware updates (report only)'
-  fwupdmgr get-updates || echo '[WARN] Firmware check unavailable; no firmware flashed.'
+  echo '==> Firmware update availability (report only, never flash)'
+  fwupdmgr get-updates || echo '[WARN] Firmware check unavailable'
 fi
-echo '==> App-specific extensions are intentionally not installed or updated.'
-echo '==> NVIDIA drivers, kernel selection, GRUB, EFI and distribution upgrades remain OS/user managed.'
+echo 'No optional application plugins are installed or updated.'
+echo 'No unattended firmware flashing, vendor GPU driver install, or release upgrade.'

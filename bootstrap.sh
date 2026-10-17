@@ -65,10 +65,10 @@ fi
 stage 'User maintenance commands' install -Dm755 "$ROOT/scripts/sysup" "$HOME/.local/bin/sysup"
 install -Dm755 "$ROOT/verify.sh" "$HOME/.local/bin/kubuntu-verify"
 CURRENT_STAGE='verification'
-if bash "$ROOT/verify.sh"; then
-  echo '[OK] Installation and static/on-host checks completed. Sign out and in; test actual KWin shortcuts.'
+if ((SKIP_PLASMA)); then
+  bash "$ROOT/verify.sh" --skip-plasma
 else
-  echo "[FAIL] Verification reports missing requirements. See $LOG" >&2
-  exit 1
+  bash "$ROOT/verify.sh"
 fi
+echo '[OK] Installation inventory verified. Sign out and in; test actual KWin shortcuts and apps.'
 echo 'No NVIDIA drivers, firmware, disk partitions, EFI or GRUB were modified.'

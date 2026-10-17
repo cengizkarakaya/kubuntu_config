@@ -20,12 +20,12 @@ for pkg in "${pkgs[@]}"; do
   fi
 done
 if (("${#available[@]}" > 0)); then
-  # Try the complete transaction first (faster and better dependency resolution).
-  if ! sudo apt-get install -y "${available[@]}"; then
+  # No optional/recommended application extensions; dependency packages remain allowed.
+  if ! sudo apt-get install -y --no-install-recommends "${available[@]}"; then
     echo '[WARN] Bulk APT transaction failed. Trying individual packages to identify failures.'
     for pkg in "${available[@]}"; do
       if ! dpkg-query -W -f='${Status}' "$pkg" 2>/dev/null | grep -qx 'install ok installed'; then
-        if ! sudo apt-get install -y "$pkg"; then missing+=("$pkg [APT installation failed]"); fi
+        if ! sudo apt-get install -y --no-install-recommends "$pkg"; then missing+=("$pkg [APT installation failed]"); fi
       fi
     done
   fi
