@@ -53,6 +53,7 @@ stage 'APT package manifest' bash "$ROOT/scripts/install-apt.sh" "$ROOT/packages
 stage 'Rust toolchain' bash "$ROOT/scripts/install-rust.sh"
 stage 'libvirt setup' bash "$ROOT/scripts/setup-libvirt.sh"
 stage 'Flatpak applications' bash "$ROOT/scripts/install-flatpaks.sh"
+stage 'Retired managed add-on links' bash "$ROOT/scripts/clean-obsolete-symlinks.sh"
 stage 'Portable dotfiles' bash "$ROOT/scripts/stow-dotfiles.sh"
 stage 'Shell integration' bash "$ROOT/scripts/setup-shell.sh"
 stage 'Default applications' bash "$ROOT/scripts/setup-defaults.sh"

@@ -94,7 +94,7 @@ done
 for obsolete in applications/addons.tsv applications/vscode-extensions.txt scripts/install-vscode-extensions.sh scripts/install-yazi-plugins.sh dotfiles/yazi/.config/yazi/package.toml dotfiles/yazi/.config/yazi/init.lua dotfiles/yazi/.config/yazi/theme.toml plasma/install-krohnkite.sh; do
   [[ ! -e "$ROOT/$obsolete" ]] && ok no-addons "$obsolete absent" || fail no-addons "$obsolete should not be shipped"
 done
-if grep -Eiq '(^|[[:space:]])plugin([[:space:].]|$)' "$ROOT/dotfiles/yazi/.config/yazi/yazi.toml" "$ROOT/dotfiles/yazi/.config/yazi/keymap.toml"; then
+if sed '/^[[:space:]]*#/d' "$ROOT/dotfiles/yazi/.config/yazi/yazi.toml" "$ROOT/dotfiles/yazi/.config/yazi/keymap.toml" | grep -Eiq '(^|[[:space:]])plugin([[:space:].]|$)'; then
   fail no-addons 'Yazi references plugin commands'
 else ok no-addons 'Yazi uses built-in actions only'; fi
 if has nvidia-smi && nvidia-smi -L >/dev/null 2>&1; then

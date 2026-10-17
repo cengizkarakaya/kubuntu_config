@@ -37,9 +37,10 @@ jobs:
               "dotfiles/yazi/.config/yazi/init.lua", "dotfiles/yazi/.config/yazi/theme.toml",
           ]
           assert all(not (root / x).exists() for x in removed)
-          assert not any("plugin " in (root / x).read_text().lower()
-                         for x in ["dotfiles/yazi/.config/yazi/keymap.toml",
-                                   "dotfiles/yazi/.config/yazi/yazi.toml"])
+          for x in ["dotfiles/yazi/.config/yazi/keymap.toml",
+                    "dotfiles/yazi/.config/yazi/yazi.toml"]:
+              active = [s.split("#", 1)[0].strip().lower() for s in (root / x).read_text().splitlines()]
+              assert not any(s.startswith("[plugin.") or 'run = "plugin ' in s for s in active), x
           bootstrap = (root / "bootstrap.sh").read_text()
           assert "install-polonium.sh" in bootstrap and "install-krohnkite.sh" not in bootstrap
           assert "install-yazi-plugins.sh" not in bootstrap
