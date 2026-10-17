@@ -14,6 +14,8 @@ jobs:
           bash -n scripts/kubuntu-power-menu
           bash -n verify.sh
           bash -n bootstrap.sh
+      - name: Exercise installer failure paths without APT, Flatpak or sudo changes
+        run: bash tests/test-installers.sh
       - name: Assert manifest and no-extra-plugin policy
         run: |
           python3 - <<'PY'
