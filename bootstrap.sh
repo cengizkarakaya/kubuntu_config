@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-export PATH="$HOME/.cargo/bin:$HOME/.local/bin:$PATH"
 CORE_ONLY=0
 SKIP_PLASMA=0
 for arg in "$@"; do
@@ -14,6 +13,7 @@ for arg in "$@"; do
 done
 (( EUID != 0 )) || { echo 'Run as a regular user, NEVER with sudo/root.' >&2; exit 2; }
 [[ -n "${HOME:-}" && -d "$HOME" ]] || { echo 'HOME is not valid' >&2; exit 2; }
+export PATH="$HOME/.cargo/bin:$HOME/.local/bin:$PATH"
 command -v flock >/dev/null || { echo 'util-linux/flock is required' >&2; exit 2; }
 STATE="$HOME/.local/state/kubuntu-config"
 mkdir -p "$STATE"
