@@ -1,0 +1,7 @@
+*.log
+*.bak
+.cache/
+.secrets/
+.env
+*.swp
+__pycache__/
