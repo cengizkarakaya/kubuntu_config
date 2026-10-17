@@ -71,3 +71,54 @@ jobs:
           assert "krohnkiteEnabled false" in polonium
           print("Yazi Arch plugins/flavor preserved; other app add-ons disabled; pinned Polonium: OK")
           PY
+
+  polonium-source-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check Polonium packaging dependencies and compile pinned source
+        run: |
+          set -Eeuo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends kpackagetool6 zip unzip make git
+          for cmd in npm node git make zip unzip kpackagetool6; do command -v "$cmd"; done
+          work="$(mktemp -d)"
+          trap 'rm -rf "$work"' EXIT
+          git clone --quiet --filter=blob:none https://github.com/zeroxoneafour/polonium.git "$work/polonium"
+          cd "$work/polonium"
+          git checkout --quiet --detach 3638b1625e95877f93279527de3b82b9b09aff3a
+          test "$(git rev-parse HEAD)" = 3638b1625e95877f93279527de3b82b9b09aff3a
+          npm ci --ignore-scripts --no-audit --no-fund
+          ./node_modules/.bin/esbuild --bundle src/index.ts --outfile=polonium.mjs --format=esm --platform=neutral
+          make build
+          unzip -t polonium.kwinscript
+          unzip -p polonium.kwinscript pkg/metadata.json | python3 -c 'import json,sys; x=json.load(sys.stdin); assert x["KPlugin"]["Id"] == "polonium" and x["KPlugin"]["Version"] == "1.2.1"'
+          echo '[PASS] Polonium pinned source and metadata bundle built successfully'
+
+  yazi-package-install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install signed upstream Yazi and pinned Arch packages
+        run: |
+          set -Eeuo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ca-certificates curl gnupg git
+          curl -fsSL https://yazi-rs.github.io/builds/yazi-keyring.gpg > /tmp/yazi-ci.gpg
+          gpg --batch --show-keys /tmp/yazi-ci.gpg
+          sudo install -Dm644 /tmp/yazi-ci.gpg /usr/share/keyrings/yazi-keyring.gpg
+          printf '%s\n' 'deb [signed-by=/usr/share/keyrings/yazi-keyring.gpg] https://yazi-rs.github.io/builds/ stable main' | sudo tee /etc/apt/sources.list.d/yazi-ci.list
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends yazi
+          command -v ya
+          mkdir -p "$HOME/.config/yazi"
+          cp dotfiles/yazi/.config/yazi/package.toml "$HOME/.config/yazi/package.toml"
+          ya pkg install
+          for p in git full-border toggle-pane smart-enter jump-to-char smart-filter smart-paste chmod mount diff; do
+            test -d "$HOME/.config/yazi/plugins/$p.yazi"
+          done
+          test -d "$HOME/.config/yazi/flavors/nord.yazi"
+          echo '[PASS] All 10 Arch Yazi plugins and Nord flavor installed from pinned manifest'
