@@ -52,7 +52,7 @@ if has kpackagetool6 && kpackagetool6 -t KWin/Script -s krohnkite >/dev/null 2>&
   ok tiling 'Kröhnkite installed'
 else fail tiling 'Kröhnkite KWin6 script missing'; fi
 # Stow links: verify each vendored file resolves to exactly its repo counterpart.
-for module in alacritty bat bottom git helix readline starship yazi zathura zellij; do
+for module in alacritty bat bottom fastfetch git helix readline starship yazi zathura zellij; do
   root="$ROOT/dotfiles/$module"
   [[ -d "$root" ]] || { warn stow "$module folder missing"; continue; }
   while IFS= read -r -d '' item; do
