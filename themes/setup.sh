@@ -28,6 +28,12 @@ if command -v kwriteconfig6 >/dev/null; then
   kwriteconfig6 --file kdeglobals --group General --key fixed 'FiraCode Nerd Font Mono,10,-1,5,50,0,0,0,0,0'
 fi
 command -v plasma-apply-colorscheme >/dev/null && plasma-apply-colorscheme KubuntuNord || true
-command -v gsettings >/dev/null && gsettings set org.gnome.desktop.interface gtk-theme Nordic || true
+if command -v gsettings >/dev/null 2>&1; then
+  gsettings set org.gnome.desktop.interface gtk-theme Nordic || true
+  gsettings set org.gnome.desktop.interface icon-theme Nordzy-dark || true
+  gsettings set org.gnome.desktop.interface font-name 'FiraCode Nerd Font 10' || true
+  gsettings set org.gnome.desktop.interface monospace-font-name 'FiraCode Nerd Font Mono 10' || true
+  gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' || true
+fi
 bash "$ROOT/themes/install-nordzy-icons.sh" || echo '[WARN] Nordzy icons could not be installed; retained KDE fallback'
 echo 'Nord palette, Nerd Font, Nordic GTK and Nordzy icons (if successful) are configured; Nordzy cursor remains optional.'
