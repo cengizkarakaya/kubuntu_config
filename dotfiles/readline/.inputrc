@@ -1,0 +1,19 @@
+# Sistem varsayılanlarını koru
+$include /etc/inputrc
+
+# Yazılmış metne göre history'de ara
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+
+
+# Tab ile completion seçenekleri arasında sırayla dolaş
+"\C-i": menu-complete
+
+# Shift+Tab ile geriye doğru dolaş
+"\e[Z": menu-complete-backward
+
+# Ambiguous ise seçenekleri hemen göster
+set show-all-if-ambiguous on
+
+# Ortak prefix'i göster
+set menu-complete-display-prefix on
