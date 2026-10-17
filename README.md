@@ -89,7 +89,9 @@ Desktop hardware: MSI Z790, i5-13600K, RTX 4080 SUPER, 64GB RAM; Linux on
 Samsung 990 Pro 2TB; future Windows 11 on separate 512GB drive.
 Neither GRUB nor EFI partition is touched by bootstrap. Read
 hosts/home-desktop.md before installing Windows; diagnose with
-bash scripts/dualboot-diagnostics.sh. Windows selection at boot requires
+bash scripts/dualboot-diagnostics.sh
+    bash scripts/configure-dualboot.sh           # read-only dry run, Windows first
+    bash scripts/configure-dualboot.sh --apply   # opt-in only after Windows is detected. Windows selection at boot requires
 the Windows installation and UEFI/GRUB discovery afterwards.
 
 Drivers and firmware stay managed by Ubuntu; no NVIDIA runfile, no blanket
