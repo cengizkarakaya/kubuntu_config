@@ -9,6 +9,7 @@ Installed automatically:
 - Nerd Fonts FiraCode v3.5.1 with pinned SHA-256, placed under user font directory
 - Nordic GTK pinned revision, installed by git archive (no untrusted install scripts)
 - KDE native color and font keys; regular KWin compositor (no extra effect package)
+- Pinned Nordzy-dark SVG icons, installed locally without running upstream installer
 
 Not automatically installed:
 - Nordzy icon/cursor and third-party Plasma global theme from KDE Store:
