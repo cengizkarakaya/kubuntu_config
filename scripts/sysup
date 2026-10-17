@@ -19,5 +19,6 @@ if command -v fwupdmgr >/dev/null 2>&1; then
   echo '==> Firmware update availability (report only, never flash)'
   fwupdmgr get-updates || echo '[WARN] Firmware check unavailable'
 fi
-echo 'No optional application plugins are installed or updated.'
+echo 'Pinned Arch Yazi plugins/flavor are preserved; sysup does not upgrade them.'
+echo 'Other optional application add-ons are not installed or updated by this repository.'
 echo 'No unattended firmware flashing, vendor GPU driver install, or release upgrade.'

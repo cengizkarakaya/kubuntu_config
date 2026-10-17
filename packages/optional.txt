@@ -1,5 +1,6 @@
 # Reference only. Not installed automatically.
 # Rust toolchain is handled by scripts/install-rust.sh (APT or preinstalled rustup).
 # Polonium builds from pinned stable source with nodejs/npm/make/zip.
-# No application add-ons or extensions are listed or installed.
+# Arch Yazi plugins/flavor are separately pinned in dotfiles/yazi/.config/yazi/package.toml.
+# No other application add-ons are listed or installed.
 qt6-tools-dev-tools
