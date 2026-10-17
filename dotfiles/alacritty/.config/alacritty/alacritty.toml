@@ -1,0 +1,62 @@
+[window]
+padding = { x = 10, y = 10 }
+dynamic_padding = true
+decorations = "None"
+
+[scrolling]
+history = 20000
+multiplier = 3
+
+[font]
+normal = { family = "FiraCode Nerd Font Mono", style = "Regular" }
+bold = { style = "Bold" }
+italic = { style = "Italic" }
+bold_italic = { style = "Bold Italic" }
+size = 12
+
+[cursor]
+style = { shape = "Beam", blinking = "On" }
+vi_mode_style = { shape = "Block", blinking = "Off" }
+
+[selection]
+save_to_clipboard = true
+
+[mouse]
+hide_when_typing = true
+
+[colors.primary]
+background = "#20242C"
+foreground = "#D8DEE9"
+
+[colors.cursor]
+text = "#2E3440"
+cursor = "#D8DEE9"
+
+[colors.selection]
+text = "#ECEFF4"
+background = "#434C5E"
+
+[colors.normal]
+black   = "#3B4252"
+red     = "#BF616A"
+green   = "#A3BE8C"
+yellow  = "#EBCB8B"
+blue    = "#81A1C1"
+magenta = "#B48EAD"
+cyan    = "#88C0D0"
+white   = "#E5E9F0"
+
+[colors.bright]
+black   = "#4C566A"
+red     = "#BF616A"
+green   = "#A3BE8C"
+yellow  = "#EBCB8B"
+blue    = "#81A1C1"
+magenta = "#B48EAD"
+cyan    = "#8FBCBB"
+white   = "#ECEFF4"
+
+[colors.footer_bar]
+foreground = "#2E3440"
+background = "#88C0D0"
+
