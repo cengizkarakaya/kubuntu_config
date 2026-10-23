@@ -35,10 +35,11 @@ if [[ -f "$rc" ]]; then
     [[ "$PATH" == *"$HOME/.local/bin"* && "$PATH" == *"$HOME/.cargo/bin"* ]] || exit 14
     [[ "$FZF_DEFAULT_OPTS" == *"--info=inline"* ]] || exit 15
     shopt -q histappend && shopt -q cmdhist || exit 16
+    [[ "$(declare -p PROMPT_COMMAND 2>/dev/null)" == *"__zoxide_hook"* || "$(declare -p __vsc_original_prompt_command 2>/dev/null)" == *"__zoxide_hook"* ]] || exit 17
   ' >/dev/null 2>&1; then
-    ok bash 'Interactive .bashrc loads eza aliases, zoxide z/zi and full fzf options'
+    ok bash 'Interactive Bash loads eza, zoxide hook, z/zi and full fzf options'
   else
-    fail bash 'Interactive Bash test failed; check .bashrc or zoxide initialization'
+    fail bash 'Interactive Bash test failed; check .bashrc, Zoxide/Starship ordering and PROMPT_COMMAND'
   fi
 fi
 conf="$HOME/.config/alacritty/alacritty.toml"
