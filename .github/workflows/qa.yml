@@ -16,6 +16,8 @@ jobs:
           bash -n bootstrap.sh
       - name: Exercise installer failure paths without APT, Flatpak or sudo changes
         run: bash tests/test-installers.sh
+      - name: Reject unverified/non-stable GitHub releases
+        run: bash tests/test-latest-release.sh
       - name: Assert manifest and no-extra-plugin policy
         run: |
           python3 - <<'PY'
@@ -37,8 +39,13 @@ jobs:
           assert 'install-herdr.sh' in (root / 'bootstrap.sh').read_text()
           assert 'install-zellij.sh' not in (root / 'bootstrap.sh').read_text()
           herdr = (root / 'scripts/install-herdr.sh').read_text()
-          assert "VERSION='v0.9.5'" in herdr
+          assert 'latest-release.sh' in herdr
           assert 'sha256sum -c' in herdr
+          polonium = (root / 'plasma/install-polonium.sh').read_text()
+          assert 'latest-release.sh' in polonium
+          assert 'sha256sum -c' in polonium
+          assert (root / 'scripts/version-audit.sh').is_file()
+          assert (root / 'scripts/latest-release.sh').is_file()
           assert not (root / 'scripts/install-zellij.sh').exists()
           assert not (root / 'dotfiles/zellij/.config/zellij/config.kdl').exists()
           flatpaks = (root / 'packages/flatpak.tsv').read_text()
@@ -73,25 +80,103 @@ jobs:
           assert "install-polonium.sh" in bootstrap and "install-krohnkite.sh" not in bootstrap
           assert "install-yazi-plugins.sh" in bootstrap
           polonium = (root / "plasma/install-polonium.sh").read_text()
-          assert "3638b1625e95877f93279527de3b82b9b09aff3a" in polonium
-          assert "npm ci --ignore-scripts" in polonium
-          assert "8fc04bd086a1445ea67783eaa33517b70e01c063" in polonium
-          assert "git submodule update --init" in polonium
           assert "krohnkiteEnabled false" in polonium
-          print("Yazi Arch plugins/flavor preserved; other app add-ons disabled; pinned Polonium: OK")
+          assert 'url digest' in polonium
+          assert 'latest-release.sh' in (root / 'themes/setup.sh').read_text()
+          assert 'flatpak update --user --noninteractive -y "$id"' in (root / 'scripts/install-flatpaks.sh').read_text()
+          assert "command -v brave-browser" in (root / 'scripts/install-brave.sh').read_text()
+          print("Latest-stable installers and Arch Yazi plugin/flavor exception: OK")
           PY
 
   herdr-release-install:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install verified pinned Herdr Linux release and recheck idempotency
+      - name: Install latest stable Herdr release and recheck idempotency
         run: |
           set -Eeuo pipefail
+          tag="$(bash scripts/latest-release.sh herdrdev/herdr herdr-linux-x86_64 | cut -f1)"
           bash scripts/install-herdr.sh
-          test "$("$HOME/.local/bin/herdr" --version)" = 'herdr 0.9.5'
+          test "$("$HOME/.local/bin/herdr" --version)" = "herdr ${tag#v}"
           bash scripts/install-herdr.sh
-          echo '[PASS] Herdr v0.9.5 executable, checksum and repeat install'
+          echo '[PASS] Latest stable Herdr binary/checksum and repeat install'
+
+  latest-release-artifacts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download and validate the newest Polonium release package
+        run: |
+          set -Eeuo pipefail
+          IFS=    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check Polonium packaging dependencies and compile pinned source
+        run: |
+          set -Eeuo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends zip unzip make git
+          # GitHub ubuntu-latest is Ubuntu 24.04; kpackagetool6 is provided on
+          # Kubuntu 26.04/26.10 and is explicitly installed by our host manifest.
+          if apt-cache show kpackagetool6 >/dev/null 2>&1; then
+            sudo apt-get install -y --no-install-recommends kpackagetool6
+          else
+            echo '[INFO] KWin package install smoke test omitted: kpackagetool6 absent on GitHub Ubuntu runner'
+          fi
+          for cmd in npm node git make zip unzip; do command -v "$cmd"; done
+          work="$(mktemp -d)"
+          trap 'rm -rf "$work"' EXIT
+          git clone --quiet --filter=blob:none https://github.com/zeroxoneafour/polonium.git "$work/polonium"
+          cd "$work/polonium"
+          git checkout --quiet --detach 3638b1625e95877f93279527de3b82b9b09aff3a
+          test "$(git rev-parse HEAD)" = 3638b1625e95877f93279527de3b82b9b09aff3a
+          grep -Fq 'https://github.com/zeroxoneafour/kwin-api' .gitmodules
+          git submodule update --init --depth 1 -- kwin-api
+          test "$(git -C kwin-api rev-parse HEAD)" = 8fc04bd086a1445ea67783eaa33517b70e01c063
+          test -f kwin-api/package.json
+          npm ci --ignore-scripts --no-audit --no-fund
+          ./node_modules/.bin/esbuild --bundle src/index.ts --outfile=polonium.mjs --format=esm --platform=neutral
+          make build
+          unzip -t polonium.kwinscript
+          unzip -p polonium.kwinscript pkg/metadata.json | python3 -c 'import json,sys; x=json.load(sys.stdin); assert x["KPlugin"]["Id"] == "polonium" and x["KPlugin"]["Version"] == "1.2.1"'
+          echo '[PASS] Polonium pinned source and metadata bundle built successfully'
+
+  yazi-package-install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install signed upstream Yazi and pinned Arch packages
+        run: |
+          set -Eeuo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ca-certificates curl gnupg git
+          curl -fsSL https://yazi-rs.github.io/builds/yazi-keyring.gpg > /tmp/yazi-ci.gpg
+          gpg --batch --show-keys /tmp/yazi-ci.gpg
+          sudo install -Dm644 /tmp/yazi-ci.gpg /usr/share/keyrings/yazi-keyring.gpg
+          printf '%s\n' 'deb [signed-by=/usr/share/keyrings/yazi-keyring.gpg] https://yazi-rs.github.io/builds/ stable main' | sudo tee /etc/apt/sources.list.d/yazi-ci.list
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends yazi
+          command -v ya
+          mkdir -p "$HOME/.config/yazi"
+          cp dotfiles/yazi/.config/yazi/package.toml "$HOME/.config/yazi/package.toml"
+          ya pkg install
+          for p in git full-border toggle-pane smart-enter jump-to-char smart-filter smart-paste chmod mount diff; do
+            test -d "$HOME/.config/yazi/plugins/$p.yazi"
+          done
+          test -d "$HOME/.config/yazi/flavors/nord.yazi"
+          echo '[PASS] All 10 Arch Yazi plugins and Nord flavor installed from pinned manifest'
+\t' read -r tag url digest < <(bash scripts/latest-release.sh zeroxoneafour/polonium polonium.kwinscript)
+          test -n "$digest"
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+          curl --proto '=https' --tlsv1.2 -fsSL --retry 3 "$url" -o "$tmp/polonium.kwinscript"
+          printf '%s  %s\n' "$digest" "$tmp/polonium.kwinscript" | sha256sum -c -
+          unzip -t "$tmp/polonium.kwinscript" >/dev/null
+          unzip -p "$tmp/polonium.kwinscript" pkg/metadata.json | python3 -c 'import json,sys; d=json.load(sys.stdin); assert d["KPlugin"]["Id"]=="polonium" and d["KPlugin"]["Version"]==sys.argv[1]' "${tag#v}"
+          echo '[PASS] Latest stable Polonium release asset verified'
 
   polonium-source-build:
     runs-on: ubuntu-latest

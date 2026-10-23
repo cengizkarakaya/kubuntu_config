@@ -10,13 +10,25 @@ export MOCK_FLAT_STATE="$work/flatpak-state"
 : > "$MOCK_LOG"
 cat > "$work/mock-bin/apt-cache" <<'EOF'
 #!/usr/bin/env bash
-[[ "$1" == show ]] || exit 2
-[[ "$2" == goodpkg ]]
+case "$1" in
+  show) [[ "$2" == goodpkg ]] ;;
+  policy) [[ "$2" == goodpkg ]] || exit 1; printf 'goodpkg:\n  Installed: 2.0\n  Candidate: 2.0\n' ;;
+  *) exit 2 ;;
+esac
 EOF
 cat > "$work/mock-bin/dpkg-query" <<'EOF'
 #!/usr/bin/env bash
 [[ "${*: -1}" == goodpkg ]] || exit 1
-printf 'install ok installed\n'
+case "$*" in
+  *Status*) printf 'install ok installed\n' ;;
+  *Version*) printf '2.0' ;;
+  *) exit 2 ;;
+esac
+EOF
+cat > "$work/mock-bin/dpkg" <<'EOF'
+#!/usr/bin/env bash
+[[ "$1" == --compare-versions && "$2" == 2.0 && "$3" == lt && "$4" == 2.0 ]] || exit 2
+exit 1
 EOF
 cat > "$work/mock-bin/sudo" <<'EOF'
 #!/usr/bin/env bash
@@ -28,11 +40,21 @@ cat > "$work/mock-bin/flatpak" <<'EOF'
 #!/usr/bin/env bash
 case "$1" in
   remote-add) exit 0 ;;
-  info) [[ -f "$MOCK_FLAT_STATE/${*: -1}" ]] ;;
+  info)
+    app="${*: -1}"
+    [[ -f "$MOCK_FLAT_STATE/$app" ]] || exit 1
+    if [[ " $* " == *" --show-commit "* ]]; then cat "$MOCK_FLAT_STATE/$app"; fi
+    ;;
+  remote-info) echo new-commit ;;
   install)
-    id="${*: -1}"
-    [[ "${MOCK_FLAT_FAIL:-}" != "$id" ]] || exit 42
-    touch "$MOCK_FLAT_STATE/$id"
+    app="${*: -1}"
+    [[ "${MOCK_FLAT_FAIL:-}" != "$app" ]] || exit 42
+    echo new-commit > "$MOCK_FLAT_STATE/$app"
+    ;;
+  update)
+    app="${*: -1}"
+    [[ "${MOCK_FLAT_FAIL:-}" != "$app" ]] || exit 42
+    echo new-commit > "$MOCK_FLAT_STATE/$app"
     ;;
   *) exit 2 ;;
 esac
@@ -51,6 +73,9 @@ grep -q missingpkg "$HOME/.local/state/kubuntu-config/apt-unavailable.txt"
 echo '[PASS] APT installer fails and reports missing packages'
 bash "$ROOT/scripts/install-flatpaks.sh"
 [[ -e "$MOCK_FLAT_STATE/md.obsidian.Obsidian" ]]
+echo old-commit > "$MOCK_FLAT_STATE/md.obsidian.Obsidian"
+bash "$ROOT/scripts/install-flatpaks.sh"
+[[ "$(cat "$MOCK_FLAT_STATE/md.obsidian.Obsidian")" == new-commit ]]
 rm -f "$MOCK_FLAT_STATE/md.obsidian.Obsidian"
 export MOCK_FLAT_FAIL='md.obsidian.Obsidian'
 if bash "$ROOT/scripts/install-flatpaks.sh"; then

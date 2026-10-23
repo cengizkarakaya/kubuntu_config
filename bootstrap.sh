@@ -68,6 +68,7 @@ if ((SKIP_PLASMA == 0)); then
   stage 'Global shortcut configuration' bash "$ROOT/plasma/shortcuts.sh"
 fi
 stage 'User maintenance commands' install -Dm755 "$ROOT/scripts/sysup" "$HOME/.local/bin/sysup"
+if ((SKIP_PLASMA)); then export KUBUNTU_SKIP_PLASMA=1; fi
 stage 'Latest-version audit (repository candidates, Flathub and GitHub)' bash "$ROOT/scripts/version-audit.sh"
 install -Dm755 "$ROOT/verify.sh" "$HOME/.local/bin/kubuntu-verify"
 CURRENT_STAGE='verification'
