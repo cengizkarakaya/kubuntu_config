@@ -81,6 +81,18 @@ jobs:
           print("Yazi Arch plugins/flavor preserved; other app add-ons disabled; pinned Polonium: OK")
           PY
 
+  herdr-release-install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install verified pinned Herdr Linux release and recheck idempotency
+        run: |
+          set -Eeuo pipefail
+          bash scripts/install-herdr.sh
+          test "$("$HOME/.local/bin/herdr" --version)" = 'herdr 0.9.5'
+          bash scripts/install-herdr.sh
+          echo '[PASS] Herdr v0.9.5 executable, checksum and repeat install'
+
   polonium-source-build:
     runs-on: ubuntu-latest
     steps:
