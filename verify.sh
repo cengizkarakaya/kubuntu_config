@@ -115,7 +115,7 @@ if ((SKIP_PLASMA==0)); then
     fail tiling 'Old Kröhnkite package remains in user directory'
   fi
 fi
-for module in alacritty bat bottom fastfetch git helix readline starship yazi; do
+for module in alacritty bat bottom fastfetch git helix herdr readline starship yazi; do
   root="$ROOT/dotfiles/$module"
   [[ -d "$root" ]] || { fail stow "$module folder missing"; continue; }
   while IFS= read -r -d '' item; do

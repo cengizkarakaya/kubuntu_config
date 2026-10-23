@@ -3,7 +3,7 @@ set -Eeuo pipefail
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT/dotfiles"
 failed=()
-for module in alacritty bat bottom fastfetch git helix readline starship yazi; do
+for module in alacritty bat bottom fastfetch git helix herdr readline starship yazi; do
   [[ -d "$module" ]] || { failed+=("$module [not provided]"); continue; }
   if ! stow --no-folding -n --restow -t "$HOME" "$module" >/dev/null 2>&1; then
     failed+=("$module [HOME collision; never overwrite]"); continue
