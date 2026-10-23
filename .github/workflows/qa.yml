@@ -55,6 +55,8 @@ jobs:
           assert not (root / 'dotfiles/zellij/.config/zellij/config.kdl').exists()
           flatpaks = (root / 'packages/flatpak.tsv').read_text()
           assert 'md.obsidian.Obsidian\tObsidian' in flatpaks
+          assert 'org.localsend.localsend_app\tLocalSend' in flatpaks
+          assert 'org.localsend.localsend\tLocalSend' not in flatpaks
           assert 'net.cozic.joplin_desktop' not in flatpaks
           removed = [
               "plasma/install-krohnkite.sh", "applications/addons.tsv",
