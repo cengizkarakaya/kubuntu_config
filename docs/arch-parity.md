@@ -42,25 +42,21 @@ The official Yazi build also requires the `file` command, now in APT list.
 
 ## Polonium requirements
 
-Pinned `Polonium v1.2.1`, Git commit
-`3638b1625e95877f93279527de3b82b9b09aff3a`.
+Polonium **latest stable GitHub release at install time** (not a fixed version).
+The official release archive is validated by its published SHA-256 and
+the embedded KWin metadata.
 
 | Dependency | Source / check |
 | --- | --- |
-| Plasma 6.4+ and Wayland session | Base Kubuntu desktop and installer preflight |
-| `kpackagetool6` | Explicit APT manifest (KF6 package tool) |
-| `kwriteconfig6`, `plasmashell` | KDE base desktop; checked at install |
-| `nodejs`, `npm` | APT manifest; Node 20.19+/22.12+/24+ checked |
-| `make`, `zip`, `unzip`, `git` | Explicit APT manifest and installer checks |
-| `esbuild` | Pinned upstream npm lockfile; `npm ci --ignore-scripts` |
-| `kwin-api` | **Required upstream Git submodule**, pinned to `8fc04bd086a1445ea67783eaa33517b70e01c063`; fetched and verified before npm |
-| DBus saver | Optional upstream feature **disabled by default** (`UseDBusSaver=false`); not required to tile windows |
-| Other KWin add-ons | None; Polonium self-contained KWin script |
+| Plasma 6.4+ and Wayland | Kubuntu desktop, checked before Polonium install |
+| `kpackagetool6`, `unzip`, `kwriteconfig6`, `plasmashell` | KDE and APT manifest; checked at installation |
+| Official `polonium.kwinscript` | GitHub newest stable release with SHA-256 asset digest and KWin ID/version validation |
+| Node/npm/esbuild/kwin-api | **Not needed** for the published stable KWin archive; do not compile arbitrary HEAD |
+| DBus saver | Optional upstream feature, not installed by default |
+| Other KWin add-ons | None; Polonium is the requested KWin script |
 
-CI compiles the exact revision, checks the generated archive and plugin
-metadata. It cannot exercise real window tiling without a Plasma Wayland
-desktop session. After installation, test KWin shortcuts and monitor behavior
-manually.
+CI validates the actual newest stable release archive. It cannot prove
+real KWin/Wayland window behaviors without a logged-in Plasma desktop.
 
 ## Intentionally unchanged
 
