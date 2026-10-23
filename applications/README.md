@@ -1,6 +1,6 @@
 # Application extension policy
 
-No optional add-ons for Krita, GIMP, Blender, FreeCAD, KiCad, Joplin,
+No optional add-ons for Krita, GIMP, Blender, FreeCAD, KiCad, Obsidian,
 Thunderbird, Calibre, Kdenlive or VS Code are installed automatically.
 
 **Exception explicitly requested:** Yazi's 10 plugins and Nord flavor from
