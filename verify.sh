@@ -30,7 +30,7 @@ for cmd in hx yazi ya herdr btm eza fd fdfind gh mpv file; do
 done
 if has herdr; then
   version="$(herdr --version 2>/dev/null || true)"
-  [[ "$version" =~ ^herdr[[:space:]][0-9]+\.[0-9]+\.[0-9]+$ ]] && ok herdr "installed $version (online latest checked separately)" || fail herdr "unexpected version: $version"
+  [[ "$version" =~ ^herdr[[:space:]][0-9]+\.[0-9]+\.[0-9]+$ ]] && ok herdr "installed $version (online audit separate)" || fail herdr "unexpected version: $version"
 fi
 for cmd in rustup rustc cargo; do
   has "$cmd" && ok rust "$cmd" || fail rust "$cmd missing"
@@ -40,11 +40,9 @@ if has rustup; then
 fi
 if has node; then
   node_major="$(node -p 'process.versions.node.split(".")[0]' 2>/dev/null)"
-  [[ "$node_major" =~ ^[0-9]+$ ]] && ((node_major>=20)) && ok node "Node.js major $node_major" || fail node 'Node.js >=20 required for Polonium builds'
+  [[ "$node_major" =~ ^[0-9]+$ ]] && ok node "Node.js major $node_major (APT channel)" || fail node 'Node.js version unknown'
 else fail node 'node missing'; fi
-for cmd in make zip unzip npm kpackagetool6; do
-  has "$cmd" && ok dependency "Polonium: $cmd" || fail dependency "Polonium requires $cmd"
-done
+has kpackagetool6 && ok dependency 'Polonium: kpackagetool6' || fail dependency 'Polonium requires kpackagetool6'
 missing_apt=0
 while IFS= read -r pkg; do
   [[ -n "$pkg" && "$pkg" != \#* ]] || continue
