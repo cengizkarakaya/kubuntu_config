@@ -69,42 +69,34 @@ PY
       ;;
   esac
 done
-# Extra official binary channels on Kubuntu 26.10.
+# Extra official stable binary releases on Kubuntu 26.10.
 case "$(uname -m)" in
   x86_64|amd64) arch=x86_64 ;;
   aarch64|arm64) arch=aarch64 ;;
   *) arch=''; problem 'Unsupported architecture for Helix/Bottom version audit' ;;
 esac
 if [[ -n "$arch" ]]; then
-  line="$(bash "$ROOT/scripts/latest-release.sh" helix-editor/helix "helix-{tag}-$arch-linux.tar.xz")" || {
-    problem 'Helix stable release lookup failed'; line='';
+  tag="$(bash "$ROOT/scripts/latest-release.sh" helix-editor/helix "helix-{tag}-$arch-linux.tar.xz" | cut -f1)" || {
+    problem 'Helix stable release lookup failed'; tag='';
   }
-  if [[ -n "$line" ]]; then
-    IFS=
-  echo "[FAIL] $failures version mismatches. Stable releases can change while bootstrap runs." >&2
-  exit 1
-fi
-echo '[OK] All configured install channels match their latest stable versions.'
-echo '[INFO] Upstream-vs-Ubuntu package age is not guaranteed; use release/vendor verification before changing channels.'
-\t' read -r tag url digest <<< "$line"
+  if [[ -n "$tag" ]]; then
     current="$("$HOME/.local/bin/hx" --version 2>/dev/null || true)"
     if [[ "$current" == *"$tag"* && -d "$HOME/.config/helix/runtime" ]]; then
       check "Helix $tag and runtime"
-    else problem "Helix not current: expected $tag"; fi
+    else
+      problem "Helix installed version/runtime differs from official stable $tag"
+    fi
   fi
-  line="$(bash "$ROOT/scripts/latest-release.sh" ClementTsang/bottom "bottom_$arch-unknown-linux-gnu.tar.gz")" || {
-    problem 'Bottom stable release lookup failed'; line='';
+  tag="$(bash "$ROOT/scripts/latest-release.sh" ClementTsang/bottom "bottom_$arch-unknown-linux-gnu.tar.gz" | cut -f1)" || {
+    problem 'Bottom stable release lookup failed'; tag='';
   }
-  if [[ -n "$line" ]]; then
-    IFS=
-  echo "[FAIL] $failures version mismatches. Stable releases can change while bootstrap runs." >&2
-  exit 1
-fi
-echo '[OK] All configured install channels match their latest stable versions.'
-echo '[INFO] Upstream-vs-Ubuntu package age is not guaranteed; use release/vendor verification before changing channels.'
-\t' read -r tag url digest <<< "$line"
+  if [[ -n "$tag" ]]; then
     current="$("$HOME/.local/bin/btm" --version 2>/dev/null || true)"
-    [[ "$current" == *"$tag"* ]] && check "Bottom $tag" || problem "Bottom not current: expected $tag"
+    if [[ "$current" == *"$tag"* ]]; then
+      check "Bottom $tag current"
+    else
+      problem "Bottom version differs from official stable $tag"
+    fi
   fi
 fi
 if ((failures)); then
