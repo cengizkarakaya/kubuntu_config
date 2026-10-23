@@ -21,7 +21,7 @@ for pkg in "${pkgs[@]}"; do
 done
 if (("${#available[@]}" > 0)); then
   # No optional/recommended application extensions; dependency packages remain allowed.
-  if ! sudo apt-get install -y --no-install-recommends "${available[@]}"; then
+  if ! sudo apt-get install -y --no-install-recommends --no-remove "${available[@]}"; then
     echo '[WARN] Bulk APT transaction failed. Trying individual packages to identify failures.'
     for pkg in "${available[@]}"; do
       if ! dpkg-query -W -f='${Status}' "$pkg" 2>/dev/null | grep -qx 'install ok installed'; then
@@ -32,7 +32,15 @@ if (("${#available[@]}" > 0)); then
 fi
 for pkg in "${available[@]}"; do
   if ! dpkg-query -W -f='${Status}' "$pkg" 2>/dev/null | grep -qx 'install ok installed'; then
-    if [[ ! " ${missing[*]} " == *" $pkg ["* ]]; then missing+=("$pkg [not installed]"); fi
+    missing+=("$pkg [not installed]")
+    continue
+  fi
+  candidate="$(apt-cache policy "$pkg" | awk '$1=="Candidate:" {print $2; exit}')"
+  current="$(dpkg-query -W -f='${Version}' "$pkg" 2>/dev/null || true)"
+  if [[ -z "$candidate" || "$candidate" == "(none)" || -z "$current" ]]; then
+    missing+=("$pkg [unable to determine installed/candidate version]")
+  elif dpkg --compare-versions "$current" lt "$candidate"; then
+    missing+=("$pkg [installed $current, repository candidate $candidate]")
   fi
 done
 if (("${#missing[@]}" > 0)); then
