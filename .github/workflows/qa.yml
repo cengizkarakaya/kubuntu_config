@@ -16,6 +16,8 @@ jobs:
           bash -n bootstrap.sh
       - name: Exercise installer failure paths without APT, Flatpak or sudo changes
         run: bash tests/test-installers.sh
+      - name: Verify interactive Bash eza/zoxide integration and Alacritty TOML
+        run: bash tests/test-shell-terminal.sh
       - name: Reject unverified or non-stable GitHub releases
         run: bash tests/test-latest-release.sh
       - name: Test installed-vs-repository version audit failure handling

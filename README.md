@@ -175,3 +175,25 @@ Hyprland, Waybar, Fuzzel and other compositor/desktop-specific settings
 cannot be copied verbatim into KWin/Plasma. Zathura's Arch config is
 not part of the present installed-app manifest; no unrelated app was added.
 See `docs/arch-parity.md`.
+
+## eza, zoxide, interactive Bash and Alacritty quick test
+
+The Alacritty TOML (Nord palette, FiraCode Nerd Font Mono, window padding,
+cursor and selection) remains **unchanged from Arch_Config**.
+The Bash integration now includes all original eza aliases
+(`ls`, `ll`, `la`, `lt`, `tree`), `zoxide init bash` for `z`/`zi`,
+and the full Nord FZF color and symbol preferences.
+
+After pulling repo updates, **do not rerun the full bootstrap** merely
+to refresh Bash aliases. Run:
+
+```bash
+bash scripts/setup-shell.sh
+bash scripts/check-shell-terminal.sh
+```
+
+The second command actually starts an interactive Bash subprocess to check
+that `~/.bashrc` loads the aliases and zoxide functions, validates the
+Alacritty TOML, font, launcher and recorded Meta+Return binding. A **real
+key press** in Plasma is still required to confirm global shortcut activation.
+See `plasma/shortcuts.md`.
