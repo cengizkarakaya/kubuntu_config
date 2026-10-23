@@ -47,6 +47,23 @@ if has herdr; then
   version="$(herdr --version 2>/dev/null || true)"
   [[ "$version" =~ ^herdr[[:space:]][0-9]+\.[0-9]+\.[0-9]+$ ]] && ok herdr "installed $version (online audit separate)" || fail herdr "unexpected version: $version"
 fi
+# Codex CLI and Herdr integration
+if has codex; then
+  ok codex "$(codex --version)"
+else
+  fail codex 'Codex CLI missing'
+fi
+
+codex_home="${CODEX_HOME:-$HOME/.codex}"
+
+if [[ -x "$codex_home/herdr-agent-state.sh" &&
+      -s "$codex_home/hooks.json" ]] &&
+   grep -Eq '^[[:space:]]*hooks[[:space:]]*=[[:space:]]*true'      "$codex_home/config.toml" 2>/dev/null; then
+  ok codex 'Herdr integration configured'
+else
+  fail codex 'Herdr integration incomplete'
+fi
+
 if [[ -L "$HOME/.config/helix/runtime" ]] &&
    [[ -d "$HOME/.config/helix/runtime" ]]; then
   ok helix 'checksum-verified Helix runtime installed'

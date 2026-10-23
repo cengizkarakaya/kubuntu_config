@@ -56,6 +56,7 @@ stage 'Helix latest stable editor and runtime' bash "$ROOT/scripts/install-helix
 stage 'Bottom latest stable monitor' bash "$ROOT/scripts/install-bottom.sh"
 stage 'Rust toolchain' bash "$ROOT/scripts/install-rust.sh"
 stage 'Herdr pinned stable binary' bash "$ROOT/scripts/install-herdr.sh"
+stage 'Codex CLI and Herdr integration' bash "$ROOT/scripts/install-codex.sh"
 stage 'libvirt setup' bash "$ROOT/scripts/setup-libvirt.sh"
 stage 'Flatpak applications' bash "$ROOT/scripts/install-flatpaks.sh"
 stage 'Portable dotfiles' bash "$ROOT/scripts/stow-dotfiles.sh"
