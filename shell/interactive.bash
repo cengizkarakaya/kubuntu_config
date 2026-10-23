@@ -12,7 +12,6 @@ if command -v eza >/dev/null; then
   alias lt='eza --tree --level=2 --icons=auto --group-directories-first'
   alias tree='eza --tree --icons=auto --group-directories-first'
 fi
-command -v zoxide >/dev/null && eval "$(zoxide init bash)"
 export FZF_DEFAULT_OPTS="\
 --height=40% \
 --layout=reverse \
@@ -37,3 +36,5 @@ y() {
   [[ -d "$cwd" && "$cwd" != "$PWD" ]] && builtin cd -- "$cwd" || true
 }
 yc() { y "$@"; }
+# Initialize last: Starship and other prompt handlers may overwrite PROMPT_COMMAND.
+command -v zoxide >/dev/null && eval "$(zoxide init bash)"
