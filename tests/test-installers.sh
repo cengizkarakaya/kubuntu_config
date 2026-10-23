@@ -89,7 +89,7 @@ mkdir -p "$HOME/.config/yazi" "$HOME/.local/bin"
 ln -s "$ROOT/dotfiles/yazi/.config/yazi/package.toml" "$HOME/.config/yazi/package.toml"
 touch "$HOME/.local/bin/yazi-rg"
 chmod +x "$HOME/.local/bin/yazi-rg"
-for cmd in yazi ya git rg fzf bat zoxide; do
+for cmd in yazi ya git rg fzf batcat zoxide; do
   cat > "$work/mock-bin/$cmd" <<'EOF'
 #!/usr/bin/env bash
 if [[ "${0##*/}" == ya && "${1:-}" == pkg && "${2:-}" == install ]]; then
@@ -104,4 +104,6 @@ EOF
 done
 bash "$ROOT/scripts/install-yazi-plugins.sh"
 grep -q 'yazi pkg install' "$MOCK_LOG"
+grep -Fq 'YAZI_BAT_PREVIEW_CMD=batcat' "$ROOT/scripts/yazi-rg"
+grep -Fq '"$YAZI_BAT_PREVIEW_CMD" --color=always' "$ROOT/scripts/yazi-rg"
 echo '[PASS] The authorized Yazi plugin installer uses the pinned Arch manifest and verifies 10 plugins + Nord flavor'

@@ -5,6 +5,16 @@ set -u
 read -r -p "Search text: " query
 [[ -n "$query" ]] || exit 0
 
+# Debian/Kubuntu uses 'batcat' for the command named 'bat' on Arch.
+if command -v bat >/dev/null 2>&1; then
+    export YAZI_BAT_PREVIEW_CMD=bat
+elif command -v batcat >/dev/null 2>&1; then
+    export YAZI_BAT_PREVIEW_CMD=batcat
+else
+    printf 'Yazi search preview requires bat or batcat (APT package: bat)\n' >&2
+    exit 1
+fi
+
 result="$(
     rg \
         --vimgrep \
@@ -15,7 +25,7 @@ result="$(
     fzf \
         --delimiter ':' \
         --prompt='rg> ' \
-        --preview 'bat --color=always --style=numbers --highlight-line {2} -- {1}' \
+        --preview '"$YAZI_BAT_PREVIEW_CMD" --color=always --style=numbers --highlight-line {2} -- {1}' \
         --preview-window='right,60%,border-left'
 )" || exit 0
 
