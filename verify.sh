@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -uo pipefail
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+# Mirror bootstrap.sh's user-local PATH so verification works in the same
+# terminal session without logout or re-sourcing ~/.bashrc.
+export PATH="$HOME/.cargo/bin:$HOME/.local/bin:$PATH"
 SKIP_PLASMA=0
 for arg in "$@"; do
   case "$arg" in --skip-plasma) SKIP_PLASMA=1 ;; *) echo "Unknown argument: $arg" >&2; exit 2 ;; esac
@@ -44,7 +47,7 @@ if has herdr; then
   version="$(herdr --version 2>/dev/null || true)"
   [[ "$version" =~ ^herdr[[:space:]][0-9]+\.[0-9]+\.[0-9]+$ ]] && ok herdr "installed $version (online audit separate)" || fail herdr "unexpected version: $version"
 fi
-if has hx && [[ -L "$HOME/.config/helix/runtime" ]] &&
+if [[ -L "$HOME/.config/helix/runtime" ]] &&
    [[ -d "$HOME/.config/helix/runtime" ]]; then
   ok helix 'checksum-verified Helix runtime installed'
 else
