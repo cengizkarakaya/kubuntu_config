@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
-for cmd in yazi ya git rg fzf bat zoxide; do
+for cmd in yazi ya git rg fzf zoxide; do
   command -v "$cmd" >/dev/null 2>&1 || { echo "[FAIL] Required for Arch Yazi workflow: $cmd" >&2; exit 1; }
 done
+# Kubuntu's 'bat' package installs the executable under the name 'batcat'.
+if ! command -v bat >/dev/null 2>&1 && ! command -v batcat >/dev/null 2>&1; then
+  echo '[FAIL] Yazi search preview requires bat or batcat (APT package: bat)' >&2
+  exit 1
+fi
 src="$ROOT/dotfiles/yazi/.config/yazi/package.toml"
 installed_manifest="$HOME/.config/yazi/package.toml"
 [[ -s "$src" ]] || { echo '[FAIL] Pinned Arch Yazi plugin manifest missing' >&2; exit 1; }

@@ -22,9 +22,14 @@ elif ((SKIP_PLASMA)); then
 else
   fail session 'Polonium requires Plasma Wayland'
 fi
-for cmd in brave-browser code git stow alacritty bat fzf rg zoxide starship dolphin spectacle kwriteconfig6 kreadconfig6 flatpak; do
+for cmd in brave-browser code git stow alacritty fzf rg zoxide starship dolphin spectacle kwriteconfig6 kreadconfig6 flatpak; do
   if has "$cmd"; then ok command "$cmd"; else fail command "$cmd"; fi
 done
+if has bat || has batcat; then
+  ok command 'bat or batcat'
+else
+  fail command 'bat/batcat unavailable (APT package: bat)'
+fi
 for cmd in hx yazi ya herdr btm eza fd fdfind gh mpv file; do
   has "$cmd" && ok command "$cmd" || fail command "$cmd"
 done
