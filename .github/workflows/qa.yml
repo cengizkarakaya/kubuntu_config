@@ -37,6 +37,12 @@ jobs:
           }
           assert not pkg & forbidden, pkg & forbidden
           assert 'yazi' in pkg and 'zellij' not in pkg
+          assert 'kde-spectacle' in pkg
+          assert not {'spectacle', 'helix', 'bottom'} & pkg
+          assert 'install-helix.sh' in (root / 'bootstrap.sh').read_text()
+          assert 'install-bottom.sh' in (root / 'bootstrap.sh').read_text()
+          assert 'latest-release.sh' in (root / 'scripts/install-helix.sh').read_text()
+          assert 'latest-release.sh' in (root / 'scripts/install-bottom.sh').read_text()
           assert 'setup-yazi-apt.sh' in (root / 'bootstrap.sh').read_text()
           assert 'install-herdr.sh' in (root / 'bootstrap.sh').read_text()
           assert 'install-zellij.sh' not in (root / 'bootstrap.sh').read_text()
@@ -100,6 +106,23 @@ jobs:
           test "$("$HOME/.local/bin/herdr" --version)" = "herdr ${tag#v}"
           bash scripts/install-herdr.sh
           echo '[PASS] Latest Herdr verified'
+
+  helix-bottom-official-releases:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install and verify latest Helix and Bottom upstream releases
+        run: |
+          set -Eeuo pipefail
+          bash scripts/install-helix.sh
+          test -x "$HOME/.local/bin/hx"
+          test -d "$HOME/.config/helix/runtime"
+          "$HOME/.local/bin/hx" --version
+          bash scripts/install-helix.sh
+          bash scripts/install-bottom.sh
+          "$HOME/.local/bin/btm" --version
+          bash scripts/install-bottom.sh
+          echo '[PASS] Official SHA-256 checked latest stable Helix and Bottom'
 
   polonium-stable-release-asset:
     runs-on: ubuntu-latest
