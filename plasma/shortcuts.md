@@ -32,3 +32,23 @@ KWin floating behavior yourself after live testing.
 **After login:** In `System Settings > Keyboard > Shortcuts`, inspect
 KWin, Polonium and the application launchers. Resolve collisions in the GUI.
 A written `kglobalshortcutsrc` key is **not** proof of an active hotkey.
+
+## Alacritty Meta+Enter: live activation
+
+`Meta+Return` (Windows/Super + Enter) is a **Plasma global shortcut**,
+not an Alacritty TOML key binding. The repository creates
+`~/.local/share/applications/kubuntu-alacritty.desktop` and stores the requested
+shortcut in `kglobalshortcutsrc`, but this alone **does not prove**
+the running Wayland KGlobalAccel registered it.
+
+After logging out and in, press **Meta+Enter**. If Alacritty does not open:
+1. Open **System Settings → Keyboard → Shortcuts**.
+2. Search for **Kubuntu Alacritty**. If absent, use **Add New → Application**
+   and choose **Kubuntu Alacritty** (or Alacritty).
+3. Assign **Meta+Enter** to the **Launch** action, and resolve any conflict
+   with Konsole or another application in the GUI. Click **Apply**.
+4. Press **Meta+Enter** again to test the real binding.
+
+`bash scripts/check-shell-terminal.sh` checks the on-disk launcher and
+shortcut setting; the live keyboard shortcut must still be exercised in the GUI.
+Do not kill/restart KGlobalAccel or overwrite unrelated bindings.
