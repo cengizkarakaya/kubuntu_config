@@ -10,7 +10,18 @@ while IFS=$'\t' read -r id name; do
   if ! flatpak info --user "$id" >/dev/null 2>&1; then
     flatpak install --user --noninteractive -y flathub "$id" || failures+=("$id: install failed")
   fi
-  flatpak info --user "$id" >/dev/null 2>&1 || failures+=("$id: not installed")
+  # Even an already-installed app must be upgraded to the latest stable commit.
+  flatpak update --user --noninteractive -y "$id" || failures+=("$id: update failed")
+  if ! flatpak info --user "$id" >/dev/null 2>&1; then
+    failures+=("$id: not installed")
+    continue
+  fi
+  # Explicitly verify the installed commit against Flathub's current default.
+  local_sha="$(flatpak info --user --show-commit "$id" 2>/dev/null || true)"
+  remote_sha="$(flatpak remote-info --user --show-commit flathub "$id" 2>/dev/null || true)"
+  if [[ -z "$local_sha" || -z "$remote_sha" || "$local_sha" != "$remote_sha" ]]; then
+    failures+=("$id: installed commit differs from current Flathub stable, or remote lookup failed")
+  fi
 done < "$ROOT/packages/flatpak.tsv"
 if (("${#failures[@]}")); then
   printf '[FAIL] Flatpak applications incomplete:\n' >&2

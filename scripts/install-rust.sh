@@ -11,6 +11,7 @@ if ! command -v rustup >/dev/null 2>&1; then
   fi
 fi
 rustup toolchain install stable --profile default
+rustup update stable
 rustup default stable
 rustup component add rustfmt clippy rust-analyzer
 command -v cargo >/dev/null || { echo '[FAIL] cargo unavailable after rustup installation' >&2; exit 1; }

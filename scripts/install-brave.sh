@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
-if command -v brave-browser >/dev/null 2>&1; then
-  echo '[OK] Brave already installed'
-  exit 0
-fi
 arch="$(dpkg --print-architecture)"
 case "$arch" in amd64|arm64) ;; *) echo "[FAIL] Unsupported Brave architecture: $arch" >&2; exit 1 ;; esac
 tmp="$(mktemp -d)"
@@ -24,6 +20,6 @@ EOF
 sudo install -Dm644 "$tmp/key.gpg" /usr/share/keyrings/brave-browser-archive-keyring.gpg
 sudo install -Dm644 "$tmp/brave.sources" /etc/apt/sources.list.d/brave-browser-release.sources
 sudo apt-get update
-sudo apt-get install -y --no-install-recommends brave-browser
+sudo apt-get install -y --no-install-recommends --no-remove brave-browser
 command -v brave-browser >/dev/null || { echo '[FAIL] Brave package installed but command unavailable' >&2; exit 1; }
-echo '[OK] Brave from a signed, narrowly scoped official APT source'
+echo '[OK] Brave installed/updated to the newest signed APT stable candidate'
