@@ -34,11 +34,11 @@ KWin changes, use `bash bootstrap.sh --skip-plasma` then
 ## What is installed
 
 - `packages/apt.txt`: CLI, KDE, graphic/engineering, desktop and virtualization applications
-- `packages/flatpak.tsv`: Joplin, Zotero, OrcaSlicer and LocalSend
+- `packages/flatpak.tsv`: Obsidian, Zotero, OrcaSlicer and LocalSend
 - `scripts/install-rust.sh`: stable Rust via existing or APT-provided rustup; missing rustup is a hard error with manual recovery guidance
 - `scripts/setup-yazi-apt.sh`: official signed stable Yazi APT source (Yazi is not in the default Kubuntu archive)
-- `scripts/install-zellij.sh`: pinned Zellij 0.45.1 compiled through Cargo in user scope (not an Ubuntu APT package)
-- `dotfiles/`: portable Alacritty, Bat, Bottom, Fastfetch, Git, Helix, Readline, Starship, Yazi, Zellij; installed by GNU Stow without overwriting existing files
+- `scripts/install-herdr.sh`: pinned official Herdr v0.9.5 Linux binary, verified against the release SHA-256 before user-local installation
+- `dotfiles/`: portable Alacritty, Bat, Bottom, Fastfetch, Git, Helix, Readline, Starship, Yazi; installed by GNU Stow without overwriting existing files
 - `scripts/install-yazi-plugins.sh`: restores all 10 Arch Yazi plugins and the pinned Nord flavor through `ya pkg install`; `scripts/yazi-rg` restores search hotkey functionality
 - `shell/interactive.bash`: Arch-like aliases sourced from `~/.bashrc`
 - `themes/`: pinned Nord KDE colors, GTK Nordic, Nordzy-dark icons and verified Nerd Font
@@ -83,10 +83,10 @@ with Hyprland's modal resize submap or exact 5/20px tiling gaps. See
 
 The Yazi repository is the upstream project's official stable channel,
 and its downloaded signing key is confined to that repository via `Signed-By`.
-Zellij is not sourced from an unreviewed third-party APT mirror: it is
-installed as pinned crate `zellij 0.45.1` with `cargo install --locked`.
-The Cargo build may be resource-intensive; it is user-scoped and its failure
-stops bootstrap rather than being hidden.
+Herdr is installed as a pinned official Linux release binary (`v0.9.5`)
+with architecture-specific SHA-256 verification, without executing a remote
+installer or compiling Zellij. Installation is user-scoped and failure
+stops bootstrap.
 
 The APT installer resolves names before installation and tries one transaction;
 if dependency resolution fails, it falls back to individual installs to give
@@ -141,8 +141,8 @@ Run `bash bootstrap.sh` again when the failed dependency is resolved.
 
 Arch_Config baseline is pinned at commit
 `56c882afbd385a905b419193aa72520a688d56ea`.
-Alacritty, Bat, Bottom, Git, Helix, Readline, Starship and Zellij dotfiles are
-byte-for-byte identical. Yazi's `init.lua`, `keymap.toml`,
+Alacritty, Bat, Bottom, Git, Helix, Readline and Starship dotfiles are
+byte-for-byte identical. Herdr replaces Zellij; Zellij's KDL config is not migrated. Yazi's `init.lua`, `keymap.toml`,
 `package.toml` and `theme.toml` are byte-for-byte identical.
 Yazi's `yazi.toml` differs only by using `hx` in place of
 `/usr/bin/helix` (Ubuntu executable compatibility); its functional settings

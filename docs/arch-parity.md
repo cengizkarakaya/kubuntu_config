@@ -15,7 +15,7 @@ or that all plugin APIs remain compatible in new Yazi versions.
 | Helix config + languages | Byte-for-byte same |
 | Readline | Byte-for-byte same |
 | Starship | Byte-for-byte same |
-| Zellij (large KDL config) | Byte-for-byte same |
+| Herdr replaces Zellij | Zellij KDL configuration is no longer installed; Herdr uses its own settings |
 | Yazi init.lua | Byte-for-byte same |
 | Yazi keymap.toml | Byte-for-byte same |
 | Yazi package.toml (10 plugins + Nord flavor) | Byte-for-byte same |

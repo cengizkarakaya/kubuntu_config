@@ -34,9 +34,16 @@ jobs:
           assert not pkg & forbidden, pkg & forbidden
           assert 'yazi' in pkg and 'zellij' not in pkg
           assert 'setup-yazi-apt.sh' in (root / 'bootstrap.sh').read_text()
-          assert 'install-zellij.sh' in (root / 'bootstrap.sh').read_text()
-          assert "VERSION='0.45.1'" in (root / 'scripts/install-zellij.sh').read_text()
-          assert 'cargo install --locked --version "$VERSION" zellij' in (root / 'scripts/install-zellij.sh').read_text()
+          assert 'install-herdr.sh' in (root / 'bootstrap.sh').read_text()
+          assert 'install-zellij.sh' not in (root / 'bootstrap.sh').read_text()
+          herdr = (root / 'scripts/install-herdr.sh').read_text()
+          assert "VERSION='v0.9.5'" in herdr
+          assert 'sha256sum -c' in herdr
+          assert not (root / 'scripts/install-zellij.sh').exists()
+          assert not (root / 'dotfiles/zellij/.config/zellij/config.kdl').exists()
+          flatpaks = (root / 'packages/flatpak.tsv').read_text()
+          assert 'md.obsidian.Obsidian\tObsidian' in flatpaks
+          assert 'net.cozic.joplin_desktop' not in flatpaks
           removed = [
               "plasma/install-krohnkite.sh", "applications/addons.tsv",
               "applications/vscode-extensions.txt", "scripts/install-vscode-extensions.sh",

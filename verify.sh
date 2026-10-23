@@ -25,9 +25,13 @@ fi
 for cmd in brave-browser code git stow alacritty bat fzf rg zoxide starship dolphin spectacle kwriteconfig6 kreadconfig6 flatpak; do
   if has "$cmd"; then ok command "$cmd"; else fail command "$cmd"; fi
 done
-for cmd in hx yazi ya zellij btm eza fd fdfind gh mpv file; do
+for cmd in hx yazi ya herdr btm eza fd fdfind gh mpv file; do
   has "$cmd" && ok command "$cmd" || fail command "$cmd"
 done
+if has herdr; then
+  version="$(herdr --version 2>/dev/null || true)"
+  [[ "$version" == 'herdr 0.9.5' ]] && ok herdr "pinned $version" || fail herdr "expected herdr 0.9.5, found: $version"
+fi
 for cmd in rustup rustc cargo; do
   has "$cmd" && ok rust "$cmd" || fail rust "$cmd missing"
 done
@@ -82,7 +86,7 @@ if ((SKIP_PLASMA==0)); then
     fail tiling 'Old Kröhnkite package remains in user directory'
   fi
 fi
-for module in alacritty bat bottom fastfetch git helix readline starship yazi zellij; do
+for module in alacritty bat bottom fastfetch git helix readline starship yazi; do
   root="$ROOT/dotfiles/$module"
   [[ -d "$root" ]] || { fail stow "$module folder missing"; continue; }
   while IFS= read -r -d '' item; do

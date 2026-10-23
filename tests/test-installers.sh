@@ -50,9 +50,9 @@ fi
 grep -q missingpkg "$HOME/.local/state/kubuntu-config/apt-unavailable.txt"
 echo '[PASS] APT installer fails and reports missing packages'
 bash "$ROOT/scripts/install-flatpaks.sh"
-[[ -e "$MOCK_FLAT_STATE/net.cozic.joplin_desktop" ]]
-rm -f "$MOCK_FLAT_STATE/net.cozic.joplin_desktop"
-export MOCK_FLAT_FAIL='net.cozic.joplin_desktop'
+[[ -e "$MOCK_FLAT_STATE/md.obsidian.Obsidian" ]]
+rm -f "$MOCK_FLAT_STATE/md.obsidian.Obsidian"
+export MOCK_FLAT_FAIL='md.obsidian.Obsidian'
 if bash "$ROOT/scripts/install-flatpaks.sh"; then
   echo '[FAIL] Flatpak installer accepted an unavailable app' >&2; exit 1
 fi
