@@ -6,7 +6,7 @@ set -Eeuo pipefail
 repo="${1:?Usage: latest-release.sh owner/repo asset-name}"
 asset="${2:?Usage: latest-release.sh owner/repo asset-name}"
 [[ "$repo" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ &&
-   "$asset" =~ ^[A-Za-z0-9_.-]+$ ]] || { echo '[FAIL] Invalid GitHub repository or asset' >&2; exit 2; }
+   "$asset" =~ ^[A-Za-z0-9_.{}-]+$ ]] || { echo '[FAIL] Invalid GitHub repository or asset' >&2; exit 2; }
 for cmd in curl python3; do
   command -v "$cmd" >/dev/null 2>&1 || { echo "[FAIL] Required for release lookup: $cmd" >&2; exit 1; }
 done
@@ -23,6 +23,7 @@ with open(path, encoding="utf-8") as handle:
 tag = data.get("tag_name", "")
 if data.get("draft") or data.get("prerelease") or not re.fullmatch(r"v?\d+(?:\.\d+){1,3}", tag):
     sys.exit("[FAIL] Latest release is not a verified stable numeric tag")
+asset = asset.replace("{tag}", tag)
 expected = f"https://github.com/{repo}/releases/download/{tag}/{asset}"
 matches = [x for x in data.get("assets", []) if x.get("name") == asset]
 if len(matches) != 1 or matches[0].get("browser_download_url") != expected:

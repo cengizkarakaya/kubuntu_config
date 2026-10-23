@@ -30,6 +30,23 @@ output="$(bash "$ROOT/scripts/latest-release.sh" example/tool test.bin)"
 [[ "$output" == $'v3.4.5\thttps://github.com/example/tool/releases/download/v3.4.5/test.bin\t'$(printf 'a%.0s' {1..64}) ]] || {
   echo '[FAIL] Valid GitHub release not parsed' >&2; exit 1;
 }
+python3 - "$MOCK_META" <<'PY'
+import json,sys
+p=sys.argv[1]
+with open(p) as f: x=json.load(f)
+x["assets"][0]["name"]="helix-v3.4.5-x86_64-linux.tar.xz"
+x["assets"][0]["browser_download_url"]="https://github.com/example/tool/releases/download/v3.4.5/helix-v3.4.5-x86_64-linux.tar.xz"
+with open(p,"w") as f: json.dump(x,f)
+PY
+bash "$ROOT/scripts/latest-release.sh" example/tool 'helix-{tag}-x86_64-linux.tar.xz' | grep -Fq 'helix-v3.4.5-x86_64-linux.tar.xz'
+python3 - "$MOCK_META" <<'PY'
+import json,sys
+p=sys.argv[1]
+with open(p) as f: x=json.load(f)
+x["assets"][0]["name"]="test.bin"
+x["assets"][0]["browser_download_url"]="https://github.com/example/tool/releases/download/v3.4.5/test.bin"
+with open(p,"w") as f: json.dump(x,f)
+PY
 for field in prerelease missing_digest wrong_url; do
   python3 - "$MOCK_META" "$field" <<'PY'
 import json,sys

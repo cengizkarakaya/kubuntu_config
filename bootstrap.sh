@@ -52,6 +52,8 @@ if ((CORE_ONLY)); then echo '[OK] Core-only finished. Run bash bootstrap.sh to c
 stage 'VS Code' bash "$ROOT/scripts/install-vscode.sh"
 stage 'Official Yazi stable repository' bash "$ROOT/scripts/setup-yazi-apt.sh"
 stage 'APT package manifest' bash "$ROOT/scripts/install-apt.sh" "$ROOT/packages/apt.txt"
+stage 'Helix latest stable editor and runtime' bash "$ROOT/scripts/install-helix.sh"
+stage 'Bottom latest stable monitor' bash "$ROOT/scripts/install-bottom.sh"
 stage 'Rust toolchain' bash "$ROOT/scripts/install-rust.sh"
 stage 'Herdr pinned stable binary' bash "$ROOT/scripts/install-herdr.sh"
 stage 'libvirt setup' bash "$ROOT/scripts/setup-libvirt.sh"

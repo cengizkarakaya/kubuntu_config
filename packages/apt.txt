@@ -3,14 +3,12 @@
 alacritty
 bash-completion
 bat
-bottom
 eza
 fastfetch
 fd-find
 fzf
 git-delta
 gh
-helix
 hyperfine
 jq
 less
@@ -40,7 +38,7 @@ lldb
 # KDE-native applications
 dolphin
 ark
-spectacle
+kde-spectacle
 okular
 krename
 kdeconnect

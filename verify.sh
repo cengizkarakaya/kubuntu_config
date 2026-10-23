@@ -32,6 +32,12 @@ if has herdr; then
   version="$(herdr --version 2>/dev/null || true)"
   [[ "$version" =~ ^herdr[[:space:]][0-9]+\.[0-9]+\.[0-9]+$ ]] && ok herdr "installed $version (online audit separate)" || fail herdr "unexpected version: $version"
 fi
+if has hx && [[ -L "$HOME/.config/helix/runtime" ]] &&
+   [[ -d "$HOME/.config/helix/runtime" ]]; then
+  ok helix 'checksum-verified Helix runtime installed'
+else
+  fail helix 'Helix runtime missing at ~/.config/helix/runtime'
+fi
 for cmd in rustup rustc cargo; do
   has "$cmd" && ok rust "$cmd" || fail rust "$cmd missing"
 done
