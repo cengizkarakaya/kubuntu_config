@@ -39,6 +39,8 @@ jobs:
           assert 'yazi' in pkg and 'zellij' not in pkg
           assert 'kde-spectacle' in pkg
           verification = (root / 'verify.sh').read_text()
+          assert 'export PATH="$HOME/.cargo/bin:$HOME/.local/bin:$PATH"' in verification
+          assert 'if [[ -L "$HOME/.config/helix/runtime" ]]' in verification
           assert "has fd || has fdfind" in verification
           assert "fc-list -f '%{family}\\n' | grep -Fi 'FiraCode Nerd Font' >/dev/null" in verification
           assert "fc-list : family | grep -Fqi" not in verification
