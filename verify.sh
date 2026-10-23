@@ -30,7 +30,14 @@ if has bat || has batcat; then
 else
   fail command 'bat/batcat unavailable (APT package: bat)'
 fi
-for cmd in hx yazi ya herdr btm eza fd fdfind gh mpv file; do
+# Ubuntu's fd-find package installs fdfind; Arch names the executable fd.
+# Either spelling satisfies the file-search dependency.
+if has fd || has fdfind; then
+  ok command 'fd or fdfind'
+else
+  fail command 'fd/fdfind unavailable (APT package: fd-find)'
+fi
+for cmd in hx yazi ya herdr btm eza gh mpv file; do
   has "$cmd" && ok command "$cmd" || fail command "$cmd"
 done
 if has herdr; then
@@ -66,9 +73,13 @@ while IFS=$'\t' read -r id name; do
     ok flatpak "$id"
   else fail flatpak "$id absent"; fi
 done < "$ROOT/packages/flatpak.tsv"
-if has fc-list && fc-list : family | grep -Fqi 'FiraCode Nerd Font'; then
-  ok font 'FiraCode Nerd Font'
-else fail font 'FiraCode Nerd Font missing'; fi
+# Do not use grep -q under pipefail here: it can close the pipe early,
+# causing fc-list to receive SIGPIPE and incorrectly report an absent font.
+if has fc-list && fc-list -f '%{family}\n' | grep -Fi 'FiraCode Nerd Font' >/dev/null; then
+  ok font 'FiraCode Nerd Font indexed by fontconfig'
+else
+  fail font 'FiraCode Nerd Font not indexed; inspect ~/.local/share/fonts/FiraCodeNerd and run fc-cache -f'
+fi
 [[ -s "$HOME/.local/share/color-schemes/KubuntuNord.colors" ]] && ok theme 'KubuntuNord' || fail theme 'Nord KDE palette missing'
 [[ -s "$HOME/.local/share/themes/Nordic/index.theme" && -s "$HOME/.local/share/themes/Nordic/gtk-3.0/gtk.css" ]] && ok theme 'Nordic GTK' || fail theme 'Nordic GTK missing'
 [[ -s "$HOME/.local/share/icons/Nordzy-dark/index.theme" ]] && ok theme 'Nordzy-dark icons' || fail theme 'Nordzy-dark icons missing'
