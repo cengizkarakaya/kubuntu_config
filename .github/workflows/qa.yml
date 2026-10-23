@@ -18,6 +18,8 @@ jobs:
         run: bash tests/test-installers.sh
       - name: Reject unverified or non-stable GitHub releases
         run: bash tests/test-latest-release.sh
+      - name: Test installed-vs-repository version audit failure handling
+        run: bash tests/test-version-audit.sh
       - name: Assert manifest and no-extra-plugin policy
         run: |
           python3 - <<'PY'
