@@ -3,17 +3,33 @@ set -Eeuo pipefail
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 mkdir -p "$HOME/.local/share/color-schemes" "$HOME/.local/share/fonts/FiraCodeNerd" "$HOME/.local/share/themes"
 install -m644 "$ROOT/themes/KubuntuNord.colors" "$HOME/.local/share/color-schemes/KubuntuNord.colors"
-# SHA-256 verified upstream Nerd Font archive; no remote install script executed.
+# Always resolve the latest STABLE Nerd Font release, with published SHA-256.
+# Preserve Nord look and the FiraCode Nerd Font family.
 font_dir="$HOME/.local/share/fonts/FiraCodeNerd"
-if ! find "$font_dir" -name '*.ttf' -print -quit | grep -q .; then
+IFS=$'\t' read -r tag url digest < <(bash "$ROOT/scripts/latest-release.sh" ryanoasis/nerd-fonts FiraCode.tar.xz)
+[[ -n "${tag:-}" && -n "${url:-}" && -n "${digest:-}" ]] || {
+  echo '[FAIL] Could not resolve newest stable FiraCode Nerd Font release' >&2; exit 1;
+}
+stamp="$font_dir/.kubuntu-config-version"
+if [[ "$(cat "$stamp" 2>/dev/null || true)" != "$tag" ]] ||
+   ! find "$font_dir" -name '*.ttf' -print -quit | grep -q .; then
   tmp="$(mktemp -d)"
   trap 'rm -rf -- "$tmp"' EXIT
-  curl -fsSL --retry 3 'https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/FiraCode.tar.xz' -o "$tmp/FiraCode.tar.xz"
-  printf '%s  %s\n' '68e3bd6164864b8b514605bc34e3a87ac401c8c48682fcce6478c70263340207' "$tmp/FiraCode.tar.xz" | sha256sum -c -
-  tar -xJf "$tmp/FiraCode.tar.xz" -C "$font_dir" --no-same-owner --wildcards '*.ttf'
+  curl --proto '=https' --tlsv1.2 -fL --retry 3 --connect-timeout 15 \
+    "$url" -o "$tmp/FiraCode.tar.xz"
+  printf '%s  %s\n' "$digest" "$tmp/FiraCode.tar.xz" | sha256sum -c -
+  mkdir -p "$tmp/fonts"
+  tar -xJf "$tmp/FiraCode.tar.xz" -C "$tmp/fonts" --no-same-owner --wildcards '*.ttf'
+  find "$tmp/fonts" -name '*.ttf' -print -quit | grep -q . || {
+    echo '[FAIL] Nerd Font archive has no TrueType fonts' >&2; exit 1;
+  }
+  mkdir -p "$font_dir"
+  cp -a "$tmp/fonts/." "$font_dir/"
+  printf '%s\n' "$tag" > "$stamp"
   fc-cache -f "$font_dir"
   rm -rf -- "$tmp"
   trap - EXIT
+  echo "[OK] Latest stable FiraCode Nerd Font $tag"
 fi
 # Pinned GTK theme source. Install into a staging dir, then move into place.
 target="$HOME/.local/share/themes/Nordic"

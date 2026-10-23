@@ -30,7 +30,7 @@ for cmd in hx yazi ya herdr btm eza fd fdfind gh mpv file; do
 done
 if has herdr; then
   version="$(herdr --version 2>/dev/null || true)"
-  [[ "$version" == 'herdr 0.9.5' ]] && ok herdr "pinned $version" || fail herdr "expected herdr 0.9.5, found: $version"
+  [[ "$version" =~ ^herdr[[:space:]][0-9]+\.[0-9]+\.[0-9]+$ ]] && ok herdr "installed $version (online latest checked separately)" || fail herdr "unexpected version: $version"
 fi
 for cmd in rustup rustc cargo; do
   has "$cmd" && ok rust "$cmd" || fail rust "$cmd missing"
@@ -79,9 +79,9 @@ if has kreadconfig6; then
 fi
 if ((SKIP_PLASMA==0)); then
   pkg="${XDG_DATA_HOME:-$HOME/.local/share}/kwin/scripts/polonium/metadata.json"
-  if [[ -r "$pkg" ]] && grep -Eq '"Version"[[:space:]]*:[[:space:]]*"1\.2\.1"' "$pkg"; then
-    ok tiling 'Polonium 1.2.1 metadata found'
-  else fail tiling 'Polonium 1.2.1 not installed in user KWin directory'; fi
+  if [[ -r "$pkg" ]] && grep -Eq '"Version"[[:space:]]*:[[:space:]]*"[0-9]+\.[0-9]+\.[0-9]+"' "$pkg"; then
+    ok tiling 'Polonium versioned metadata found (online latest checked separately)'
+  else fail tiling 'Polonium versioned metadata missing in user KWin directory'; fi
   if [[ -e "${XDG_DATA_HOME:-$HOME/.local/share}/kwin/scripts/krohnkite" ]]; then
     fail tiling 'Old Kröhnkite package remains in user directory'
   fi
