@@ -72,6 +72,8 @@ fi
 grep -q missingpkg "$HOME/.local/state/kubuntu-config/apt-unavailable.txt"
 echo '[PASS] APT installer fails and reports missing packages'
 bash "$ROOT/scripts/install-flatpaks.sh"
+[[ -e "$MOCK_FLAT_STATE/org.localsend.localsend_app" ]] || { echo "[FAIL] Expected official LocalSend Flathub ID" >&2; exit 1; }
+[[ ! -e "$MOCK_FLAT_STATE/org.localsend.localsend" ]] || { echo "[FAIL] Obsolete LocalSend ID was used" >&2; exit 1; }
 [[ -e "$MOCK_FLAT_STATE/md.obsidian.Obsidian" ]]
 echo old-commit > "$MOCK_FLAT_STATE/md.obsidian.Obsidian"
 bash "$ROOT/scripts/install-flatpaks.sh"
