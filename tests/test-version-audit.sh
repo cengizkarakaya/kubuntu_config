@@ -16,6 +16,17 @@ cat > "$work/home/.local/bin/herdr" <<'EOF'
 #!/usr/bin/env bash
 echo 'herdr 0.9.5'
 EOF
+mkdir -p "$work/home/.config/helix"
+mkdir -p "$work/home/.local/share/kubuntu-config/helix/test/runtime"
+ln -s "$work/home/.local/share/kubuntu-config/helix/test/runtime" "$work/home/.config/helix/runtime"
+cat > "$work/home/.local/bin/hx" <<'EOF'
+#!/usr/bin/env bash
+echo 'helix 25.07.1'
+EOF
+cat > "$work/home/.local/bin/btm" <<'EOF'
+#!/usr/bin/env bash
+echo 'bottom 0.14.9'
+EOF
 cat > "$work/bin/dpkg-query" <<'EOF'
 #!/usr/bin/env bash
 printf '2.0'
@@ -34,10 +45,12 @@ case "$1" in
   herdrdev/herdr) printf 'v0.9.5\t%s\t%s\n' https://github.com/herdrdev/herdr/release dummysha ;;
   zeroxoneafour/polonium) printf 'v1.2.1\t%s\t%s\n' https://github.com/zeroxoneafour/polonium/release dummysha ;;
   ryanoasis/nerd-fonts) printf 'v3.5.1\t%s\t%s\n' https://github.com/ryanoasis/nerd-fonts/release dummysha ;;
+  helix-editor/helix) printf '25.07.1\t%s\t%s\n' https://github.com/helix-editor/helix/release dummysha ;;
+  ClementTsang/bottom) printf '0.14.9\t%s\t%s\n' https://github.com/ClementTsang/bottom/release dummysha ;;
   *) exit 1 ;;
 esac
 EOF
-chmod +x "$work/bin/"* "$work/home/.local/bin/herdr" "$work/root/scripts/latest-release.sh"
+chmod +x "$work/bin/"* "$work/home/.local/bin/herdr" "$work/home/.local/bin/hx" "$work/home/.local/bin/btm" "$work/root/scripts/latest-release.sh"
 export PATH="$work/bin:$PATH"
 bash "$work/root/scripts/version-audit.sh"
 export MOCK_CANDIDATE=3.0
