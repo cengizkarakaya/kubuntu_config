@@ -16,7 +16,7 @@ sudo apt-get update && sudo apt-get install -y git
 git clone https://github.com/cengizkarakaya/kubuntu_config.git
 cd kubuntu_config
 bash bootstrap.sh --core-only   # fast first stage: Brave for ChatGPT
-bash bootstrap.sh               # complete setup, including pinned Polonium
+bash bootstrap.sh               # install/update to current stable packages and Polonium
 bash verify.sh
 ```
 
@@ -37,14 +37,15 @@ KWin changes, use `bash bootstrap.sh --skip-plasma` then
 - `packages/flatpak.tsv`: Obsidian, Zotero, OrcaSlicer and LocalSend
 - `scripts/install-rust.sh`: stable Rust via existing or APT-provided rustup; missing rustup is a hard error with manual recovery guidance
 - `scripts/setup-yazi-apt.sh`: official signed stable Yazi APT source (Yazi is not in the default Kubuntu archive)
-- `scripts/install-herdr.sh`: pinned official Herdr v0.9.5 Linux binary, verified against the release SHA-256 before user-local installation
+- `scripts/install-herdr.sh`: newest official STABLE Herdr Linux release, verified against GitHub-published SHA-256
 - `dotfiles/`: portable Alacritty, Bat, Bottom, Fastfetch, Git, Helix, Readline, Starship, Yazi; installed by GNU Stow without overwriting existing files
 - `scripts/install-yazi-plugins.sh`: restores all 10 Arch Yazi plugins and the pinned Nord flavor through `ya pkg install`; `scripts/yazi-rg` restores search hotkey functionality
 - `shell/interactive.bash`: Arch-like aliases sourced from `~/.bashrc`
-- `themes/`: pinned Nord KDE colors, GTK Nordic, Nordzy-dark icons and verified Nerd Font
-- `plasma/`: ten workspaces, KWin shortcuts and **Polonium 1.2.1**, built from pinned upstream source
+- `themes/`: Nord KDE colors, appearance-preserving GTK/icon sources and newest stable SHA-256-verified Nerd Font
+- `plasma/`: ten workspaces, KWin shortcuts and **latest stable Polonium**, verified release KWin archive
 - `scripts/sysup`: interactive OS/App/Rust updates, firmware *report only*
-- `verify.sh`: strict package inventory, dotfile links, local KWin metadata and no-add-on policy; reports untestable session behaviors
+- `verify.sh`: local package inventory, dotfile links, KWin metadata and add-on policy
+- `scripts/version-audit.sh`: fail-fast online check against current APT candidates, Flathub stable commits and GitHub release versions
 
 **Yazi is the only exception to the no-optional-add-ons policy.**
 Its 10 pinned plugins, Nord flavor, Lua setup, search helper and shortcuts
@@ -57,15 +58,14 @@ as the window tiler. See `applications/README.md`.
 ## Polonium and Arch key bindings
 
 Official upstream: https://github.com/zeroxoneafour/polonium
-Stable: `v1.2.1`; source pinned to
-`3638b1625e95877f93279527de3b82b9b09aff3a`.
-Build checks the pinned `kwin-api` submodule commit
-`8fc04bd086a1445ea67783eaa33517b70e01c063`, then uses
-`npm ci --ignore-scripts` and local esbuild in an unprivileged
-temporary directory. No latest-HEAD scripts, automatic development snapshots
-or arbitrary remote install commands. Requires Plasma >=6.4, Wayland, `kpackagetool6`, `zip`, `unzip`,
-`make`, `npm`, and a supported Node.js release. The old Kröhnkite installation is disabled (and user-installed
-script package removed if present) after Polonium installs successfully.
+At each run, the installer resolves the **latest non-prerelease GitHub release**,
+downloads the official `polonium.kwinscript` artifact, checks the GitHub API
+SHA-256 digest, validates the KWin package ID and release version, and installs
+or upgrades it via `kpackagetool6`. If the upstream release metadata, digest
+or compatibility requirements cannot be validated, installation **stops**
+instead of silently using a stale pinned version. Plasma >=6.4 and Wayland
+are required. **No npm or Node.js build is required for Polonium itself.**
+The old Kröhnkite script is disabled/removed only after installation succeeds.
 
 Polonium's own H/J/K/L focus, Shift+H/J/K/L move and Ctrl+H/J/K/L resize
 preserve the familiar Arch pattern. `plasma/shortcuts.sh` writes KDE-global
@@ -79,25 +79,44 @@ Polonium 1.2.1 does **not** claim parity with every Kröhnkite behavior, nor
 with Hyprland's modal resize submap or exact 5/20px tiling gaps. See
 `plasma/shortcuts.md`.
 
-## Package health and updates
+## Latest stable version policy (important)
 
-The Yazi repository is the upstream project's official stable channel,
-and its downloaded signing key is confined to that repository via `Signed-By`.
-Herdr is installed as a pinned official Linux release binary (`v0.9.5`)
-with architecture-specific SHA-256 verification, without executing a remote
-installer or compiling Zellij. Installation is user-scoped and failure
-stops bootstrap.
+The bootstrap no longer treats "already installed" as "latest":
 
-The APT installer resolves names before installation and tries one transaction;
-if dependency resolution fails, it falls back to individual installs to give
-a precise failure report. It verifies *every* manifest package via dpkg.
-If a package no longer exists in your chosen Kubuntu release, bootstrap reports
-it as FAIL rather than falsely declaring complete setup.
+- **APT apps (including Brave and VS Code):** `apt-get update`, install/upgrade
+  every manifest package to the newest **candidate in the configured signed
+  Kubuntu or vendor repository**; compare installed version with `apt-cache
+  policy` and fail if outdated.
+- **Flathub apps:** install or upgrade every app even when already installed;
+  compare installed and remote stable commits.
+- **Herdr / Polonium / Nerd Font:** resolve latest official *stable* GitHub
+  release **at install time**. Require SHA-256 asset digest, download over
+  HTTPS, verify its contents/version before replacing existing software.
+- **Rust:** update the stable toolchain and selected components.
+- **Yazi:** install newest signed stable Yazi package, **preserve the exact
+  ten Arch_Config plugins and Nord flavor with locked revisions**, per your
+  existing preference. Other app add-ons stay disabled.
+- **Nordic GTK/Nordzy icons:** existing selected and pinned source snapshots
+  are kept intentionally to preserve the specified Nord appearance.
+
+**Limitation:** the newest package inside Ubuntu's supported APT archive is
+not necessarily the newest upstream release. Without changing distro,
+introducing unverified PPAs, installing conflicting AppImages/Flatpaks or
+building everything from source, no script can safely guarantee "absolute
+upstream latest" for every KDE and creative app. AI agents MUST check official
+vendor release information before promising that, and report discrepancies.
+Do not silently substitute third-party repositories or beta builds.
+
+`scripts/version-audit.sh` provides a strict installed-vs-configured-repository
+check after bootstrap. GitHub release lookups can fail due to rate limits or
+network outages; bootstrap then **fails rather than installing unverifiable
+binaries**. Installed versions can change after the audit as new releases
+appear. See `docs/version-policy.md` and `AGENTS.md`.
 
 VS Code and Brave are installed from their official signed repositories.
-Flatpak apps use the Flathub remote in **user** scope. Downloads from GitHub
-for appearance assets and Polonium are pinned to revisions; the Nerd Font archive
-is additionally checked against its SHA256. This does not establish a third-party
+Flatpak apps use the Flathub remote in **user** scope. GitHub release assets (Herdr, Polonium and FiraCode) are resolved at runtime
+and checked against their published SHA-256. Nordic GTK/icon source snapshots
+remain deliberately pinned to preserve your existing look. This does not establish a third-party
 security audit of all npm packages or visual plugins.
 
 ```bash
@@ -127,7 +146,8 @@ EFI and personal data before editing boot settings.
 
 ## CI, limitations and recovery
 
-GitHub Actions checks shell syntax and static no-add-on/Polonium invariants.
+GitHub Actions checks shell syntax, failure modes, GitHub release signatures/digests,
+latest stable Herdr and Polonium assets, and the Yazi add-on inventory.
 It **does not** run a genuine Kubuntu 26.10 Wayland login with the installed
 NVIDIA driver. Actual KWin behavior, Flatpak portals, plugins from previous
 installations, and application rendering still need target-machine smoke tests.

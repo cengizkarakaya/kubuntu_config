@@ -6,7 +6,7 @@ Nordic GTK, Nordzy-dark icons.
 
 Installed automatically (these are appearance assets, not application add-ons):
 - Native KDE color palette in themes/KubuntuNord.colors
-- Pinned and SHA-256-checked FiraCode Nerd Font v3.5.1
+- Latest stable SHA-256-checked FiraCode Nerd Font (resolved when installed)
 - Nordic GTK theme from pinned revision; no upstream installer execution
 - Nordzy-dark SVG icon theme from pinned revision; no upstream installer execution
 
