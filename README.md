@@ -44,7 +44,7 @@ KWin changes, use `bash bootstrap.sh --skip-plasma` then
 - `scripts/install-yazi-plugins.sh`: restores all 10 Arch Yazi plugins and the pinned Nord flavor through `ya pkg install`; `scripts/yazi-rg` restores search hotkey functionality
 - `shell/interactive.bash`: Arch-like aliases sourced from `~/.bashrc`
 - `themes/`: Nord KDE colors, appearance-preserving GTK/icon sources and newest stable SHA-256-verified Nerd Font
-- `plasma/`: ten workspaces, KWin shortcuts and **latest stable Polonium**, verified release KWin archive
+- `plasma/`: preserves your KDE virtual-desktop count; installs KWin shortcuts and **latest stable Polonium**, verified release KWin archive
 - `scripts/sysup`: interactive OS/App/Rust updates, firmware *report only*
 - `verify.sh`: local package inventory, dotfile links, KWin metadata and add-on policy
 - `scripts/version-audit.sh`: fail-fast online check against current APT candidates, Flathub stable commits and GitHub release versions

@@ -91,7 +91,13 @@ if has kreadconfig6; then
   [[ "$val" == KubuntuNord ]] && ok kde 'Nord palette selected' || fail kde "ColorScheme=$val"
   if ((SKIP_PLASMA==0)); then
     val="$(kreadconfig6 --file kwinrc --group Desktops --key Number 2>/dev/null)"
-    [[ "$val" == 10 ]] && ok kde '10 virtual desktops' || fail kde "Virtual desktops=$val"
+    if [[ "$val" =~ ^[1-9][0-9]*$ ]]; then
+      ok kde "$val virtual desktops (user preference preserved)"
+    elif [[ -z "$val" ]]; then
+      warn kde 'Virtual-desktop count uses the Plasma default'
+    else
+      fail kde "Invalid virtual-desktop count=$val"
+    fi
     val="$(kreadconfig6 --file kwinrc --group Plugins --key poloniumEnabled 2>/dev/null)"
     [[ "$val" == true ]] && ok kde 'Polonium requested enabled' || fail kde "Polonium enabled=$val"
     val="$(kreadconfig6 --file kwinrc --group Plugins --key krohnkiteEnabled 2>/dev/null)"
