@@ -118,7 +118,16 @@ fi
 if command -v rustup >/dev/null; then
     echo
     echo "==> Rust"
-    rustup update
+
+    rustup_path="$(readlink -f "$(command -v rustup)")"
+
+    if command -v dpkg-query >/dev/null 2>&1 &&
+       dpkg-query -S "$rustup_path" >/dev/null 2>&1; then
+        echo "[INFO] APT-managed rustup: toolchain updates only"
+        rustup update --no-self-update
+    else
+        rustup update
+    fi
 fi
 
 echo
