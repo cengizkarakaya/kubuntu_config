@@ -29,6 +29,8 @@ collection of shell commands to run unreviewed.
 
 - Run as an ordinary user, never `sudo bash bootstrap.sh`. Use sudo only
   where the existing scripts request it for APT/OS changes.
+- Do not restart the SDDM service to apply greeter preferences; verify on the
+  next normal login. Preserve unrelated entries in SDDM configuration files.
 - Do not alter NVIDIA drivers, firmware, partition table, EFI or GRUB
   automatically. Do not remove unrelated packages or overwrite user dotfiles.
 - Before execution, examine `packages/apt.txt`, `packages/flatpak.tsv`,

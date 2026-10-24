@@ -63,6 +63,7 @@ stage 'Default applications' bash "$ROOT/scripts/setup-defaults.sh"
 stage 'Nord appearance' bash "$ROOT/themes/setup.sh"
 if ((SKIP_PLASMA == 0)); then
   stage 'Plasma settings' bash "$ROOT/plasma/setup.sh"
+  stage 'SDDM Num Lock on login screen' bash "$ROOT/scripts/configure-sddm-numlock.sh"
   stage 'Native KWin (remove legacy tiling script)' bash "$ROOT/plasma/disable-polonium.sh"
   stage 'Global shortcut configuration' bash "$ROOT/plasma/shortcuts.sh"
 fi

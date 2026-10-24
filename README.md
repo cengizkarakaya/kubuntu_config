@@ -46,6 +46,7 @@ The default installation uses native KWin without an automatic tiler.
 - `themes/`: Nord KDE colors, appearance-preserving GTK/icon sources and newest stable SHA-256-verified Nerd Font
 - `plasma/`: preserves the KDE virtual desktops and shortcuts; removes legacy user-installed Polonium when migrating to native KWin
 - `scripts/sysup`: interactive OS/App/Rust updates, firmware *report only*
+- `scripts/configure-sddm-numlock.sh`: enables Num Lock on the SDDM login screen (X11 and KWin/Wayland greeters)
 - `verify.sh`: local package inventory, dotfile links, native KWin state and add-on policy
 - `scripts/version-audit.sh`: fail-fast online check against current APT candidates, Flathub stable commits and GitHub release versions
 
@@ -71,6 +72,21 @@ settings or touch NVIDIA drivers. Sign out and back in after migration.
 Meta+E, Meta+M, desktop switching, Meta+Q and Meta+F. Previously provided
 H/J/K/L tiling shortcuts are no longer installed. Configure any replacements
 in **System Settings > Keyboard > Shortcuts**. See `plasma/shortcuts.md`.
+
+## SDDM login-screen Num Lock
+
+Full bootstrap enables Num Lock at the SDDM password screen using the
+configuration verified on the workstation:
+
+- `/etc/sddm.conf` -> `[General] Numlock=on`
+- `/var/lib/sddm/.config/kcminputrc` -> `[Keyboard] NumLock=0`
+
+The script uses `kwriteconfig6` to preserve unrelated configuration,
+runs the second write as the `sddm` account, verifies both values and
+never restarts SDDM or KWin. Rerun it standalone with
+`bash scripts/configure-sddm-numlock.sh` (as a regular user; sudo is
+invoked only for the relevant configuration writes). The greeter must be
+tested on a real login screen; static CI cannot confirm keyboard state.
 
 ## Latest stable version policy (important)
 
@@ -171,6 +187,10 @@ See `docs/arch-parity.md`.
 
 The Alacritty TOML (Nord palette, FiraCode Nerd Font Mono, window padding,
 cursor and selection) remains **unchanged from Arch_Config**.
+It intentionally uses `[window] decorations = "None"`. In KDE,
+hold **Meta** and drag with the **left mouse button** anywhere in the window
+to move it without a titlebar; use `decorations = "Full"` only if a visible
+titlebar is preferred.
 The Bash integration now includes all original eza aliases
 (`ls`, `ll`, `la`, `lt`, `tree`), `zoxide init bash` for `z`/`zi`,
 and the full Nord FZF color and symbol preferences.
