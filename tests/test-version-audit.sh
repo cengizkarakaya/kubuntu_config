@@ -11,7 +11,6 @@ printf 'org.example.App\tExample\n' > "$work/root/packages/flatpak.tsv"
 printf 'v3.5.1\n' > "$work/home/.local/share/fonts/FiraCodeNerd/.kubuntu-config-version"
 export HOME="$work/home"
 export MOCK_CANDIDATE=2.0
-export KUBUNTU_SKIP_PLASMA=1
 cat > "$work/home/.local/bin/herdr" <<'EOF'
 #!/usr/bin/env bash
 echo 'herdr 0.9.5'
@@ -43,7 +42,6 @@ cat > "$work/root/scripts/latest-release.sh" <<'EOF'
 #!/usr/bin/env bash
 case "$1" in
   herdrdev/herdr) printf 'v0.9.5\t%s\t%s\n' https://github.com/herdrdev/herdr/release dummysha ;;
-  zeroxoneafour/polonium) printf 'v1.2.1\t%s\t%s\n' https://github.com/zeroxoneafour/polonium/release dummysha ;;
   ryanoasis/nerd-fonts) printf 'v3.5.1\t%s\t%s\n' https://github.com/ryanoasis/nerd-fonts/release dummysha ;;
   helix-editor/helix) printf '25.07.1\t%s\t%s\n' https://github.com/helix-editor/helix/release dummysha ;;
   ClementTsang/bottom) printf '0.14.9\t%s\t%s\n' https://github.com/ClementTsang/bottom/release dummysha ;;

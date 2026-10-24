@@ -27,10 +27,6 @@ source /etc/os-release
 [[ "${ID:-}" == ubuntu ]] || { echo 'Only Ubuntu-based Kubuntu is supported' >&2; exit 2; }
 dpkg --compare-versions "${VERSION_ID:-0}" ge 26.04 || { echo 'Requires Kubuntu 26.04 or newer' >&2; exit 2; }
 command -v plasmashell >/dev/null || { echo 'KDE Plasma desktop is required' >&2; exit 2; }
-if [[ "${XDG_SESSION_TYPE:-}" != wayland && "$SKIP_PLASMA" == 0 && "$CORE_ONLY" == 0 ]]; then
-  echo '[FAIL] Polonium supports Wayland only. Log into Plasma (Wayland) or use --skip-plasma.' >&2
-  exit 1
-fi
 available_kb="$(df -Pk "$HOME" | awk 'NR==2 {print $4}')"
 if [[ "$CORE_ONLY" == 0 && "$available_kb" =~ ^[0-9]+$ ]] && ((available_kb < 8 * 1024 * 1024)); then
   echo '[FAIL] At least 8 GiB of free disk space is required for the full setup.' >&2; exit 1
@@ -67,7 +63,7 @@ stage 'Default applications' bash "$ROOT/scripts/setup-defaults.sh"
 stage 'Nord appearance' bash "$ROOT/themes/setup.sh"
 if ((SKIP_PLASMA == 0)); then
   stage 'Plasma settings' bash "$ROOT/plasma/setup.sh"
-  stage 'Polonium (pinned stable release)' bash "$ROOT/plasma/install-polonium.sh"
+  stage 'Native KWin (remove legacy tiling script)' bash "$ROOT/plasma/disable-polonium.sh"
   stage 'Global shortcut configuration' bash "$ROOT/plasma/shortcuts.sh"
 fi
 stage 'User maintenance commands' install -Dm755 "$ROOT/scripts/sysup" "$HOME/.local/bin/sysup"

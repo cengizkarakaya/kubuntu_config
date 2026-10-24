@@ -20,7 +20,6 @@ stow
 tealdeer
 zoxide
 yazi
-kpackagetool6
 file
 7zip
 unzip

@@ -211,14 +211,6 @@ bash "$ROOT/scripts/install-bottom.sh"
 bash "$ROOT/scripts/install-herdr.sh"
 bash "$ROOT/scripts/install-codex.sh"
 
-if [[ "${XDG_SESSION_TYPE:-}" == "wayland" ]]; then
-    echo
-    echo "==> Polonium"
-    bash "$ROOT/plasma/install-polonium.sh"
-else
-    echo "[WARN] Polonium skipped: not a Wayland session"
-fi
-
 if command -v fwupdmgr >/dev/null; then
     echo
     echo "==> Firmware availability (report only)"

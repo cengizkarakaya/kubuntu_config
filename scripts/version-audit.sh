@@ -37,7 +37,7 @@ while IFS=$'\t' read -r app name; do
 done < "$ROOT/packages/flatpak.tsv"
 herdr_asset='herdr-linux-x86_64'
 case "$(uname -m)" in aarch64|arm64) herdr_asset='herdr-linux-aarch64';; esac
-for spec in "herdrdev/herdr $herdr_asset" 'zeroxoneafour/polonium polonium.kwinscript' 'ryanoasis/nerd-fonts FiraCode.tar.xz'; do
+for spec in "herdrdev/herdr $herdr_asset" 'ryanoasis/nerd-fonts FiraCode.tar.xz'; do
   read -r repo asset <<< "$spec"
   line="$(bash "$ROOT/scripts/latest-release.sh" "$repo" "$asset")" || {
     problem "GitHub stable release lookup failed: $repo"; continue;
@@ -47,19 +47,6 @@ for spec in "herdrdev/herdr $herdr_asset" 'zeroxoneafour/polonium polonium.kwins
     herdrdev/herdr)
       actual="$("$HOME/.local/bin/herdr" --version 2>/dev/null || true)"
       [[ "$actual" == "herdr ${tag#v}" ]] && check "Herdr $actual latest stable" || problem "Herdr $actual differs from GitHub $tag"
-      ;;
-    zeroxoneafour/polonium)
-      metadata="${XDG_DATA_HOME:-$HOME/.local/share}/kwin/scripts/polonium/metadata.json"
-      if [[ "${KUBUNTU_SKIP_PLASMA:-0}" == 1 ]]; then
-        echo "[SKIP] Polonium version not checked (explicit --skip-plasma)"
-      elif [[ -f "$metadata" ]] &&
-        python3 - "$metadata" "${tag#v}" <<'PY'
-import json,sys
-with open(sys.argv[1],encoding="utf-8") as f: x=json.load(f)
-assert x.get("KPlugin",{}).get("Id")=="polonium" and x["KPlugin"].get("Version")==sys.argv[2]
-PY
-      then check "Polonium $tag latest stable"
-      else problem "Polonium metadata version differs from GitHub $tag"; fi
       ;;
     ryanoasis/nerd-fonts)
       stamp="$HOME/.local/share/fonts/FiraCodeNerd/.kubuntu-config-version"

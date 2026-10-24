@@ -24,7 +24,7 @@ or that all plugin APIs remain compatible in new Yazi versions.
 | Yazi rg/fzf helper | Same search workflow; `hx` (or `helix`) replaces Arch absolute Helix path |
 | Fastfetch | Same except Arch logo becomes Ubuntu logo |
 | Nord colors and appearance | Adapted to KDE/Qt + GTK; not byte-for-byte desktop files |
-| KDE shortcuts, tiling, panels | Adapted from Hyprland to Plasma/Polonium; exact equivalence impossible |
+| KDE shortcuts, tiling, panels | Adapted from Hyprland to native Plasma/KWin; automatic tiling intentionally omitted |
 | Zathura | Original Arch file present in Arch_Config but not installed/managed by current Kubuntu manifest |
 | Other GUI application preferences | No portable Arch dotfiles for them in baseline; defaults controlled by their package/profile |
 
@@ -40,23 +40,15 @@ from `package.toml`. It will **not** update them to latest master by default.
 original `g r` mapping. Requires `rg`, `fzf`, `bat`, `hx`.
 The official Yazi build also requires the `file` command, now in APT list.
 
-## Polonium requirements
+## Native KDE window management
 
-Polonium **latest stable GitHub release at install time** (not a fixed version).
-The official release archive is validated by its published SHA-256 and
-the embedded KWin metadata.
+KWin's built-in floating windows, quick tiling and optional tiling editor
+replace third-party automatic tiling scripts. Polonium and Kröhnkite are
+not installed or enabled. Their old H/J/K/L shortcuts are left unassigned.
 
-| Dependency | Source / check |
-| --- | --- |
-| Plasma 6.4+ and Wayland | Kubuntu desktop, checked before Polonium install |
-| `kpackagetool6`, `unzip`, `kwriteconfig6`, `plasmashell` | KDE and APT manifest; checked at installation |
-| Official `polonium.kwinscript` | GitHub newest stable release with SHA-256 asset digest and KWin ID/version validation |
-| Node/npm/esbuild/kwin-api | **Not needed** for the published stable KWin archive; do not compile arbitrary HEAD |
-| DBus saver | Optional upstream feature, not installed by default |
-| Other KWin add-ons | None; Polonium is the requested KWin script |
-
-CI validates the actual newest stable release archive. It cannot prove
-real KWin/Wayland window behaviors without a logged-in Plasma desktop.
+`plasma/disable-polonium.sh` backs up `kwinrc`, disables the legacy
+plugin, and removes only user-installed Polonium. It preserves monitor
+geometry, NVIDIA drivers, themes and unrelated shortcuts.
 
 ## Intentionally unchanged
 
