@@ -94,6 +94,10 @@ jobs:
           bootstrap = (root / "bootstrap.sh").read_text()
           assert "install-yazi-plugins.sh" in bootstrap
           assert "disable-polonium.sh" in bootstrap
+          shortcuts = (root / "plasma/shortcuts.sh").read_text()
+          assert "setkey 'Window Maximize' 'Meta+F,Meta+PgUp,Maximize Window'" in shortcuts
+          assert "setkey 'Window Fullscreen' 'Meta+Shift+F,none,Make Window Fullscreen'" in shortcuts
+          assert "setkey 'Window Fullscreen' 'Meta+F," not in shortcuts
           assert 'configure-sddm-numlock.sh' in bootstrap
           sddm = (root / 'scripts/configure-sddm-numlock.sh').read_text()
           assert '--file /etc/sddm.conf --group General --key Numlock on' in sddm

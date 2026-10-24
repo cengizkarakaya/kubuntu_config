@@ -69,8 +69,11 @@ Polonium KWin script if present. It does not restart KWin, change monitor
 settings or touch NVIDIA drivers. Sign out and back in after migration.
 
 `plasma/shortcuts.sh` retains application shortcuts Meta+Enter, Meta+B,
-Meta+E, Meta+M, desktop switching, Meta+Q and Meta+F. Previously provided
-H/J/K/L tiling shortcuts are no longer installed. Configure any replacements
+Meta+E, Meta+M, desktop switching and Meta+Q. Meta+F now maximizes
+while keeping the KDE panel visible; Meta+Shift+F enters true fullscreen.
+Borderless Alacritty windows can be moved with Meta+left mouse drag or
+resized with Meta+right mouse drag. Previously provided H/J/K/L tiling
+shortcuts are no longer installed. Configure any replacements
 in **System Settings > Keyboard > Shortcuts**. See `plasma/shortcuts.md`.
 
 ## SDDM login-screen Num Lock

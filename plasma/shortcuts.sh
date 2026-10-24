@@ -11,7 +11,9 @@ setkey() {
   kwriteconfig6 --file kglobalshortcutsrc --group kwin --key "$1" "$2"
 }
 setkey 'Window Close' 'Meta+Q,Alt+F4,Close Window'
-setkey 'Window Fullscreen' 'Meta+F,none,Make Window Fullscreen'
+setkey 'Window Fullscreen' 'Meta+Shift+F,none,Make Window Fullscreen'
+# Maximize respects the KDE panel; Fullscreen intentionally hides it.
+setkey 'Window Maximize' 'Meta+F,Meta+PgUp,Maximize Window'
 for i in {1..10}; do
   n="$i"; [[ "$i" == 10 ]] && n=0
   setkey "Switch to Desktop $i" "Meta+$n,none,Switch to Desktop $i"
