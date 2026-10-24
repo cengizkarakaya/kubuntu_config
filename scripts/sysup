@@ -1,24 +1,150 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
-echo '==> APT refresh and full upgrade (package removal prohibited)'
+
+export PATH="$HOME/.cargo/bin:$HOME/.local/bin:$PATH"
+
+MODE="${1:---check}"
+ROOT="${KUBUNTU_CONFIG_ROOT:-$HOME/kubuntu_config}"
+
+case "$MODE" in
+    --check|--apply) ;;
+    *)
+        echo "Usage: sysup [--check|--apply]" >&2
+        exit 2
+        ;;
+esac
+
+[[ -f "$ROOT/bootstrap.sh" ]] || {
+    echo "[FAIL] Kubuntu_Config repository not found: $ROOT" >&2
+    exit 1
+}
+
+STATE="$HOME/.local/state/kubuntu-config"
+mkdir -p "$STATE"
+
+# Prevent concurrent maintenance operations.
+exec 9>"$STATE/bootstrap.lock"
+flock -n 9 || {
+    echo "[FAIL] Another maintenance operation is running"
+    exit 1
+}
+
+LOG="$STATE/sysup-$(date +%Y%m%d-%H%M%S).log"
+exec > >(tee -a "$LOG") 2>&1
+
+echo "=== Kubuntu_Config System Update ==="
+echo "Mode: $MODE"
+echo "Log: $LOG"
+
+if [[ "$MODE" == "--check" ]]; then
+    echo
+    echo "==> APT simulation"
+    apt-get -s --no-remove full-upgrade
+
+    if command -v flatpak >/dev/null 2>&1; then
+        echo
+        echo "==> Flatpak pending updates"
+        flatpak remote-ls --user --updates ||
+            echo "[WARN] Flatpak update check unavailable"
+    fi
+
+    if command -v rustup >/dev/null; then
+        echo
+        echo "==> Rust toolchains"
+        rustup check
+    fi
+
+    if command -v snap >/dev/null; then
+        echo
+        echo "==> Snap pending updates"
+        snap refresh --list || true
+    fi
+
+    echo
+    echo "==> Installed standalone tools"
+
+    for cmd in hx herdr btm codex; do
+        if command -v "$cmd" >/dev/null; then
+            "$cmd" --version
+        else
+            echo "[WARN] $cmd unavailable"
+        fi
+    done
+
+    echo
+    echo "[OK] Read-only check completed"
+    echo "For full version audit:"
+    echo "bash $ROOT/scripts/version-audit.sh"
+    exit 0
+fi
+
+echo
+echo "==> Refreshing APT metadata"
 sudo apt-get update
+
+echo
+echo "==> Proposed APT changes"
+apt-get -s --no-remove full-upgrade
+
+echo
+echo "Updates may include kernel and NVIDIA driver packages."
+echo "Run this outside active Herdr/Codex sessions."
+read -r -p "Continue with system updates? [y/N] " answer
+
+case "$answer" in
+    y|Y|yes|YES) ;;
+    *)
+        echo "[INFO] Update cancelled"
+        exit 0
+        ;;
+esac
+
+echo
+echo "==> APT"
 sudo apt-get full-upgrade --no-remove
-if command -v flatpak >/dev/null 2>&1; then
-  echo '==> Flatpak user applications and runtimes'
-  flatpak update --user
+
+if command -v flatpak >/dev/null; then
+    echo
+    echo "==> Flatpak"
+    flatpak update --user
 fi
-if command -v snap >/dev/null 2>&1; then
-  echo '==> Existing Snap packages'
-  sudo snap refresh
+
+if command -v snap >/dev/null; then
+    echo
+    echo "==> Snap"
+    sudo snap refresh
 fi
-if command -v rustup >/dev/null 2>&1; then
-  echo '==> Rust toolchain'
-  rustup update
+
+if command -v rustup >/dev/null; then
+    echo
+    echo "==> Rust"
+    rustup update
 fi
-if command -v fwupdmgr >/dev/null 2>&1; then
-  echo '==> Firmware update availability (report only, never flash)'
-  fwupdmgr get-updates || echo '[WARN] Firmware check unavailable'
+
+echo
+echo "==> Standalone development tools"
+
+bash "$ROOT/scripts/install-helix.sh"
+bash "$ROOT/scripts/install-bottom.sh"
+bash "$ROOT/scripts/install-herdr.sh"
+bash "$ROOT/scripts/install-codex.sh"
+
+if [[ "${XDG_SESSION_TYPE:-}" == "wayland" ]]; then
+    echo
+    echo "==> Polonium"
+    bash "$ROOT/plasma/install-polonium.sh"
+else
+    echo "[WARN] Polonium skipped: not a Wayland session"
 fi
-echo 'Pinned Arch Yazi plugins/flavor are preserved; sysup does not upgrade them.'
-echo 'Other optional application add-ons are not installed or updated by this repository.'
-echo 'No unattended firmware flashing, vendor GPU driver install, or release upgrade.'
+
+if command -v fwupdmgr >/dev/null; then
+    echo
+    echo "==> Firmware availability (report only)"
+    fwupdmgr get-updates || true
+fi
+
+echo
+echo "[OK] Update operations completed"
+echo "Review the log and run: bash $ROOT/verify.sh"
+echo "Log: $LOG"
+echo "A logout/login may be required after KDE updates."
