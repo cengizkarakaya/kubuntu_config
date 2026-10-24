@@ -16,6 +16,8 @@ jobs:
           bash -n bootstrap.sh
       - name: Exercise installer failure paths without APT, Flatpak or sudo changes
         run: bash tests/test-installers.sh
+      - name: Test optional native KWin Alacritty rule (mocked config tools)
+        run: bash tests/test-host-alacritty-rule.sh
       - name: Verify interactive Bash eza/zoxide integration and Alacritty TOML
         run: bash tests/test-shell-terminal.sh
       - name: Reject unverified or non-stable GitHub releases
@@ -94,6 +96,8 @@ jobs:
           bootstrap = (root / "bootstrap.sh").read_text()
           assert "install-yazi-plugins.sh" in bootstrap
           assert "disable-polonium.sh" in bootstrap
+          assert 'configure-alacritty-lg.sh' not in bootstrap
+          assert 'configure-alacritty-lg.sh' not in (root / 'scripts/sysup').read_text()
           shortcuts = (root / "plasma/shortcuts.sh").read_text()
           assert "setkey 'Window Maximize' 'Meta+F,Meta+PgUp,Maximize Window'" in shortcuts
           assert "setkey 'Window Fullscreen' 'Meta+Shift+F,none,Make Window Fullscreen'" in shortcuts

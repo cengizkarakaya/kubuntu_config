@@ -23,3 +23,29 @@ Windows 11 future setup:
 - After installation restore Kubuntu Boot Manager in UEFI if Windows changed order.
 - Windows entry in GRUB is not guaranteed without OS probing / EFI inspection.
 - See scripts/dualboot-diagnostics.sh for read-only commands.
+
+## Optional Alacritty placement on the dual-monitor desktop
+
+Once KDE has configured the displays as **Samsung 2560x1440 on the left**
+and **LG 3440x1440 on the right**, restore the tested native KWin
+Alacritty window rule:
+
+```bash
+bash hosts/configure-alacritty-lg.sh
+```
+
+- Rule UUID: `6a0f76f7-a826-4eef-a335-97d1c23633ba`
+- Match: Alacritty (`wmclassmatch=1`, `types=1`)
+- Initial position: `2600,40` (global desktop coordinates)
+- Initial size: `1732,1260`
+- `positionrule=3`, `sizerule=3` (Apply Initially);
+  `ignoregeometry=true`, `ignoregeometryrule=2`
+- The script preserves other rules and the `[General] rules` index,
+  takes a dated backup before changes, and asks KWin to reload.
+- Re-running it with the same settings is a no-op; it never installs an
+  automatic tiling extension.
+
+**This is host-specific and is not run by bootstrap or sysup.**
+Do not apply these coordinates with a different monitor arrangement,
+scaling, or resolution. The rule restores a fixed initial layout,
+not the last geometry from every application close.

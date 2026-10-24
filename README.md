@@ -149,6 +149,9 @@ Samsung 990 Pro 2 TB; optional later Windows 11 on a separate 512 GB SSD.
 Neither operating-system disk is touched by this repository. Configure the
 3440x1440 and 2560x1440 displays in KDE's actual display UI.
 See `hosts/home-desktop.md`.
+The optional `hosts/configure-alacritty-lg.sh` script restores the tested
+Alacritty KWin placement for this specific two-monitor arrangement; it is
+not run by the general bootstrap or sysup.
 
 After Windows is installed, use the read-only diagnostics first. The
 `scripts/configure-dualboot.sh` command is dry-run by default and only

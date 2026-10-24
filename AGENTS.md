@@ -29,6 +29,9 @@ collection of shell commands to run unreviewed.
 
 - Run as an ordinary user, never `sudo bash bootstrap.sh`. Use sudo only
   where the existing scripts request it for APT/OS changes.
+- Host-specific Alacritty KWin placement is opt-in and may only be restored
+  with `bash hosts/configure-alacritty-lg.sh` after confirming the Samsung-left,
+  LG-right 6000x1440 virtual desktop layout; do not run it during bootstrap.
 - Do not restart the SDDM service to apply greeter preferences; verify on the
   next normal login. Preserve unrelated entries in SDDM configuration files.
 - Do not alter NVIDIA drivers, firmware, partition table, EFI or GRUB
