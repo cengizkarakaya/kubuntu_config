@@ -20,10 +20,8 @@ source /etc/os-release
 has plasmashell && ok desktop 'KDE Plasma detected' || fail desktop 'KDE Plasma not found'
 if [[ "${XDG_SESSION_TYPE:-}" == wayland ]]; then
   ok session 'Wayland'
-elif ((SKIP_PLASMA)); then
-  warn session 'Wayland absent; Polonium deliberately skipped'
 else
-  fail session 'Polonium requires Plasma Wayland'
+  warn session "Non-Wayland session (${XDG_SESSION_TYPE:-unknown}); verify desktop manually"
 fi
 for cmd in brave-browser code git stow alacritty fzf rg zoxide starship dolphin spectacle kwriteconfig6 kreadconfig6 flatpak; do
   if has "$cmd"; then ok command "$cmd"; else fail command "$cmd"; fi
@@ -80,7 +78,6 @@ if has node; then
   node_major="$(node -p 'process.versions.node.split(".")[0]' 2>/dev/null)"
   [[ "$node_major" =~ ^[0-9]+$ ]] && ok node "Node.js major $node_major (APT channel)" || fail node 'Node.js version unknown'
 else fail node 'node missing'; fi
-has kpackagetool6 && ok dependency 'Polonium: kpackagetool6' || fail dependency 'Polonium requires kpackagetool6'
 missing_apt=0
 while IFS= read -r pkg; do
   [[ -n "$pkg" && "$pkg" != \#* ]] || continue
@@ -116,18 +113,19 @@ if has kreadconfig6; then
       fail kde "Invalid virtual-desktop count=$val"
     fi
     val="$(kreadconfig6 --file kwinrc --group Plugins --key poloniumEnabled 2>/dev/null)"
-    [[ "$val" == true ]] && ok kde 'Polonium requested enabled' || fail kde "Polonium enabled=$val"
+    [[ "$val" != true ]] && ok kde 'Polonium disabled (native KWin)' || fail kde 'Polonium re-enabled'
     val="$(kreadconfig6 --file kwinrc --group Plugins --key krohnkiteEnabled 2>/dev/null)"
-    [[ "$val" != true ]] && ok kde 'Kröhnkite disabled' || fail kde 'Kröhnkite enabled concurrently!'
+    [[ "$val" != true ]] && ok kde 'Kröhnkite disabled' || fail kde 'Kröhnkite is enabled; native KWin expected'
     desktopfile="$HOME/.config/kglobalshortcutsrc"
     if [[ -f "$desktopfile" ]]; then ok shortcut 'KDE shortcut config present' && warn shortcut 'Actual shortcut activation requires relogin/manual GUI check'; else fail shortcut 'KDE shortcut config absent'; fi
   fi
 fi
 if ((SKIP_PLASMA==0)); then
-  pkg="${XDG_DATA_HOME:-$HOME/.local/share}/kwin/scripts/polonium/metadata.json"
-  if [[ -r "$pkg" ]] && grep -Eq '"Version"[[:space:]]*:[[:space:]]*"[0-9]+\.[0-9]+\.[0-9]+"' "$pkg"; then
-    ok tiling 'Polonium versioned metadata found (online latest checked separately)'
-  else fail tiling 'Polonium versioned metadata missing in user KWin directory'; fi
+  if [[ ! -d "${XDG_DATA_HOME:-$HOME/.local/share}/kwin/scripts/polonium" ]]; then
+    ok tiling 'No user-installed Polonium KWin script'
+  else
+    fail tiling 'Legacy Polonium remains installed; run bash plasma/disable-polonium.sh'
+  fi
   if [[ -e "${XDG_DATA_HOME:-$HOME/.local/share}/kwin/scripts/krohnkite" ]]; then
     fail tiling 'Old Kröhnkite package remains in user directory'
   fi
@@ -144,7 +142,7 @@ for module in alacritty bat bottom fastfetch git helix herdr readline starship y
   done < <(find "$root" -type f -print0)
 done
 # Only Yazi add-ons are permitted; all other optional application add-on manifests remain absent.
-for obsolete in applications/addons.tsv applications/vscode-extensions.txt scripts/install-vscode-extensions.sh plasma/install-krohnkite.sh; do
+for obsolete in applications/addons.tsv applications/vscode-extensions.txt scripts/install-vscode-extensions.sh plasma/install-krohnkite.sh plasma/install-polonium.sh; do
   [[ ! -e "$ROOT/$obsolete" ]] && ok no-addons "$obsolete absent" || fail no-addons "$obsolete should not be shipped"
 done
 yazi_manifest="$ROOT/dotfiles/yazi/.config/yazi/package.toml"

@@ -1,4 +1,4 @@
-# Arch shortcuts in KDE Plasma 6 + Polonium
+# Arch shortcuts in native KDE Plasma 6
 
 Authoritative Arch source: `hypr/.config/hypr/bindings.lua`.
 Configurator: `plasma/shortcuts.sh`. These are **desired** mappings, not verified
@@ -13,25 +13,24 @@ updates until logout/login or explicit assignment in KDE System Settings.
 | Meta+Space | KRunner | KDE default; do not overwrite |
 | Meta+Q | Close | KWin |
 | Meta+F | Fullscreen | KWin |
-| Meta+H/J/K/L | Focus left/down/up/right | Polonium native |
-| Meta+Shift+H/J/K/L | Move window left/down/up/right | Polonium native |
-| Meta+Ctrl+H/J/K/L | Resize tile | Polonium native |
-| Meta+Shift+Space | Toggle active window tiling | Polonium native |
+| Meta+H/J/K/L | Not installed | Former tiling-script shortcuts |
+| Meta+Shift+H/J/K/L | Not installed | Former tiling-script shortcuts |
+| Meta+Ctrl+H/J/K/L | Not installed | Former tiling-script shortcuts |
+| Meta+Shift+Space | Not installed | Former tiling-script shortcut |
 | Meta+1..0 | Switch to desktops 1..10 | KWin |
 | Meta+Shift+1..0 | Send window to desktop 1..10 | KWin |
 | Meta+M | Power menu | KDE application shortcut (needs live check) |
-| Meta+R | Hyprland modal resize | Unsupported; use Meta+Ctrl+H/J/K/L |
+| Meta+R | Hyprland modal resize | Not available by default in native KWin |
 | Print and Shift+Print | Screenshot/region | KDE Spectacle defaults; inspect GUI |
 
-Polonium does not reserve Meta+Return, Meta+F, Meta+M or Meta+R in stable
-1.2.1. Hence we don't patch Polonium upstream source or install a shortcut add-on.
-Polonium does not provide the same floating toggle key as the old Kröhnkite.
-Use its per-window `Meta+Shift+Space` tile toggle or bind an explicit
-KWin floating behavior yourself after live testing.
+Kubuntu_Config does not install an automatic tiling script. Plasma's
+built-in quick tiling (typically Meta+Left/Right) and native tiling editor
+(typically Meta+T) can be configured in System Settings. No additional
+H/J/K/L assignments are made, to preserve current working KDE shortcuts.
 
 **After login:** In `System Settings > Keyboard > Shortcuts`, inspect
-KWin, Polonium and the application launchers. Resolve collisions in the GUI.
-A written `kglobalshortcutsrc` key is **not** proof of an active hotkey.
+KWin and application launchers. A written `kglobalshortcutsrc` mapping
+does not prove it is activated in the live Wayland session.
 
 ## Alacritty Meta+Enter: live activation
 

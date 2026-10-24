@@ -92,12 +92,12 @@ jobs:
           assert 'yazi-rg' in keymap
           assert (root / "scripts/install-yazi-plugins.sh").is_file()
           bootstrap = (root / "bootstrap.sh").read_text()
-          assert "install-polonium.sh" in bootstrap and "install-krohnkite.sh" not in bootstrap
           assert "install-yazi-plugins.sh" in bootstrap
-          polonium = (root / "plasma/install-polonium.sh").read_text()
-          assert 'latest-release.sh' in polonium
-          assert 'sha256sum -c' in polonium
-          assert "krohnkiteEnabled false" in polonium
+          assert "disable-polonium.sh" in bootstrap
+          assert "install-polonium.sh" not in bootstrap
+          assert "install-polonium.sh" not in (root / "scripts/sysup").read_text()
+          assert "poloniumEnabled false" in (root / "plasma/disable-polonium.sh").read_text()
+          assert not (root / "plasma/install-polonium.sh").exists()
           assert 'latest-release.sh' in (root / 'themes/setup.sh').read_text()
           assert 'flatpak update --user --noninteractive -y "$id"' in (root / 'scripts/install-flatpaks.sh').read_text()
           assert 'apt-cache policy "$pkg"' in (root / 'scripts/install-apt.sh').read_text()
@@ -133,25 +133,6 @@ jobs:
           "$HOME/.local/bin/btm" --version
           bash scripts/install-bottom.sh
           echo '[PASS] Official SHA-256 checked latest stable Helix and Bottom'
-
-  polonium-stable-release-asset:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Download and verify latest stable Polonium KWin package
-        run: |
-          set -Eeuo pipefail
-          info="$(bash scripts/latest-release.sh zeroxoneafour/polonium polonium.kwinscript)"
-          tag="$(printf '%s\n' "$info" | cut -f1)"
-          url="$(printf '%s\n' "$info" | cut -f2)"
-          digest="$(printf '%s\n' "$info" | cut -f3)"
-          tmp="$(mktemp -d)"
-          trap 'rm -rf "$tmp"' EXIT
-          curl --proto '=https' --tlsv1.2 -fsSL --retry 3 "$url" -o "$tmp/polonium.kwinscript"
-          printf '%s  %s\n' "$digest" "$tmp/polonium.kwinscript" | sha256sum -c -
-          unzip -t "$tmp/polonium.kwinscript"
-          unzip -p "$tmp/polonium.kwinscript" pkg/metadata.json | python3 -c 'import json,sys; d=json.load(sys.stdin); assert d["KPlugin"]["Id"]=="polonium" and d["KPlugin"]["Version"]==sys.argv[1]' "${tag#v}"
-          echo '[PASS] Latest stable Polonium asset and metadata verified'
 
   yazi-package-install:
     runs-on: ubuntu-latest

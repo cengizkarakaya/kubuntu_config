@@ -16,7 +16,7 @@ sudo apt-get update && sudo apt-get install -y git
 git clone https://github.com/cengizkarakaya/kubuntu_config.git
 cd kubuntu_config
 bash bootstrap.sh --core-only   # fast first stage: Brave for ChatGPT
-bash bootstrap.sh               # install/update to current stable packages and Polonium
+bash bootstrap.sh               # install/update packages, theme and native KDE settings
 bash verify.sh
 ```
 
@@ -26,9 +26,9 @@ Rerun the same command after resolving the error. It uses an exclusive lock to
 prevent concurrent bootstraps. Run logs and APT availability diagnostics go to
 `~/.local/state/kubuntu-config/`; no silent missing-app success.
 
-For an X11 troubleshooting session, or a workstation where you do **not** want
-KWin changes, use `bash bootstrap.sh --skip-plasma` then
-`bash verify.sh --skip-plasma`. This **does not** enable Polonium.
+To preserve existing Plasma settings during troubleshooting, use
+`bash bootstrap.sh --skip-plasma` and `bash verify.sh --skip-plasma`.
+The default installation uses native KWin without an automatic tiler.
 `--core-only` is deliberately limited to prerequisites and Brave.
 
 ## What is installed
@@ -44,9 +44,9 @@ KWin changes, use `bash bootstrap.sh --skip-plasma` then
 - `scripts/install-yazi-plugins.sh`: restores all 10 Arch Yazi plugins and the pinned Nord flavor through `ya pkg install`; `scripts/yazi-rg` restores search hotkey functionality
 - `shell/interactive.bash`: Arch-like aliases sourced from `~/.bashrc`
 - `themes/`: Nord KDE colors, appearance-preserving GTK/icon sources and newest stable SHA-256-verified Nerd Font
-- `plasma/`: preserves your KDE virtual-desktop count; installs KWin shortcuts and **latest stable Polonium**, verified release KWin archive
+- `plasma/`: preserves the KDE virtual desktops and shortcuts; removes legacy user-installed Polonium when migrating to native KWin
 - `scripts/sysup`: interactive OS/App/Rust updates, firmware *report only*
-- `verify.sh`: local package inventory, dotfile links, KWin metadata and add-on policy
+- `verify.sh`: local package inventory, dotfile links, native KWin state and add-on policy
 - `scripts/version-audit.sh`: fail-fast online check against current APT candidates, Flathub stable commits and GitHub release versions
 
 **Yazi is the only exception to the no-optional-add-ons policy.**
@@ -54,32 +54,23 @@ Its 10 pinned plugins, Nord flavor, Lua setup, search helper and shortcuts
 are restored from Arch_Config. Other optional application/editor extensions
 remain disabled. Previously installed user extensions are not uninstalled.
 Required system dependencies and Flatpak runtimes may still be installed.
-**Polonium** is the sole deliberately installed KWin script, explicitly requested
-as the window tiler. See `applications/README.md`.
+No third-party automatic KWin tiling script is installed. See `applications/README.md`.
 
-## Polonium and Arch key bindings
+## Native KWin and Arch key bindings
 
-Official upstream: https://github.com/zeroxoneafour/polonium
-At each run, the installer resolves the **latest non-prerelease GitHub release**,
-downloads the official `polonium.kwinscript` artifact, checks the GitHub API
-SHA-256 digest, validates the KWin package ID and release version, and installs
-or upgrades it via `kpackagetool6`. If the upstream release metadata, digest
-or compatibility requirements cannot be validated, installation **stops**
-instead of silently using a stale pinned version. Plasma >=6.4 and Wayland
-are required. **No npm or Node.js build is required for Polonium itself.**
-The old Kröhnkite script is disabled/removed only after installation succeeds.
+The workstation uses KDE's built-in floating windows, quick tiling and
+optional native tiling editor. Automatic Polonium tiling was removed after
+causing window placement and focus issues on the dual-monitor setup.
 
-Polonium's own H/J/K/L focus, Shift+H/J/K/L move and Ctrl+H/J/K/L resize
-preserve the familiar Arch pattern. `plasma/shortcuts.sh` writes KDE-global
-shortcut *configuration* with an automatic dated backup. **KGlobalAccel may
-not load file-written shortcuts in the running Wayland session.**
-After installing, **log out and log in**, and test keys in
-`System Settings > Keyboard > Shortcuts`. If needed, bind application launch
-shortcuts in the GUI; the repository does not kill/restart KDE's shortcut daemon.
+On existing systems, `bash plasma/disable-polonium.sh` backs up
+`~/.config/kwinrc`, disables Polonium and removes only the user-installed
+Polonium KWin script if present. It does not restart KWin, change monitor
+settings or touch NVIDIA drivers. Sign out and back in after migration.
 
-Polonium 1.2.1 does **not** claim parity with every Kröhnkite behavior, nor
-with Hyprland's modal resize submap or exact 5/20px tiling gaps. See
-`plasma/shortcuts.md`.
+`plasma/shortcuts.sh` retains application shortcuts Meta+Enter, Meta+B,
+Meta+E, Meta+M, desktop switching, Meta+Q and Meta+F. Previously provided
+H/J/K/L tiling shortcuts are no longer installed. Configure any replacements
+in **System Settings > Keyboard > Shortcuts**. See `plasma/shortcuts.md`.
 
 ## Latest stable version policy (important)
 
@@ -91,7 +82,7 @@ The bootstrap no longer treats "already installed" as "latest":
   policy` and fail if outdated.
 - **Flathub apps:** install or upgrade every app even when already installed;
   compare installed and remote stable commits.
-- **Herdr / Polonium / Nerd Font:** resolve latest official *stable* GitHub
+- **Herdr / Nerd Font:** resolve latest official *stable* GitHub
   release **at install time**. Require SHA-256 asset digest, download over
   HTTPS, verify its contents/version before replacing existing software.
 - **Rust:** update the stable toolchain and selected components.
@@ -116,7 +107,7 @@ binaries**. Installed versions can change after the audit as new releases
 appear. See `docs/version-policy.md` and `AGENTS.md`.
 
 VS Code and Brave are installed from their official signed repositories.
-Flatpak apps use the Flathub remote in **user** scope. GitHub release assets (Herdr, Polonium and FiraCode) are resolved at runtime
+Flatpak apps use the Flathub remote in **user** scope. GitHub release assets (Herdr and FiraCode) are resolved at runtime
 and checked against their published SHA-256. Nordic GTK/icon source snapshots
 remain deliberately pinned to preserve your existing look. This does not establish a third-party
 security audit of all npm packages or visual plugins.
@@ -149,7 +140,7 @@ EFI and personal data before editing boot settings.
 ## CI, limitations and recovery
 
 GitHub Actions checks shell syntax, failure modes, GitHub release signatures/digests,
-latest stable Herdr and Polonium assets, and the Yazi add-on inventory.
+latest stable Herdr assets, native KWin policy, and the Yazi add-on inventory.
 It **does not** run a genuine Kubuntu 26.10 Wayland login with the installed
 NVIDIA driver. Actual KWin behavior, Flatpak portals, plugins from previous
 installations, and application rendering still need target-machine smoke tests.
