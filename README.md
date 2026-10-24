@@ -43,7 +43,7 @@ The default installation uses native KWin without an automatic tiler.
 - `dotfiles/`: portable Alacritty, Bat, Bottom, Fastfetch, Git, Helix, Readline, Starship, Yazi; installed by GNU Stow without overwriting existing files
 - `scripts/install-yazi-plugins.sh`: restores all 10 Arch Yazi plugins and the pinned Nord flavor through `ya pkg install`; `scripts/yazi-rg` restores search hotkey functionality
 - `shell/interactive.bash`: Arch-like aliases sourced from `~/.bashrc`
-- `themes/`: Nord KDE colors, appearance-preserving GTK/icon sources and newest stable SHA-256-verified Nerd Font
+- `themes/`: Nord KDE colors, KDE general interface font at **12 pt** (FiraCode Nerd Font), unchanged 10 pt monospace/GTK fonts, and newest stable SHA-256-verified Nerd Font
 - `plasma/`: preserves the KDE virtual desktops and shortcuts; removes legacy user-installed Polonium when migrating to native KWin
 - `scripts/sysup`: interactive OS/App/Rust updates, firmware *report only*
 - `scripts/configure-sddm-numlock.sh`: enables Num Lock on the SDDM login screen (X11 and KWin/Wayland greeters)

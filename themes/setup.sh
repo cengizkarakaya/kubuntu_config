@@ -55,7 +55,7 @@ fi
 if command -v kwriteconfig6 >/dev/null; then
   kwriteconfig6 --file kdeglobals --group General --key ColorScheme KubuntuNord
   kwriteconfig6 --file kdeglobals --group General --key AccentColor '136,192,208'
-  kwriteconfig6 --file kdeglobals --group General --key font 'FiraCode Nerd Font,10,-1,5,50,0,0,0,0,0'
+  kwriteconfig6 --file kdeglobals --group General --key font 'FiraCode Nerd Font,12,-1,5,50,0,0,0,0,0'
   kwriteconfig6 --file kdeglobals --group General --key fixed 'FiraCode Nerd Font Mono,10,-1,5,50,0,0,0,0,0'
 fi
 command -v plasma-apply-colorscheme >/dev/null && plasma-apply-colorscheme KubuntuNord || true
