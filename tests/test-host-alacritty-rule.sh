@@ -55,7 +55,2642 @@ INI
 
 bash "$ROOT/hosts/configure-alacritty-lg.sh"
 config="$XDG_CONFIG_HOME/kwinrulesrc"
-grep -qx 'rules=unrelated,6a0f76f7-a826-4eef-a335-97d1c23633ba' "$config"
+grep -Eq '^rules[[:space:]]*=[[:space:]]*unrelated,6a0f76f7-a826-4eef-a335-97d1c23633ba
+grep -Eq '^count[[:space:]]*=[[:space:]]*2
+grep -Eq '^position[[:space:]]*=[[:space:]]*2600,40
+grep -Eq '^size[[:space:]]*=[[:space:]]*1732,1260
+grep -Eq '^wmclass[[:space:]]*=[[:space:]]*Firefox
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -Eq '^count[[:space:]]*=[[:space:]]*1
+grep -Eq '^rules[[:space:]]*=[[:space:]]*6a0f76f7-a826-4eef-a335-97d1c23633ba
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'count=2' "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
+grep -qx 'position=2600,40' "$config"
+grep -qx 'size=1732,1260' "$config"
+grep -qx 'wmclass=Firefox' "$config"
+
+before="$(sha256sum "$config" | cut -d' ' -f1)"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+after="$(sha256sum "$config" | cut -d' ' -f1)"
+[[ "$before" == "$after" ]] || {
+  echo '[FAIL] Re-running rule script changed config' >&2
+  exit 1
+}
+
+export HOME="$work/fresh"
+export XDG_CONFIG_HOME="$HOME/.config"
+bash "$ROOT/hosts/configure-alacritty-lg.sh"
+fresh="$XDG_CONFIG_HOME/kwinrulesrc"
+grep -qx 'count=1' "$fresh"
+grep -qx 'rules=6a0f76f7-a826-4eef-a335-97d1c23633ba' "$fresh"
+
+echo '[PASS] Alacritty LG rule is idempotent and preserves unrelated KWin rules'
+ "$config"
 grep -qx 'count=2' "$config"
 grep -qx 'position=2600,40' "$config"
 grep -qx 'size=1732,1260' "$config"
