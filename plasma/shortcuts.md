@@ -12,7 +12,8 @@ updates until logout/login or explicit assignment in KDE System Settings.
 | Meta+E | Dolphin | KDE application shortcut (needs live check) |
 | Meta+Space | KRunner | KDE default; do not overwrite |
 | Meta+Q | Close | KWin |
-| Meta+F | Fullscreen | KWin |
+| Meta+F | Maximize/restore (KDE panel stays visible) | KWin |
+| Meta+Shift+F | True fullscreen (hides KDE panel) | KWin |
 | Meta+H/J/K/L | Not installed | Former tiling-script shortcuts |
 | Meta+Shift+H/J/K/L | Not installed | Former tiling-script shortcuts |
 | Meta+Ctrl+H/J/K/L | Not installed | Former tiling-script shortcuts |
@@ -31,6 +32,22 @@ H/J/K/L assignments are made, to preserve current working KDE shortcuts.
 **After login:** In `System Settings > Keyboard > Shortcuts`, inspect
 KWin and application launchers. A written `kglobalshortcutsrc` mapping
 does not prove it is activated in the live Wayland session.
+
+## Borderless Alacritty: moving, resizing and maximizing
+
+`dotfiles/alacritty/.config/alacritty/alacritty.toml` intentionally
+sets `decorations = "None"`. To manipulate the window without restoring
+a titlebar, hold **Meta + left mouse button** and drag to move it, or
+**Meta + right mouse button** and drag to resize it. These actions
+are provided by KWin; inspect `System Settings > Window Management >
+Window Behavior > Window Actions` if the mouse bindings are different.
+
+`Meta+F` now uses **Maximize Window** rather than fullscreen, so the
+normal bottom panel remains available. `Meta+Shift+F` provides true
+fullscreen for occasional immersive use. Changing `kglobalshortcutsrc`
+from a script may not update an already running Plasma 6 session:
+assign the two actions in `System Settings > Keyboard > Shortcuts > KWin`,
+or sign out and back in and verify with real keypresses.
 
 ## Alacritty Meta+Enter: live activation
 
