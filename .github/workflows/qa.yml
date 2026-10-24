@@ -94,6 +94,12 @@ jobs:
           bootstrap = (root / "bootstrap.sh").read_text()
           assert "install-yazi-plugins.sh" in bootstrap
           assert "disable-polonium.sh" in bootstrap
+          assert 'configure-sddm-numlock.sh' in bootstrap
+          sddm = (root / 'scripts/configure-sddm-numlock.sh').read_text()
+          assert '--file /etc/sddm.conf --group General --key Numlock on' in sddm
+          assert '--file kcminputrc --group Keyboard --key NumLock 0' in sddm
+          assert 'sudo -u sddm' in sddm
+          assert 'systemctl restart' not in sddm
           assert "install-polonium.sh" not in bootstrap
           assert "install-polonium.sh" not in (root / "scripts/sysup").read_text()
           assert "poloniumEnabled false" in (root / "plasma/disable-polonium.sh").read_text()

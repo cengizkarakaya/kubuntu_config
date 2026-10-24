@@ -166,6 +166,20 @@ done
 if has nvidia-smi && nvidia-smi -L >/dev/null 2>&1; then
   ok graphics 'NVIDIA driver responds; application GPU functions NOT tested'
 else warn graphics 'NVIDIA driver/GPU not confirmed; Ubuntu controls driver installation'; fi
+# Read-only SDDM login-screen checks. The greeter configuration can be
+# inaccessible to ordinary users; do not elevate privileges in verify.sh.
+if [[ -r /etc/sddm.conf ]]; then
+  val="$(kreadconfig6 --file /etc/sddm.conf --group General --key Numlock 2>/dev/null)"
+  [[ "$val" == on ]] && ok sddm 'Login-screen Num Lock configured on' || warn sddm "Login-screen Num Lock=${val:-unset}"
+else
+  warn sddm '/etc/sddm.conf not readable; cannot verify Num Lock'
+fi
+if [[ -r /var/lib/sddm/.config/kcminputrc ]]; then
+  val="$(kreadconfig6 --file /var/lib/sddm/.config/kcminputrc --group Keyboard --key NumLock 2>/dev/null)"
+  [[ "$val" == 0 ]] && ok sddm 'Wayland greeter Num Lock configured on' || warn sddm "Wayland greeter NumLock=${val:-unset}"
+else
+  warn sddm 'Wayland greeter config not readable as current user'
+fi
 for service in sddm NetworkManager; do
   systemctl is-active --quiet "$service" && ok service "$service active" || warn service "$service inactive"
 done
