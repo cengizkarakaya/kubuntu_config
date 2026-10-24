@@ -112,7 +112,10 @@ jobs:
           assert "install-polonium.sh" not in (root / "scripts/sysup").read_text()
           assert "poloniumEnabled false" in (root / "plasma/disable-polonium.sh").read_text()
           assert not (root / "plasma/install-polonium.sh").exists()
-          assert 'latest-release.sh' in (root / 'themes/setup.sh').read_text()
+          appearance = (root / 'themes/setup.sh').read_text()
+          assert 'latest-release.sh' in appearance
+          assert "General --key font 'FiraCode Nerd Font,12,-1,5,50,0,0,0,0,0'" in appearance
+          assert "General --key fixed 'FiraCode Nerd Font Mono,10,-1,5,50,0,0,0,0,0'" in appearance
           assert 'flatpak update --user --noninteractive -y "$id"' in (root / 'scripts/install-flatpaks.sh').read_text()
           assert 'apt-cache policy "$pkg"' in (root / 'scripts/install-apt.sh').read_text()
           print("Latest-stable upgrade channels with pinned Arch Yazi plugins: OK")
