@@ -179,7 +179,7 @@ sudo apt-get full-upgrade --no-remove
 if command -v flatpak >/dev/null; then
     echo
     echo "==> Flatpak"
-    flatpak update --user
+    flatpak update --user --assumeyes
 fi
 
 if command -v snap >/dev/null; then
