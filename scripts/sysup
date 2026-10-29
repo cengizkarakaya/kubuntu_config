@@ -233,9 +233,28 @@ run_stage "Bottom güncellemesi" bash "$ROOT/scripts/install-bottom.sh"
 run_stage "Herdr güncellemesi" bash "$ROOT/scripts/install-herdr.sh"
 run_stage "Codex güncellemesi" bash "$ROOT/scripts/install-codex.sh"
 
+# fwupdmgr: 0 = updates listed / check complete, 2 = no actions (success),
+# 1 = general error, 3 = resource not found. Never install firmware here.
+firmware_report_only() {
+    local rc=0
+    fwupdmgr get-updates || rc=$?
+    case "$rc" in
+        0)
+            return 0
+            ;;
+        2)
+            info "Firmware için uygulanabilir güncelleme bulunamadı (kod 2; normal durum)"
+            return 0
+            ;;
+        *)
+            return "$rc"
+            ;;
+    esac
+}
+
 if command -v fwupdmgr >/dev/null; then
-    run_stage "Firmware kontrolü (yalnızca rapor)" fwupdmgr get-updates ||
-        warn "Firmware kontrolü kullanılamıyor"
+    run_stage "Firmware kontrolü (yalnızca rapor)" firmware_report_only ||
+        warn "Firmware kontrolü tamamlanamadı; diğer güncellemeler etkilenmedi"
 fi
 
 echo
