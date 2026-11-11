@@ -185,7 +185,8 @@ when this is a concern.
 
 ```bash
 sysup auto             # one explicit noninteractive run, detached under systemd
-sysup status           # JSON summary, unit state, failures
+sysup status           # colored stage summary and live unit state
+sysup summary          # colored final summary (also after terminal closes)
 sysup logs             # latest interactive log, automatic unit journal (sudo)
 sysup cancel           # request stop after the CURRENT stage completes
 sysup resume --auto    # retry only incomplete/failed automatic stages
@@ -217,6 +218,19 @@ ecosystems continue even if another fails, with a nonzero overall result.
 Flatpak warnings that indicate unresolved remote references are not reported
 as clean success. Standard Ubuntu **phased updates remain phased**; the
 script does not override the distribution rollout policy.
+
+At the end of an interactive update, sysup prints an aligned, color-coded
+**final summary**: each stage's success, failure or skip, elapsed time,
+overall outcome, warning/failure counts and log location. When updates run
+under systemd, the service journal intentionally contains the same summary
+**without ANSI color codes**. Use `sysup summary` to read the latest saved
+summary in color from Alacritty after closing the original terminal.
+`sysup status` shows the colored summary for finished runs and also queries
+the systemd unit state; while a run is active it shows live JSON status.
+Automatic summaries are written to a user-readable `summary.json` in the
+root-owned system state directory; package-manager logs remain separately
+protected. A successful stage means its command completed successfully; it
+does not prove that any package actually changed version.
 
 Checkpoint files and JSONL events reside under
 `~/.local/state/kubuntu-config/` for interactive runs and
