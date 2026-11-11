@@ -33,10 +33,13 @@ The default installation uses native KWin without an automatic tiler.
 
 ## What is installed
 
-- `packages/apt.txt`: CLI, KDE (including `kde-spectacle`), graphic/engineering, desktop and virtualization applications
+- `packages/apt.txt`: CLI, KDE (including `kde-spectacle`), graphic/engineering (including LabPlot and Cantor), desktop and virtualization applications
 - `scripts/install-helix.sh`: newest verified official stable Helix release with runtime assets (not available as Kubuntu 26.10 APT package)
 - `scripts/install-bottom.sh`: newest verified official stable Bottom (btm) release (not available as Kubuntu 26.10 APT package)
 - `packages/flatpak.tsv`: Obsidian, Zotero, OrcaSlicer and LocalSend
+
+LabPlot and Cantor are installed together through APT. On this workstation,
+LabPlot 2.12.1 crashed at startup until Cantor was installed.
 - `scripts/install-rust.sh`: stable Rust via existing or APT-provided rustup; missing rustup is a hard error with manual recovery guidance
 - `scripts/setup-yazi-apt.sh`: official signed stable Yazi APT source (Yazi is not in the default Kubuntu archive)
 - `scripts/install-herdr.sh`: newest official STABLE Herdr Linux release, verified against GitHub-published SHA-256
