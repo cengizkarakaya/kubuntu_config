@@ -23,16 +23,18 @@ RUN_STAGE_HEARTBEAT=""
 STAGE="idle"
 STATUS="idle"
 DETAIL=""
+SYSUP_TTY_COLOR=0
 
 usage() {
     cat <<'HELP'
-Usage: sysup [check|apply|auto|resume [--auto]|status|logs|doctor|cancel]
+Usage: sysup [check|apply|auto|resume [--auto]|status|summary|logs|doctor|cancel]
   check         read-only pending updates
   apply         interactive update (default); terminal must remain open
   auto          detached, noninteractive systemd service
   resume        resume successful stage checkpoints interactively
   resume --auto resume automatic service checkpoints
-  status        status of interactive and detached runs
+  status        colored final summary and current process state
+  summary       latest readable update summary
   logs          latest interactive log and detached service journal
   doctor        read-only package manager / DNS diagnostics
   cancel        request cancellation AFTER the currently running stage
@@ -84,6 +86,149 @@ with open(path, 'a', encoding='utf-8') as f:
 PY
 }
 
+
+# A per-run summary is constructed from the existing structured event log.
+# No sensitive package output is exposed in the public-readable summary.
+# A successful stage indicates the command completed, not necessarily that
+# a package changed version. The last summary can be reviewed after logout.
+summary_report() {
+    local action="$1" state="$2" color="$3"
+    local saved_log=""
+    if [[ "$action" != view ]]; then saved_log="$LOG"; fi
+    python3 - "$action" "$state/status.json" "$state/events.jsonl" "$state/summary.json" "$color" "$saved_log" <<'PY'
+import datetime as dt
+import json
+import os
+import sys
+import tempfile
+
+action, status_path, events_path, summary_path, color, log_path = sys.argv[1:]
+if action != 'view':
+    with open(status_path, encoding='utf-8') as handle:
+        status = json.load(handle)
+    run_id = status['run_id']
+    stages = []
+    pending = {}
+    warnings = 0
+    begin = None
+    for raw in open(events_path, encoding='utf-8'):
+        event = json.loads(raw)
+        if event.get('run_id') != run_id:
+            continue
+        kind, key = event.get('event'), event.get('stage')
+        when = dt.datetime.fromisoformat(event['timestamp'])
+        if kind == 'start':
+            begin = when
+        elif kind == 'stage_start':
+            row = {'key': key, 'name': event.get('message') or key,
+                   'outcome': 'running', 'seconds': 0, 'code': 0,
+                   'reason': '', 'started': when}
+            pending[key] = row
+            stages.append(row)
+        elif kind in ('stage_ok', 'stage_failed', 'skipped'):
+            if kind == 'skipped':
+                row = {'key': key, 'name': str(event.get('message', key)).replace(' already completed', ''),
+                       'outcome': 'skipped', 'seconds': 0, 'code': 0, 'reason': 'Previously completed'}
+                stages.append(row)
+                continue
+            row = pending.pop(key, None)
+            if row is None:
+                row = {'key': key, 'name': event.get('message') or key,
+                       'outcome': 'running', 'seconds': 0, 'code': 0, 'reason': ''}
+                stages.append(row)
+            row['outcome'] = 'success' if kind == 'stage_ok' else 'failed'
+            row['code'] = int(event.get('exit_code') or 0)
+            row['reason'] = '' if kind == 'stage_ok' else str(event.get('message') or '')
+            started = row.pop('started', when)
+            row['seconds'] = max(0, int((when - started).total_seconds()))
+        elif kind == 'warning':
+            warnings += 1
+    for row in stages:
+        row.pop('started', None)
+    ended = dt.datetime.now(dt.timezone.utc)
+    totals = {name: sum(row['outcome'] == name for row in stages)
+              for name in ('success', 'failed', 'skipped', 'running')}
+    summary = {'run_id': run_id, 'mode': status.get('mode'),
+               'status': status.get('status'), 'detail': status.get('detail'),
+               'started_at': begin.isoformat() if begin else '',
+               'finished_at': ended.isoformat(),
+               'elapsed_seconds': max(0, int((ended - begin).total_seconds())) if begin else 0,
+               'counts': totals, 'warnings': warnings, 'stages': stages,
+               'log': log_path}
+    fd, tmp = tempfile.mkstemp(prefix='.sysup-summary-', dir=os.path.dirname(summary_path))
+    try:
+        with os.fdopen(fd, 'w', encoding='utf-8') as handle:
+            json.dump(summary, handle, ensure_ascii=False, indent=2)
+            handle.write('\n')
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.chmod(tmp, 0o644)
+        os.replace(tmp, summary_path)
+    finally:
+        if os.path.exists(tmp):
+            os.unlink(tmp)
+    if action == 'save':
+        sys.exit(0)
+else:
+    with open(summary_path, encoding='utf-8') as handle:
+        summary = json.load(handle)
+
+colored = ((color == 'yes') or (color == 'auto' and sys.stdout.isatty()))
+colored = colored and ('NO_COLOR' not in os.environ) and (os.environ.get('TERM') != 'dumb')
+def c(message, code):
+    return f'\033[{code}m{message}\033[0m' if colored else message
+
+phases = {
+    'completed': ('TAMAMLANDI', '1;32'),
+    'failed': ('HATALARLA TAMAMLANDI', '1;31'),
+    'partial': ('UYARILARLA TAMAMLANDI', '1;33'),
+    'cancelled': ('İPTAL EDİLDİ', '1;33'),
+    'running': ('DEVAM EDİYOR', '1;36'),
+}
+results = {
+    'success': ('BAŞARILI', '32'),
+    'failed': ('HATA', '31'),
+    'skipped': ('ATLANDI', '33'),
+    'running': ('BEKLİYOR', '36'),
+}
+phase, phase_color = phases.get(summary.get('status'), ('BİLİNMİYOR', '33'))
+print()
+print(c('═' * 75, '36'))
+print(c('  SYSUP  |  SİSTEM GÜNCELLEME ÖZETİ', '1;36'))
+print(c('═' * 75, '36'))
+print('  Durum      : ' + c(phase, phase_color))
+print('  Mod        : ' + ('Otomatik (systemd)' if summary.get('mode') == 'automatic' else 'İnteraktif'))
+print('  Çalışma    : ' + str(summary.get('run_id', '-')))
+print('  Başlangıç  : ' + str(summary.get('started_at') or '-') + ' (UTC)')
+print('  Toplam süre: ' + str(summary.get('elapsed_seconds', 0)) + ' sn')
+print(c('─' * 75, '90'))
+print(f"  {'AŞAMA':<39} {'SONUÇ':<15} SÜRE")
+print(c('─' * 75, '90'))
+for stage in summary.get('stages', []):
+    word, tone = results.get(stage.get('outcome'), ('BİLİNMİYOR', '33'))
+    name = str(stage.get('name') or stage.get('key') or '')[:39]
+    print(f"  {name:<39} {c(f'{word:<15}', tone)} {stage.get('seconds', 0)} sn")
+    if stage.get('outcome') == 'failed':
+        print('    ' + c('↳ ' + str(stage.get('reason') or ('Exit code ' + str(stage.get('code'))))[:96], '31'))
+if not summary.get('stages'):
+    print('  Kaydedilmiş aşama bulunmuyor.')
+print(c('─' * 75, '90'))
+counts = summary.get('counts', {})
+print('  ' + c(f"Başarılı: {counts.get('success', 0)}", '32') + '   '
+      + c(f"Hata: {counts.get('failed', 0)}", '31') + '   '
+      + c(f"Uyarı: {summary.get('warnings', 0)}", '33') + '   '
+      + c(f"Atlanan: {counts.get('skipped', 0)}", '33'))
+if summary.get('status') in ('failed', 'partial', 'cancelled'):
+    print(c('  Ayrıntılar: sysup logs  |  Sorun analizi: sysup doctor', '33'))
+else:
+    print(c('  Aşama başarılı olabilir; güncellenecek paket bulunmamış olabilir.', '90'))
+if summary.get('log'):
+    print('  Log: ' + str(summary['log']))
+print(c('═' * 75, '36'))
+print()
+PY
+}
+
 get_field() {
     local path="$1" field="$2"
     [[ -r "$path" ]] || return 1
@@ -132,6 +277,10 @@ setup_run_state() {
         info "Resuming checkpoint from $STATE"
     else
         : > "$STATE/completed.txt"
+    fi
+    # Capture terminal color capability before tee redirects stdout to a pipe.
+    if [[ -t 1 && -z "${NO_COLOR+x}" && "${TERM:-dumb}" != dumb ]]; then
+        SYSUP_TTY_COLOR=1
     fi
     # Every attempted run gets a new log; JSONL retains the historical events.
     LOG="$STATE/sysup-$RUN_ID.log"
@@ -302,23 +451,31 @@ run_stage() {
 }
 
 finish_run() {
+    local rc=0 color=no
     STAGE='finished'
     if ((CANCEL_REQUESTED)); then
         warn "Cancelled safely at a stage boundary; $FAILED stage(s) failed"
         write_status cancelled 'Cancellation completed at stage boundary'
         event cancelled 'Stage boundary cancellation'
-        return 130
-    fi
-    if ((FAILED > 0)); then
-        error "Maintenance finished with $FAILED failed stage(s) and $WARNINGS warning(s). See logs."
-        write_status failed "$FAILED failed stage(s); $WARNINGS warnings"
+        rc=130
+    elif ((FAILED > 0)); then
+        error "Maintenance finished with $FAILED failed stage(s) and $WARNINGS warning(s)."
+        write_status failed "$FAILED failed stage(s); $WARNINGS warning(s)"
         event finished "partial failure: $FAILED stage(s)" 1
-        return 1
+        rc=1
+    elif ((WARNINGS > 0)); then
+        warn "Maintenance finished with $WARNINGS warning(s) requiring review."
+        write_status partial "$WARNINGS warning(s) require review"
+        event finished "warnings: $WARNINGS" 2
+        rc=2
+    else
+        info '[OK] Maintenance finished'
+        write_status completed 'All stages completed successfully'
+        event finished 'all stages completed'
     fi
-    info "[OK] Maintenance finished ($WARNINGS warnings)"
-    write_status completed "All stages completed ($WARNINGS warnings)"
-    event finished 'all stages completed'
-    return 0
+    if [[ "$SYSUP_TTY_COLOR" == 1 ]]; then color=yes; fi
+    summary_report save_print "$STATE" "$color" || warn 'Final summary unavailable'
+    return "$rc"
 }
 
 execute_run() {
@@ -415,8 +572,13 @@ show_status() {
     local f unit
     for f in "$USER_STATE/status.json" "$SYSTEM_STATE_BASE/uid-$CALLER_UID/status.json"; do
         if [[ -r "$f" ]]; then
-            printf '\n%s\n' "$f"
-            python3 -m json.tool "$f" || true
+            if [[ -r "$(dirname "$f")/summary.json" ]] &&
+               [[ "$(get_field "$f" run_id 2>/dev/null || true)" == "$(get_field "$(dirname "$f")/summary.json" run_id 2>/dev/null || true)" ]]; then
+                summary_report view "$(dirname "$f")" auto || true
+            else
+                printf '\n%s\n' "$f"
+                python3 -m json.tool "$f" || true
+            fi
             local spid smode sphase
             spid="$(get_field "$f" pid || true)"
             smode="$(get_field "$f" mode || true)"
@@ -430,6 +592,20 @@ show_status() {
             fi
         fi
     done
+}
+
+show_summary() {
+    local f found=0
+    for f in "$USER_STATE/summary.json" "$SYSTEM_STATE_BASE/uid-$CALLER_UID/summary.json"; do
+        if [[ -r "$f" ]]; then
+            summary_report view "$(dirname "$f")" auto || true
+            found=1
+        fi
+    done
+    if ((found == 0)); then
+        warn 'No completed update summary has been saved.'
+        return 1
+    fi
 }
 
 show_logs() {
@@ -497,6 +673,7 @@ main() {
       check|-c|--check) check_updates ;;
       doctor) doctor ;;
       status) show_status ;;
+      summary) show_summary ;;
       logs) show_logs ;;
       cancel) cancel_run ;;
       apply|--apply|auto|--automatic|resume)
