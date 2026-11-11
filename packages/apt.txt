@@ -75,6 +75,9 @@ handbrake
 keepassxc
 qbittorrent
 meshlab
+# Scientific data analysis: install Cantor alongside LabPlot (startup crash workaround).
+labplot
+cantor
 # Virtualization
 virt-manager
 qemu-system-x86
