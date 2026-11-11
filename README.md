@@ -45,7 +45,7 @@ The default installation uses native KWin without an automatic tiler.
 - `shell/interactive.bash`: Arch-like aliases sourced from `~/.bashrc`
 - `themes/`: Nord KDE colors, KDE general interface font at **12 pt** (FiraCode Nerd Font), unchanged 10 pt monospace/GTK fonts, and newest stable SHA-256-verified Nerd Font
 - `plasma/`: preserves the KDE virtual desktops and shortcuts; removes legacy user-installed Polonium when migrating to native KWin
-- `scripts/sysup`: interactive OS/App/Rust updates, firmware *report only*
+- `scripts/sysup`: interactive and detached systemd-supervised maintenance; per-stage checkpoint/retry/error reports, firmware *report only*
 - `scripts/configure-sddm-numlock.sh`: enables Num Lock on the SDDM login screen (X11 and KWin/Wayland greeters)
 - `verify.sh`: local package inventory, dotfile links, native KWin state and add-on policy
 - `scripts/version-audit.sh`: fail-fast online check against current APT candidates, Flathub stable commits and GitHub release versions
@@ -132,7 +132,11 @@ remain deliberately pinned to preserve your existing look. This does not establi
 security audit of all npm packages or visual plugins.
 
 ```bash
-sysup                # only after a successful installation; interactive
+sysup check          # inspect pending updates
+sysup apply          # interactive maintenance, leave terminal open
+sysup auto           # detached, noninteractive systemd service
+sysup status         # progress and last stage result
+sysup logs           # recent terminal logs and system journal
 bash verify.sh       # read-only inventory verification
 bash scripts/dualboot-diagnostics.sh
 ```
@@ -158,6 +162,78 @@ After Windows is installed, use the read-only diagnostics first. The
 allows GRUB OS probing after verifying Windows and an explicit typed
 confirmation. It never installs GRUB or modifies partitions. Always back up
 EFI and personal data before editing boot settings.
+
+## Reliable sysup maintenance (interactive and detached)
+
+After updating this repository, refresh the installed command **without running
+the full desktop bootstrap**:
+
+```bash
+cd ~/kubuntu_config
+git pull --ff-only
+bash -n scripts/sysup
+install -Dm755 scripts/sysup ~/.local/bin/sysup
+sysup doctor
+sysup check
+```
+
+The standard `sysup` or `sysup apply` remains **interactive**: it shows the
+cached APT upgrade simulation, asks for approval on the controlling TTY, and
+allows configuration questions. **Keep that terminal open.** If the terminal
+is closed, the interactive process may be interrupted; use the detached mode
+when this is a concern.
+
+```bash
+sysup auto             # one explicit noninteractive run, detached under systemd
+sysup status           # JSON summary, unit state, failures
+sysup logs             # latest interactive log, automatic unit journal (sudo)
+sysup cancel           # request stop after the CURRENT stage completes
+sysup resume --auto    # retry only incomplete/failed automatic stages
+sysup resume           # same approach for interactive runs
+```
+
+`sysup auto` authenticates with sudo, copies the supervisor to the
+**root-owned** `/usr/local/libexec/kubuntu-sysup`, and launches a **transient
+system systemd service**. It survives closing Alacritty (but not shutdown).
+Root-managed APT and Snap run with system privileges; Flatpak, Rustup and
+GitHub-based installers run under the desktop user's UID and HOME. No timers
+or unattended recurring updates are installed. Each run has an exclusive
+maintenance lock shared with `bootstrap.sh` (using `flock --close` to
+prevent inherited lock handles).
+
+Automatic APT uses Debconf's noninteractive frontend and retains existing
+conffiles in ambiguous cases; some third-party maintainer scripts can still
+fail. **Neither `sysup cancel` nor retry forcibly terminates APT/dpkg**:
+cancellation is deferred to a stage boundary. An administrator forcing
+`systemctl stop`, logging out of the interactive session, rebooting or
+losing power during a package operation is not guaranteed safe. If an APT
+transaction was interrupted, inspect `sysup doctor` and repair the package
+manager manually before resuming. Never delete dpkg lockfiles.
+
+A network preflight resolves each service's DNS name with a 15-second limit
+and bounded 5/15/30-second retries. APT installation is **never blindly
+repeated**; `apt-get update` uses standard safe fetch retries. Independent
+ecosystems continue even if another fails, with a nonzero overall result.
+Flatpak warnings that indicate unresolved remote references are not reported
+as clean success. Standard Ubuntu **phased updates remain phased**; the
+script does not override the distribution rollout policy.
+
+Checkpoint files and JSONL events reside under
+`~/.local/state/kubuntu-config/` for interactive runs and
+`/var/lib/kubuntu-sysup/uid-<UID>/` for detached runs. Automatic execution
+logs are also available in the system journal. `resume` first runs
+`dpkg --audit` and reuses only stages recorded successful; it does **not**
+resume a half-executed dpkg transaction. The `doctor` command performs
+read-only checks of package configuration, process state, DNS, and snapshot
+capabilities. **Automatic rollback is intentionally not implemented.**
+Btrfs/Timeshift snapshots require separate backup configuration and a tested
+manual restore plan before they can be relied on.
+
+`bash tests/test-sysup.sh` exercises error isolation, checkpoint resume and
+safe deferred cancellation with mocked package-manager commands, without
+performing actual updates. GitHub CI cannot test a real Kubuntu systemd
+session, package maintainer scripts, DNS outages or full filesystem rollback.
+Verify the detached mode on the target desktop before relying on it.
 
 ## CI, limitations and recovery
 
