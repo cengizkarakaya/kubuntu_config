@@ -37,9 +37,6 @@ The default installation uses native KWin without an automatic tiler.
 - `scripts/install-helix.sh`: newest verified official stable Helix release with runtime assets (not available as Kubuntu 26.10 APT package)
 - `scripts/install-bottom.sh`: newest verified official stable Bottom (btm) release (not available as Kubuntu 26.10 APT package)
 - `packages/flatpak.tsv`: Obsidian, Zotero, OrcaSlicer and LocalSend
-
-LabPlot and Cantor are installed together through APT. On this workstation,
-LabPlot 2.12.1 crashed at startup until Cantor was installed.
 - `scripts/install-rust.sh`: stable Rust via existing or APT-provided rustup; missing rustup is a hard error with manual recovery guidance
 - `scripts/setup-yazi-apt.sh`: official signed stable Yazi APT source (Yazi is not in the default Kubuntu archive)
 - `scripts/install-herdr.sh`: newest official STABLE Herdr Linux release, verified against GitHub-published SHA-256
@@ -52,6 +49,9 @@ LabPlot 2.12.1 crashed at startup until Cantor was installed.
 - `scripts/configure-sddm-numlock.sh`: enables Num Lock on the SDDM login screen (X11 and KWin/Wayland greeters)
 - `verify.sh`: local package inventory, dotfile links, native KWin state and add-on policy
 - `scripts/version-audit.sh`: fail-fast online check against current APT candidates, Flathub stable commits and GitHub release versions
+
+LabPlot and Cantor are installed together through APT. On this workstation,
+LabPlot 2.12.1 crashed at startup until Cantor was installed.
 
 **Yazi is the only exception to the no-optional-add-ons policy.**
 Its 10 pinned plugins, Nord flavor, Lua setup, search helper and shortcuts
