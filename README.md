@@ -60,6 +60,27 @@ remain disabled. Previously installed user extensions are not uninstalled.
 Required system dependencies and Flatpak runtimes may still be installed.
 No third-party automatic KWin tiling script is installed. See `applications/README.md`.
 
+## Scientific and engineering applications (optional)
+
+The host has a separate, manually managed scientific stack (ParaView, GNU
+Radio, Qalculate! Qt, OpenModelica/OMEdit, KStars, CalculiX/CGX, Webots,
+Elmer FEM, openEMS, SageMath and FEniCSx, alongside APT-managed LabPlot and
+Cantor). To **check or create KDE Application Launcher entries** for software
+already installed on the machine:
+
+```bash
+bash scripts/setup-scientific-launchers.sh --check
+bash scripts/setup-scientific-launchers.sh --install
+```
+
+This user-scoped script avoids duplicate system/Flatpak entries and does not
+overwrite existing custom shortcuts. CLI-only solvers receive interactive
+terminal entries, not imaginary GUIs. The script **does not install** scientific
+software; large source builds and Conda environments are not part of the
+default `bootstrap.sh` or `sysup` workflows. See
+[scientific software inventory and launcher details](docs/scientific-software.md)
+for tested host paths, validation commands and reproduction limits.
+
 ## Native KWin and Arch key bindings
 
 The workstation uses KDE's built-in floating windows, quick tiling and
