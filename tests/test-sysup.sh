@@ -64,6 +64,23 @@ grep -q 'rustup' "$MOCK_TRACE"
 grep -q 'install-codex' "$MOCK_TRACE"
 [[ "$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["status"])' "$HOME/.local/state/kubuntu-config/status.json")" == failed ]]
 
+# The failed run must leave a readable persisted summary.
+python3 - "$HOME/.local/state/kubuntu-config/summary.json" <<'PY'
+import json, sys
+data=json.load(open(sys.argv[1], encoding='utf-8'))
+assert data['status'] == 'failed', data
+assert data['counts']['failed'] >= 1, data
+assert any(x['key'] == 'flatpak' and x['outcome'] == 'failed' for x in data['stages'])
+assert any(x['key'] == 'codex' and x['outcome'] == 'success' for x in data['stages'])
+PY
+bash "$SYSUP" summary > "$WORK/summary.out"
+grep -q 'SİSTEM GÜNCELLEME ÖZETİ' "$WORK/summary.out"
+grep -q 'Flatpak updates' "$WORK/summary.out"
+grep -q 'HATALARLA TAMAMLANDI' "$WORK/summary.out"
+if grep -q $'\033' "$WORK/summary.out"; then
+    echo 'Unexpected ANSI in a non-TTY summary' >&2; exit 1
+fi
+
 # Resume must skip completed APT and Snap stages, but repeat failed Flatpak.
 : > "$MOCK_TRACE"
 export MOCK_FLATPAK_FAIL=0
@@ -72,6 +89,16 @@ bash "$SYSUP" __execute interactive "$WORK/repo" "$(id -u)" 1 '' 'test-resumed'
 ! grep -q '^snap$' "$MOCK_TRACE"
 grep -q '^flatpak$' "$MOCK_TRACE"
 [[ "$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["status"])' "$HOME/.local/state/kubuntu-config/status.json")" == completed ]]
+
+# Resume shows completed checkpoints as skipped and re-runs only the failure.
+python3 - "$HOME/.local/state/kubuntu-config/summary.json" <<'PY'
+import json, sys
+data=json.load(open(sys.argv[1], encoding='utf-8'))
+assert data['status'] == 'completed', data
+assert data['counts']['failed'] == 0, data
+assert data['counts']['skipped'] >= 2, data
+assert any(x['key'] == 'flatpak' and x['outcome'] == 'success' for x in data['stages'])
+PY
 
 # Cancellation signal is deferred until the running APT metadata command ends.
 : > "$MOCK_TRACE"
@@ -94,4 +121,15 @@ grep -q 'apt-get .*update' "$MOCK_TRACE"
 ! grep -q '^snap$' "$MOCK_TRACE"
 [[ "$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["status"])' "$HOME/.local/state/kubuntu-config/status.json")" == cancelled ]]
 
-echo '[PASS] sysup error isolation, checkpoint/resume and deferred cancellation (mocked)'
+python3 - "$HOME/.local/state/kubuntu-config/summary.json" <<'PY'
+import json, sys
+data=json.load(open(sys.argv[1], encoding='utf-8'))
+assert data['status'] == 'cancelled', data
+assert any(x['key'] == 'apt_metadata' and x['outcome'] == 'success' for x in data['stages'])
+assert all(x['key'] != 'apt_upgrade' for x in data['stages'])
+PY
+bash "$SYSUP" status > "$WORK/status.out"
+grep -q 'İPTAL EDİLDİ' "$WORK/status.out"
+grep -q 'APT repository metadata' "$WORK/status.out"
+
+echo '[PASS] sysup error isolation, resume, cancellation and readable final summaries (mocked)'
