@@ -33,7 +33,7 @@ The default installation uses native KWin without an automatic tiler.
 
 ## What is installed
 
-- `packages/apt.txt`: CLI, KDE (including `kde-spectacle`), graphic/engineering (including LabPlot and Cantor), desktop and virtualization applications
+- `packages/apt.txt`: CLI and terminal emulators (Alacritty plus optional-use Cool Retro Term), KDE (including `kde-spectacle`), graphic/engineering (including LabPlot and Cantor), desktop and virtualization applications
 - `scripts/install-helix.sh`: newest verified official stable Helix release with runtime assets (not available as Kubuntu 26.10 APT package)
 - `scripts/install-bottom.sh`: newest verified official stable Bottom (btm) release (not available as Kubuntu 26.10 APT package)
 - `packages/flatpak.tsv`: Obsidian, Zotero, OrcaSlicer and LocalSend
@@ -49,6 +49,16 @@ The default installation uses native KWin without an automatic tiler.
 - `scripts/configure-sddm-numlock.sh`: enables Num Lock on the SDDM login screen (X11 and KWin/Wayland greeters)
 - `verify.sh`: local package inventory, dotfile links, native KWin state and add-on policy
 - `scripts/version-audit.sh`: fail-fast online check against current APT candidates, Flathub stable commits and GitHub release versions
+
+**Cool Retro Term:** The standard Kubuntu APT manifest installs
+`cool-retro-term` alongside Alacritty. This is an optional-use retro
+CRT-styled terminal (phosphor glow, scanlines, screen curvature), not a
+replacement for Alacritty or Bash. The Ubuntu 26.10 repository currently
+packages stable `1.2.0+ds2-4.1`; the upstream 2.0 series is beta, so
+do not switch to prereleases or add external repositories automatically.
+Start with `cool-retro-term` or find **Cool Retro Term** in the KDE
+Application Launcher. Configure its visual effects through the terminal's
+context menu. Its shell uses the existing Bash configuration.
 
 LabPlot and Cantor are installed together through APT. On this workstation,
 LabPlot 2.12.1 crashed at startup until Cantor was installed.

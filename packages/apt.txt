@@ -1,6 +1,8 @@
 # Core applications and portable CLI tools. Arch Yazi plugins/flavor are managed separately.
 # Do not add GIMP/Blender/KiCad/FreeCAD/Dolphin plugins or editor extensions.
 alacritty
+# CRT-style visual terminal; keep Alacritty as the primary terminal.
+cool-retro-term
 bash-completion
 ble.sh
 bat
