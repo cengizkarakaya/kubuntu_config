@@ -38,3 +38,20 @@ y() {
 yc() { y "$@"; }
 # Initialize last: Starship and other prompt handlers may overwrite PROMPT_COMMAND.
 command -v zoxide >/dev/null && eval "$(zoxide init bash)"
+
+# ble.sh provides Fish-style autosuggestions in interactive Bash (Alacritty).
+# Keep the existing user-local installation when present; otherwise use APT.
+# Skip detached/redirected interactive Bash subprocesses (no controlling TTY).
+if [[ -t 0 && -t 1 && -t 2 ]]; then
+  if [[ -z ${BLE_VERSION-} ]]; then
+    if [[ -r "$HOME/.local/share/blesh/ble.sh" ]]; then
+      source -- "$HOME/.local/share/blesh/ble.sh"
+    elif [[ -r /usr/share/blesh/ble.sh ]]; then
+      source -- /usr/share/blesh/ble.sh
+    fi
+  fi
+  if [[ -n ${BLE_VERSION-} ]]; then
+    bleopt complete_auto_complete=1 complete_auto_delay=100
+    ble-face auto_complete='fg=242'
+  fi
+fi
