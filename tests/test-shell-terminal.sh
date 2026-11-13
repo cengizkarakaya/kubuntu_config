@@ -35,6 +35,10 @@ bash "$ROOT/scripts/setup-shell.sh"
 hook='[ -r "$HOME/.config/kubuntu-config/interactive.bash" ] && source "$HOME/.config/kubuntu-config/interactive.bash"'
 [[ "$(grep -Fxc -- "$hook" "$HOME/.bashrc")" == 1 ]]
 cmp -s "$ROOT/shell/interactive.bash" "$HOME/.config/kubuntu-config/interactive.bash"
+# The portable shell must offer history-based autosuggestions without changing .bashrc.
+[[ "$(grep -Fxc 'ble.sh' "$ROOT/packages/apt.txt")" == 1 ]]
+grep -Fq 'bleopt complete_auto_complete=1 complete_auto_delay=100' "$ROOT/shell/interactive.bash"
+grep -Fq "ble-face auto_complete='fg=242'" "$ROOT/shell/interactive.bash"
 bash --noprofile --rcfile "$HOME/.bashrc" -ic '
   for name in ls ll la lt tree; do alias "$name" >/dev/null || exit 11; done
   [[ "$(type -t z)" == function && "$(type -t zi)" == function ]] || exit 12

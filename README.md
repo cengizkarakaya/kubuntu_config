@@ -315,6 +315,21 @@ The Bash integration now includes all original eza aliases
 (`ls`, `ll`, `la`, `lt`, `tree`), `zoxide init bash` for `z`/`zi`,
 and the full Nord FZF color and symbol preferences.
 
+**Bash autosuggestions (ble.sh):** The `ble.sh` package is in the APT
+manifest for fresh installations. The interactive Bash integration loads
+`~/.local/share/blesh/ble.sh` first if the user already installed it
+there (preserving the working user-local version); otherwise it loads
+`/usr/share/blesh/ble.sh` from Ubuntu. It only activates on a real
+terminal, enables `complete_auto_complete=1` with a 100 ms delay, and
+shows suggestions in grey (`fg=242`). The obsolete
+`complete_auto_history` setting is intentionally not used.
+This is Bash behavior, not an Alacritty setting. After a repository pull,
+run `bash scripts/setup-shell.sh` and open a **new Alacritty terminal**.
+Check `echo "$BLE_VERSION"`, `echo "${BLE_ATTACHED:-0}"`, and
+`bleopt complete_auto_complete`. Typing the start of a previously used
+command should show its suggested remainder; the right arrow accepts it.
+No existing `~/.bashrc` or `~/.blerc` settings are overwritten.
+
 After pulling repo updates, **do not rerun the full bootstrap** merely
 to refresh Bash aliases. Run:
 

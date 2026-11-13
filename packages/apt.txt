@@ -2,6 +2,7 @@
 # Do not add GIMP/Blender/KiCad/FreeCAD/Dolphin plugins or editor extensions.
 alacritty
 bash-completion
+ble.sh
 bat
 chafa
 eza
