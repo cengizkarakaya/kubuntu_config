@@ -15,7 +15,7 @@ grep -q 'AM_PO_SUBDIRS and AM_GNU_GETTEXT' "$TMP/plan"
 grep -q 'temporary build tree' "$TMP/plan"
 grep -q 'git -C "$SOURCE" archive --format=tar "$TAG" | tar -xf - -C "$BUILD"' \
   "$ROOT/scripts/build-celestia-stable.sh"
-if grep -Eq 'git (clean|reset)' "$ROOT/scripts/build-celestia-stable.sh"; then
+if grep -Eq '^[[:space:]]*git[[:space:]]+(clean|reset)([[:space:]]|$)' "$ROOT/scripts/build-celestia-stable.sh"; then
   echo '[FAIL] Source cleanup/reset commands are forbidden.' >&2; exit 1
 fi
 bash -n "$ROOT/scripts/build-celestia-stable.sh"
