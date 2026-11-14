@@ -71,6 +71,27 @@ remain disabled. Previously installed user extensions are not uninstalled.
 Required system dependencies and Flatpak runtimes may still be installed.
 No third-party automatic KWin tiling script is installed. See `applications/README.md`.
 
+## ROS 2 Lyrical Docker development (opt-in)
+
+ROS 2 Lyrical has passed a Docker CLI and two-terminal Publisher/Subscriber
+test on the Kubuntu workstation (Docker Engine 29.7.2, Ubuntu 26.04.1 in image).
+**Stage 3** now has a reproducible but as-yet untested custom development
+container in [robotics/ros2/README.md](robotics/ros2/README.md).
+
+```bash
+bash scripts/ros2-env.sh plan     # read-only Docker Compose check
+bash scripts/ros2-env.sh up       # build and start, requires sudo for daemon
+bash scripts/ros2-env.sh check    # validate ROS, colcon and workspace writes
+bash scripts/ros2-env.sh shell    # interactive non-root ROS 2 Bash
+bash scripts/ros2-env.sh down     # stop, preserve host projects
+```
+
+Projects persist in `~/Workspaces/Robotics/{tio_ws,rova_ws}/src`, outside
+the config repository. This optional profile is **not** installed by
+`bootstrap.sh`; it does not alter host ROS, NVIDIA drivers or KDE. Gazebo,
+RViz2, ROS navigation, Rust ROS nodes and device/network passthrough remain
+separate stages.
+
 ## Post-format recovery: KDE menu, science tools, Firefox default
 
 The November 2026 workstation expansion is documented in

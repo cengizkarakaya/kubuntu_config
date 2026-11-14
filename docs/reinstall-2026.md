@@ -84,3 +84,17 @@ kbuildsycoca6 --noincremental
 ```
 
 Run GUI and numerical smoke tests on the actual machine; static presence/version checks cannot prove a Qt/Wayland application opens correctly, or that scientific computation converged. If a package candidate disappears on a later Kubuntu release, STOP and review the signed repository; do not add incompatible PPAs automatically.
+
+## ROS 2 Lyrical Docker development (added 14 Nov 2026)
+
+The ROS 2 base image and talker/listener communication were verified on the
+actual machine. A reproducible **development environment** was subsequently
+added under `robotics/ros2`. Unlike the old disposable test container, the
+TIO/ROVA workspace sources are persistent host bind mounts. See
+[`robotics/ros2/README.md`](../robotics/ros2/README.md).
+
+After Docker Engine + Compose is installed and functioning on the rebuilt
+host, run `bash scripts/ros2-env.sh plan`, `up` and `check`. The custom
+image has **not yet** been exercised on the real Kubuntu system. RViz2,
+Gazebo Jetty, GPU passthrough, Rust `rclrs`, Nav2, MoveIt2 and Raspberry Pi
+DDS networking are future independent stages, not automatic installers.

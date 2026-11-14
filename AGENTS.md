@@ -58,7 +58,7 @@ collection of shell commands to run unreviewed.
   installs the optional signed APT profile in `packages/science-apt.txt`.
   Always run a full APT simulation with no removals first. In particular,
   never install `quantum-espresso-data` alongside `quantum-espresso-data-sssp`.
-- OpenFOAM and ROS 2 are deferred. KiCad large 3D models and external
+- OpenFOAM and native ROS 2 installation are deferred. ROS 2 Lyrical is opt-in through the Docker Compose development profile under robotics/ros2; KiCad large 3D models and external
   AppImages, Conda environments, FreeCAD StepUp and special vendor software
   require separate explicit installation and verification.
 - Firefox is the preferred default browser if its desktop entry is available;
@@ -70,3 +70,16 @@ collection of shell commands to run unreviewed.
   the KDE cache. Never overwrite arbitrary home/config files.
 - Document settings whose exact on-machine values are unknown as manual
   verification items, not as invented kwinrc/kscreenlockerrc edits.
+
+## ROS 2 Docker development (optional, never in bootstrap)
+
+- ROS 2 Lyrical Publisher/Subscriber worked in the user's standalone Docker
+  test container. The new Compose image is **not** validated on the workstation
+  until `bash scripts/ros2-env.sh up` and `check` succeed there.
+- Keep `~/Workspaces/Robotics/tio_ws` and `rova_ws` outside the Git repo.
+  Maintain non-root container UID/GID parity to avoid root-owned files.
+- Initial Compose setup must not enable GPU, X11/Wayland, Docker socket,
+  privileged containers, USB device access, host networking or DDS discovery
+  onto the local network. Enable these only as separately reviewed stages.
+- A rootful Docker Engine is in use; the wrapper explicitly uses sudo instead
+  of adding the user to the Docker group. It does not install Docker Engine.
