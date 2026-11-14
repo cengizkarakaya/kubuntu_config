@@ -40,9 +40,11 @@ files retain their expected host ownership. It uses a numeric container user
 rather than creating a fixed UID 1000 account that could collide with Ubuntu
 base-image users.
 
-The base image provides ROS 2 Lyrical. The Dockerfile adds Ubuntu packages
-`colcon`, `python3-colcon-ros`, `vcstool`, `cmake`, `git` and compiler
-tools. No extra third-party APT sources, GPU tools, GUI apps or Rust toolchains
+The base image provides ROS 2 Lyrical. Its ROS repository packages already
+provide `python3-colcon-core` (the `colcon` command),
+`python3-colcon-ros` and `python3-vcstool` (the `vcs` command). The
+Dockerfile retains these **non-conflicting** package names and adds/ensures
+`cmake`, `git` and compiler tools. No extra third-party APT sources, GPU tools, GUI apps or Rust toolchains
 are installed at this stage. Inside `bash scripts/ros2-env.sh shell`,
 `/home/rosdev/.bashrc` sources `/opt/ros/lyrical/setup.bash`.
 For noninteractive `docker compose exec` commands, explicitly source it.
@@ -81,6 +83,17 @@ bash scripts/ros2-env.sh down
   `sha256:c69a7a39142b0a19c8cc5e80a35e9087e2ae46080dfa0a59961ff72287fdc5f6`.
 
 ## Troubleshooting
+
+**Resolved 14 November 2026:** the first custom Dockerfile incorrectly
+requested Ubuntu's `colcon` and `vcstool` packages in addition to ROS
+image packages. During `apt-get install`, `vcstool` tried to overwrite
+`/usr/bin/vcs` already owned by `python3-vcstool` (exit 100). The
+Dockerfile now uses only `python3-colcon-core`, `python3-colcon-ros` and
+`python3-vcstool`, and verifies both `colcon` and `vcs` executables.
+This failure occurred inside a disposable Docker build layer, not in Kubuntu's
+host APT database. After pulling the correction, retry `bash scripts/ros2-env.sh
+up` normally. Do **not** use `dpkg --force-overwrite` or
+`docker builder prune -a` to bypass this conflict.
 
 If `up` fails, inspect its full output. Likely causes include package
 availability in the image's Ubuntu 26.04 repositories, insufficient disk

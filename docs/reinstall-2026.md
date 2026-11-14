@@ -98,3 +98,13 @@ host, run `bash scripts/ros2-env.sh plan`, `up` and `check`. The custom
 image has **not yet** been exercised on the real Kubuntu system. RViz2,
 Gazebo Jetty, GPU passthrough, Rust `rclrs`, Nav2, MoveIt2 and Raspberry Pi
 DDS networking are future independent stages, not automatic installers.
+
+### ROS 2 Docker build package-conflict fix (14 Nov 2026)
+
+The initial Compose image build failed because Ubuntu `vcstool` tried to
+overwrite `/usr/bin/vcs` from `python3-vcstool` already installed in
+the ROS base image. `colcon` was likewise unnecessary: `python3-colcon-core`
+already provided the CLI. The Dockerfile now selects the Python/ROS packages
+and verifies both commands, without modifying the Kubuntu host packages.
+After pulling, retry `bash scripts/ros2-env.sh up` and `check`. The corrected
+image must still be tested on the actual workstation.
