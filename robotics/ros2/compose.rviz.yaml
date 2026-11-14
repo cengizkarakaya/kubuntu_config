@@ -40,6 +40,12 @@ services:
         target: /home/rosdev/.rviz2
         bind:
           create_host_path: false
+      # Qt, rqt and PlotJuggler preferences survive container recreation.
+      - type: bind
+        source: "${ROBOTICS_ROOT:?Set via scripts/ros2-env.sh}/ros-gui-config"
+        target: /home/rosdev/.config
+        bind:
+          create_host_path: false
       - type: bind
         source: /tmp/.X11-unix
         target: /tmp/.X11-unix

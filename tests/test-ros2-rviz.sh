@@ -27,6 +27,9 @@ assert 'QT_QPA_PLATFORM: xcb' in gfx
 assert 'source: "${RVIZ_XAUTH:' in gfx
 assert 'source: "${ROBOTICS_ROOT:?Set via scripts/ros2-env.sh}/rviz2-config"' in gfx
 assert 'target: /home/rosdev/.rviz2' in gfx
+assert 'source: "${ROBOTICS_ROOT:?Set via scripts/ros2-env.sh}/ros-gui-config"' in gfx
+assert 'target: /home/rosdev/.config' in gfx
+assert 'Persistent Qt/rqt/PlotJuggler settings' in helper
 assert 'rviz_prepare_config "$auth"' in helper
 assert 'persistent_settings' in helper
 assert 'create_host_path: false' in gfx
