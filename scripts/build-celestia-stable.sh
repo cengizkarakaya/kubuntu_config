@@ -82,8 +82,38 @@ trap cleanup EXIT
 # libtoolize and configure operate on the throwaway copy, not SOURCE.
 git -C "$SOURCE" archive --format=tar "$TAG" | tar -xf - -C "$BUILD"
 cd "$BUILD"
+
+# Celestia 1.6.4 includes a legacy KDE_CHECK_QT_JPEG Autoconf macro with a
+# misplaced 'fi' inside AC_CACHE_VAL. Autoconf >=2.72 generates invalid shell
+# syntax even when the GTK/KDE UIs are disabled. Patch only this temporary
+# build copy, matching the narrowly scoped upstream source pattern.
+python3 - "$BUILD/acinclude.m4" <<'PY'
+from pathlib import Path
+import sys
+
+path = Path(sys.argv[1])
+source = path.read_text()
+start = source.find('AC_DEFUN([KDE_CHECK_QT_JPEG],')
+end = source.find('AC_DEFUN([AC_FIND_ZLIB],', start)
+if start < 0 or end < 0:
+    raise SystemExit('[FAIL] Legacy KDE_CHECK_QT_JPEG macro layout changed.')
+region = source[start:end]
+old = 'AC_LANG_RESTORE\\nfi\\n])'
+new = 'AC_LANG_RESTORE\\n])\\nfi'
+if region.count(old) != 1:
+    raise SystemExit('[FAIL] Misplaced-fi pattern not found uniquely; refusing patch.')
+region = region.replace(old, new, 1)
+path.write_text(source[:start] + region + source[end:])
+print('[PATCH] Fixed legacy KDE_CHECK_QT_JPEG conditional in temporary source.')
+PY
+
 libtoolize --copy --force
 autoreconf -fi
+if ! sh -n ./configure; then
+  echo '[FAIL] Generated configure script has invalid shell syntax.' >&2
+  echo '       Preserve the temporary build tree shown below for diagnosis.' >&2
+  exit 1
+fi
 ./configure --prefix="$PREFIX" --with-glut
 make -j "${CELESTIA_BUILD_JOBS:-4}"
 make install
