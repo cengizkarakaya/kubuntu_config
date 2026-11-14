@@ -54,16 +54,37 @@ fi
 grep -q 'unexpected modifications' "$TMP/error1"
 grep -q 'altered by user' modules/globebrowsing/globebrowsingmodule.cpp
 
-# Restore only the disposable test fixture, then test changing another file.
+# Restore only the disposable target fixture. A build can legitimately modify
+# unrelated tracked files. Both staged and unstaged unrelated changes must be
+# left untouched, and should not prevent the exact approved GDAL patch.
 cp "$TMP/patched" modules/globebrowsing/globebrowsingmodule.cpp
 printf 'untouched\n' > other.txt
 git add other.txt
 git commit -qm 'add other tracked file'
 printf 'changed\n' >> other.txt
+printf 'staged-only\n' > staged-other.txt
+git add staged-other.txt
+cp other.txt "$TMP/other-before"
+cp staged-other.txt "$TMP/staged-before"
+git show HEAD:modules/globebrowsing/globebrowsingmodule.cpp > modules/globebrowsing/globebrowsingmodule.cpp
+python3 "$ROOT/scripts/patch-openspace-gdal.py" "$TMP/upstream" >"$TMP/other-first"
+grep -q '\[PATCH\]' "$TMP/other-first"
+cmp modules/globebrowsing/globebrowsingmodule.cpp "$TMP/patched"
+python3 "$ROOT/scripts/patch-openspace-gdal.py" "$TMP/upstream" >"$TMP/other-out"
+cmp other.txt "$TMP/other-before"
+cmp staged-other.txt "$TMP/staged-before"
+git diff --quiet -- other.txt && { echo '[FAIL] Unrelated changes were reverted.' >&2; exit 1; }
+git diff --cached --quiet -- staged-other.txt && { echo '[FAIL] Unrelated staged changes were reverted.' >&2; exit 1; }
+grep -q 'already applied' "$TMP/other-out"
+
+# Staged changes to the exact target file are still a hard conflict.
+git add modules/globebrowsing/globebrowsingmodule.cpp
 if python3 "$ROOT/scripts/patch-openspace-gdal.py" "$TMP/upstream" >"$TMP/error2" 2>&1; then
-  echo '[FAIL] Unrelated source changes must be rejected.' >&2; exit 1
+  echo '[FAIL] Staged GDAL target modifications must be rejected.' >&2; exit 1
 fi
-grep -q 'Other tracked source changes' "$TMP/error2"
+grep -q 'GDAL target file has staged changes' "$TMP/error2"
+cmp other.txt "$TMP/other-before"
+cmp staged-other.txt "$TMP/staged-before"
 
 # Check --resume bypasses APT, Git submodule fetch, and CMake generation.
 python3 - "$ROOT/scripts/build-openspace.sh" <<'PY'
@@ -78,4 +99,4 @@ assert 'python3 "$SCRIPTS_DIR/patch-openspace-gdal.py" "$DEST"' in s
 assert 'cmake --build "$DEST/build"' in s
 PY
 bash -n "$ROOT/scripts/build-openspace.sh"
-echo '[PASS] GDAL patch exactness, idempotency, conflict protection and Ninja resume.'
+echo '[PASS] GDAL patch exactness, idempotency, target-file protection, preservation of unrelated changes and Ninja resume.'

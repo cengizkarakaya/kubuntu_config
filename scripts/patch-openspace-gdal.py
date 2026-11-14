@@ -3,7 +3,7 @@
 
 The fix is constrained to one Git-tracked source file. It never runs git reset
 or git clean. It tolerates the exact same patch on subsequent Ninja resumes,
-but rejects any other changes to the checked-out source.
+but rejects unexpected changes to the target file. Changes to unrelated tracked\nfiles remain untouched (OpenSpace/CMake/codegen can modify these during builds).
 """
 from __future__ import annotations
 
@@ -48,13 +48,12 @@ def patch(root: Path) -> str:
     baseline = git(root, "show", f"HEAD:{RELATIVE}", capture=True)
     if baseline.returncode:
         raise ValueError("Cannot retrieve OpenSpace upstream source from Git")
-    if git(root, "diff", "--cached", "--quiet").returncode:
-        raise ValueError("Staged changes detected; refusing source patch")
-    other = git(
-        root, "diff", "--quiet", "--", ".", f":(exclude){RELATIVE}"
-    )
-    if other.returncode:
-        raise ValueError("Other tracked source changes found; refusing patch")
+    # Only this source file will be written. Builds can modify other tracked
+    # files (generated headers/schemas); do not block, reset or alter those.
+    # Reject staged edits to the target itself to avoid interfering with
+    # deliberate user changes to this translation unit.
+    if git(root, "diff", "--cached", "--quiet", "--", RELATIVE).returncode:
+        raise ValueError("GDAL target file has staged changes; refusing patch")
     original = baseline.stdout
     expected = expected_change(original)
     current = target.read_text(encoding="utf-8")
