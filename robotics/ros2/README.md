@@ -248,7 +248,12 @@ cannot prove these packages are available in the installed image.
 The optional RViz2 Docker image now bundles
 `ros-lyrical-rqt`, `ros-lyrical-rqt-graph`,
 `ros-lyrical-rqt-console`, `ros-lyrical-rqt-image-view`,
-`ros-lyrical-rqt-topic`, and `ros-lyrical-plotjuggler-ros`.
+`ros-lyrical-rqt-topic`, `ros-lyrical-rqt-plot`, and
+`ros-lyrical-plotjuggler` (PlotJuggler 3).
+The `ros-lyrical-plotjuggler-ros` package is **unavailable** in the ROS
+Lyrical binary repo as of 14 November 2026 (upstream issue #119).
+PlotJuggler runs without its ROS subscriber plugin; choose `rqt Plot`
+for ROS topic time-series until a compatible plugin is separately built.
 The existing headless ROS 2 `dev` image stays unchanged.
 The GUI helper supports `rqt`, `rqt-graph`, `rqt-console`,
 `rqt-image`, and `plotjuggler` subcommands.

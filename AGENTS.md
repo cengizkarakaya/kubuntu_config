@@ -117,8 +117,11 @@ collection of shell commands to run unreviewed.
 
 - Keep ROS GUIs in the existing optional GPU/XWayland `rviz` Compose
   service; the headless `dev` must remain usable without GPU dependencies.
-  The ROS 2 PlotJuggler plugin package is for the **classic 3.x app**;
-  do not install/download unverified standalone variants.
+  PlotJuggler 3's Lyrical ROS plugin binary package is currently unavailable
+  (upstream issue #119); **never** require it in the base GUI Dockerfile.
+  Use `ros-lyrical-plotjuggler` for offline plots and
+  `ros-lyrical-rqt-plot` for live ROS topic graphs. Do not install mismatched
+  ROS distributions or unverified standalone packages.
 - App menu entries are created **only** with
   `python3 scripts/install-ros2-launchers.py --install` by the desktop
   user, never via bootstrap or sudo. Preserve the user KMenuEdit Robotics

@@ -94,9 +94,11 @@ for label in ('rqt', 'rqt-graph', 'rqt-console', 'rqt-image', 'plotjuggler'):
 assert 'exec ros2 run "$1" "$2"' in s
 for package in ('ros-lyrical-rqt', 'ros-lyrical-rqt-graph',
                 'ros-lyrical-rqt-console', 'ros-lyrical-rqt-image-view',
-                'ros-lyrical-rqt-topic', 'ros-lyrical-plotjuggler-ros'):
+                'ros-lyrical-rqt-topic', 'ros-lyrical-rqt-plot', 'ros-lyrical-plotjuggler'):
     assert package in d, package
-print('[PASS] ROS GUI helper and Docker packages declared')
+assert 'ros-lyrical-plotjuggler-ros \\\n' not in d, 'unavailable binary package in Dockerfile'
+assert 'ros2 pkg prefix plotjuggler_ros' not in d, 'unavailable plugin enforced at build'
+print('[PASS] ROS GUI helper, available Docker packages, and optional plugin handling')
 PY
 
 echo '[PASS] Read-only planning, safe installs, backup, idempotency and conflict refusal'

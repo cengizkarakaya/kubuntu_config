@@ -17,11 +17,18 @@ external APT source is installed on Kubuntu.
 - `ros-lyrical-rqt`, `ros-lyrical-rqt-graph`,
   `ros-lyrical-rqt-console`, `ros-lyrical-rqt-image-view`,
   `ros-lyrical-rqt-topic`.
-- `ros-lyrical-plotjuggler-ros`, which depends on the matching ROS
-  PlotJuggler application and ROS topic/rosbag plugins.
+- `ros-lyrical-rqt-plot`: supported live numeric ROS topic plotting.
+- `ros-lyrical-plotjuggler` (PlotJuggler 3.17.2): CSV and generic
+  data visualization. The Lyrical `plotjuggler_ros` binary package is not
+  available; **ROS topic subscriber / rosbag plugins are NOT installed**.
 
-The ROS-linked PlotJuggler uses the **PlotJuggler 3.x** line. Do not confuse it
-with standalone PlotJuggler 4 or install external website binaries. Read
+The ROS-distributed PlotJuggler here uses the **PlotJuggler 3.x** line.
+ROS streaming requires the missing `plotjuggler_ros` plugin, so the
+initial installation is **not** a ROS-integrated PlotJuggler. For live
+ROS telemetry use `rqt` → Plugins → Visualization → Plot (rqt_plot).
+A separately reviewed source build or PlotJuggler 4 integration can be
+added later. Do not confuse this with PlotJuggler 4 or install unknown
+third-party packages. Read
 upstream release notes at the original `PlotJuggler/PlotJuggler` GitHub
 repository; its maintainers currently warn against a lookalike .com domain.
 
@@ -46,8 +53,9 @@ bash scripts/ros2-env.sh check
 Note: `rviz-up` explicitly rebuilds/recreates the GUI viewer and may
 recreate `dev` due to its shared network and IPC dependencies.
 `rviz-check` now verifies `rqt_gui`, `rqt_graph`, `rqt_console`,
-`rqt_image_view`, `rqt_topic`, `plotjuggler` and
-`plotjuggler_ros` package indexes, along with NVIDIA OpenGL.
+`rqt_image_view`, `rqt_topic`, `rqt_plot` and
+`plotjuggler` package indexes, along with NVIDIA OpenGL.
+It prints a non-fatal warning if `plotjuggler_ros` remains unavailable.
 
 If APT in the container reports missing/conflicting packages, preserve
 the output; do not force package overwrites or alter host APT packages.
@@ -144,10 +152,47 @@ the live private KMenuEdit files.
 
 Start `bash scripts/ros2-tio.sh run` in one Alacritty terminal.
 Open **rqt Graph** from the Robotics menu to inspect publishers/subscribers,
-then open **rqt** and locate its Topic Monitor plugin. PlotJuggler's ROS 2
-topic subscriber becomes useful when real numeric sensor topic data is
-available. The TIO description demo publishes state and TF, not real
+then open **rqt** and locate its Topic Monitor plugin. For live numeric ROS sensor topics, use **rqt → Plugins → Visualization
+→ Plot**. PlotJuggler itself can inspect exported CSV or other supported
+offline data; native ROS topic subscription requires a future
+`plotjuggler_ros` plugin build. The TIO description demo publishes state and TF, not real
 IMU/motor telemetry.
 
 The tools are considered fully installed only once the GUI image builds,
 `rviz-check` passes, and the apps actually open from the KDE menu.
+
+## Upstream PlotJuggler Lyrical packaging issue (14 November 2026)
+
+The first `rviz-up` following Stage 6 failed with
+`E: Unable to locate package ros-lyrical-plotjuggler-ros`.
+This is an upstream ROS Lyrical binary packaging problem, reported as
+`PlotJuggler/plotjuggler-ros-plugins#119` (opened May 29, 2026).
+The ROS binary build references a removed rosbag2 header:
+`rosbag2_cpp/typesupport_helpers.hpp`.
+
+The source package is **indexed** by ROS but is **not available as a
+binary APT package** for the Lyrical base image. The official status page
+for Lyrical does show `plotjuggler` 3.17.2 and `rqt_plot` 1.7.6.
+The Dockerfile now installs those and does not require the unavailable
+plugin or assert `ros2 pkg prefix plotjuggler_ros`. No host
+Kubuntu package repair is required. The old RViz2 image remains available
+until the corrected new image builds successfully.
+
+On the workstation, after pulling the fix:
+
+```bash
+cd ~/kubuntu_config
+git pull --ff-only
+bash scripts/ros2-env.sh rviz-up
+bash scripts/ros2-env.sh rviz-check
+python3 scripts/install-ros2-launchers.py --check
+python3 scripts/install-ros2-launchers.py --install
+```
+
+If there is any further `E: Unable to locate package ...` message,
+do not guess a replacement package or install mismatched ROS distributions;
+share the full container build output.
+
+Upstream:
+- GitHub PlotJuggler ROS plugin issue #119.
+- ROS Lyrical package status at `repo.ros2.org/status_page/ros_lyrical_default.html`.

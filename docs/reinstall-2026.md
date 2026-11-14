@@ -143,7 +143,9 @@ future independent work. See `robotics/tio_description/README.md`.
 ### ROS 2 tools and KDE Robotics menu shortcuts (14 Nov 2026)
 
 The optional `robotics/ros2/Dockerfile.rviz` adds rqt (graph, console,
-image view, topic plugin) and the ROS-linked PlotJuggler 3 package.
+image view, topic and plot plugin) plus PlotJuggler 3.
+Its ROS topic/rosbag plugin is **not packaged for Lyrical** as of
+November 2026 (upstream issue #119); use rqt Plot for live numeric topics.
 After installing the host NVIDIA runtime and restoring the ROS base
 Docker environment, rebuild the GUI image with `rviz-up` and check it
 with `rviz-check`.

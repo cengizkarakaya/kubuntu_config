@@ -95,7 +95,9 @@ separate stages.
 ## ROS 2 rqt, PlotJuggler and KDE Robotics launchers (opt-in)
 
 The GPU-enabled ROS 2 GUI image now includes `rqt`, `rqt_graph`,
-`rqt_console`, `rqt_image_view` and ROS-linked PlotJuggler 3.
+`rqt_console`, `rqt_image_view`, `rqt_plot`, and PlotJuggler 3.
+The ROS-specific PlotJuggler plugin is unavailable for Lyrical as a binary
+APT package; use rqt Plot for live ROS data in the meantime.
 **These GUI additions require a new on-host Docker image build.**
 Run:
 
