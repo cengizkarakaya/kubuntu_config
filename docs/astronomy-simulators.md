@@ -87,6 +87,7 @@ download experimental builds.
 ```bash
 cd ~/kubuntu_config
 bash scripts/build-openspace.sh --plan
+bash scripts/build-openspace.sh --check-apt  # APT simülasyonu: paket değiştirmez
 bash scripts/build-openspace.sh --build
 ```
 
@@ -103,6 +104,27 @@ with submodules and builds in `~/.local/opt/openspace/build`, expecting
 requires GCC >=15 and uses vcpkg/presets, while the pinned 0.22.1 source
 tree still uses Git submodules and the 0.22-specific Qt/GDAL requirements.
 Version numbers above are tailored to the **pinned tag**, not to master.
+
+### Kubuntu 26.10 JACK2 dependency conflict (15 November 2026)
+
+On the user's Kubuntu 26.10 host, a first `--build` attempt stopped safely
+during APT simulation: `libmpv-dev` depends on virtual `libjack-dev`.
+APT picked the JACK1 development package `libjack-dev` and proposed removing
+both installed `libjack-jackd2-0` (amd64) and `libjack-jackd2-0:i386` to
+replace them with `libjack0` and `libjack0:i386`.
+
+OpenSpace's installer now **explicitly requests `libjack-jackd2-dev`**, which
+also satisfies the virtual JACK development dependency while remaining
+compatible with existing JACK2 runtime libraries. This avoids deliberately
+replacing either the native or the 32-bit JACK library. APT's
+`--no-remove` protection remains mandatory.
+
+**Always run `bash scripts/build-openspace.sh --check-apt` before `--build`
+on this workstation**. The check simulates the entire APT transaction
+without root privileges or package changes and fails if removal would still
+be required. If it fails, keep the current audio packages and inspect
+the complete solver output; **do not use `--allow-remove-essential`,
+`--force-yes`, `apt autoremove` or manual JACK1 replacement**.
 
 **Important:** OpenSpace's large dependency graph and build flow may be
 incompatible with Kubuntu 26.10; do not consider the installation complete until
