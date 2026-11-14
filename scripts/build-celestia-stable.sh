@@ -98,8 +98,8 @@ end = source.find('AC_DEFUN([AC_FIND_ZLIB],', start)
 if start < 0 or end < 0:
     raise SystemExit('[FAIL] Legacy KDE_CHECK_QT_JPEG macro layout changed.')
 region = source[start:end]
-old = 'AC_LANG_RESTORE\\nfi\\n])'
-new = 'AC_LANG_RESTORE\\n])\\nfi'
+old = 'AC_LANG_RESTORE\nfi\n])'
+new = 'AC_LANG_RESTORE\n])\nfi'
 if region.count(old) != 1:
     raise SystemExit('[FAIL] Misplaced-fi pattern not found uniquely; refusing patch.')
 region = region.replace(old, new, 1)
