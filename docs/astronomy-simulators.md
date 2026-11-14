@@ -141,13 +141,25 @@ to this exact OpenSpace tagged checkout by
 - Convert the `GDALGetMetadata` result to `const char* const*`.
 - Convert `parseSubDatasets` argument to `const char* const*`.
 - **Do not use `-fpermissive`**, cast away const, or downgrade GDAL.
-- Refuse to touch a checkout with any unexpected tracked modifications.
+- Refuse to overwrite any unexpected changes **to the targeted GDAL source
+  file**, including staged changes to that file.
+- Preserve and **ignore unrelated tracked changes** in the OpenSpace checkout
+  (CMake/code generation can modify other tracked files during normal builds).
+  The patch does not reset, remove, stage, or overwrite those files.
 - Permit this exact same patch on subsequent runs without overwriting it.
 
 The patch intentionally modifies only that one tracked source file within
 `~/.local/opt/openspace`; this is expected and does **not** affect
 `kubuntu_config` itself. The build script recognizes the approved change
 on rerun. It does not run `git reset` or `git clean`.
+
+**Update 15 November 2026:** The original implementation incorrectly aborted
+when *other* tracked files were modified in the checkout:
+`[FAIL] Other tracked source changes found; refusing patch`. This is
+too strict for an in-progress OpenSpace/CMake build. The patch now checks
+only its own target and leaves unrelated worktree/index changes untouched.
+It still refuses to overwrite the GDAL source if that file differs from the
+exact upstream or approved patched content.
 
 **For an existing, partially built source checkout**, after updating the
 `kubuntu_config` repo and confirming `build/build.ninja` exists:
