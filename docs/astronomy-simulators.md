@@ -51,8 +51,15 @@ The source is pinned to upstream tag `1.6.4` and installed only within
 `~/.local/opt/celestia-stable/` (no `sudo make install`). This is the
 stable **GLUT** version; it does **not** offer the contemporary Qt6 interface.
 The script simulates APT installation without removals, aborting on dependency
-conflicts. It does not add OBS repositories. Compilation on 26.10 remains to be
-verified against the actual NVIDIA/OpenGL setup.
+conflicts. It explicitly installs **gettext** and **autopoint**: Celestia's
+legacy `configure.ac` requires their `AM_PO_SUBDIRS` and `AM_GNU_GETTEXT`
+macros. Its Git checkout is verified against the pinned source commit.
+To recover safely from failed prior `autoreconf` attempts, it exports a clean
+copy of the tagged files via `git archive` to a temporary build directory.
+It **does not** run `git clean` or `git reset` on the original checkout,
+and preserves failed temporary builds for investigation. It does not add OBS
+repositories. Compilation on 26.10 remains to be verified against the actual
+NVIDIA/OpenGL setup.
 
 **Future option, not automated:** The Celestia maintainers offer
 [experimental 1.7 Qt6 AppImages](https://github.com/CelestiaProject/Celestia/blob/master/INSTALL.md)
