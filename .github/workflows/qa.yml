@@ -28,7 +28,9 @@ jobs:
         run: bash tests/test-ros2-rviz.sh
       - name: Validate provisional TIO description and safe initial copy
         run: bash tests/test-tio-description.sh
-      - name: Test Celestia source-build retry safety (offline)\n        run: bash tests/test-celestia-builder.sh\n      - name: Test astronomy KDE launchers (mocked, non-destructive)
+      - name: Test Celestia source-build retry safety (offline)
+        run: bash tests/test-celestia-builder.sh
+      - name: Test astronomy KDE launchers (mocked, non-destructive)
         run: bash tests/test-astronomy-launchers.sh
 
       - name: Test ROS 2 graphical desktop launchers (mocked, non-destructive)
