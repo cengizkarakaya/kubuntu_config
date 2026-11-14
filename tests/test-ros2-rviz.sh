@@ -37,5 +37,15 @@ assert 'Persistent Qt/rqt/PlotJuggler settings' in helper
 assert 'rviz_prepare_config "$auth"' in helper
 assert 'persistent_settings' in helper
 assert 'create_host_path: false' in gfx
+# Check the embedded bash -lc script as an argument, not only the outer
+# wrapper (bash -n on the wrapper alone misses nested quote breakage).
+import subprocess
+rviz_check_open = "compose_rviz_sudo \"$auth\" exec --no-TTY rviz bash -lc '"
+assert helper.count(rviz_check_open) == 1, 'rviz-check command not uniquely identified'
+inner = helper.split(rviz_check_open, 1)[1].split("\n    '\n    ;;", 1)[0]
+assert "      if ros2 pkg prefix plotjuggler_ros" in inner
+assert "'" not in inner, 'Unescaped apostrophe breaks the outer single-quoted bash -lc argument'
+subprocess.run(["bash", "-n", "-c", inner], check=True)
+print('[PASS] Embedded rviz-check Bash is syntactically valid and safely quoted')
 print('[PASS] RViz2 profile isolation, graphics env and explicit Xauthority guards')
 PY

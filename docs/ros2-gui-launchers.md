@@ -196,3 +196,20 @@ share the full container build output.
 Upstream:
 - GitHub PlotJuggler ROS plugin issue #119.
 - ROS Lyrical package status at `repo.ros2.org/status_page/ros_lyrical_default.html`.
+
+## Fix: rviz-check embedded Bash quotation (14 November 2026)
+
+The corrected GUI Docker image built successfully in approximately six
+minutes, and ROS 2 could locate the installed `rqt_gui`, `rqt_graph`,
+`rqt_console`, `rqt_image_view`, `rqt_topic`, `rqt_plot`, and
+`plotjuggler` packages. The `rviz-check` wrapper then encountered a
+`bash: -c: syntax error: unexpected end of file from if` because warning
+messages used *single quotes inside an outer single-quoted* `bash -lc`
+argument. The helper now uses double quotes within that argument.
+An automated regression test checks the **embedded Bash argument** as well
+as the wrapper, to catch quoting issues that plain `bash -n` misses.
+
+After pulling the fix, rerun only `bash scripts/ros2-env.sh rviz-check`;
+the Docker image does **not** need rebuilding. The KDE launchers can then
+be installed with `python3 scripts/install-ros2-launchers.py --check`
+followed by `--install` as the normal desktop user.
