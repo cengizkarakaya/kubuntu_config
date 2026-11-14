@@ -56,6 +56,13 @@ legacy `configure.ac` requires their `AM_PO_SUBDIRS` and `AM_GNU_GETTEXT`
 macros. Its Git checkout is verified against the pinned source commit.
 To recover safely from failed prior `autoreconf` attempts, it exports a clean
 copy of the tagged files via `git archive` to a temporary build directory.
+Before running Autotools, the script applies a narrow, verified fix to the
+**temporary copy** of Celestia 1.6.4's legacy `KDE_CHECK_QT_JPEG` macro in
+`acinclude.m4`: a misplaced `fi` inside `AC_CACHE_VAL` causes generated
+`configure` syntax errors with modern Autoconf 2.72/2.73. The patch is
+guarded by an exact macro-pattern match and fails closed if upstream sources
+change. The generated `configure` undergoes `sh -n` validation before it
+is executed; an invalid file leaves the build directory intact for diagnosis.
 It **does not** run `git clean` or `git reset` on the original checkout,
 and preserves failed temporary builds for investigation. It does not add OBS
 repositories. Compilation on 26.10 remains to be verified against the actual
