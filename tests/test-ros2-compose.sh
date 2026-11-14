@@ -40,32 +40,7 @@ PATH="$tmp/bin:$PATH" ROBOTICS_ROOT="$tmp/safe-robotics" bash "$ROOT/scripts/ros
 grep -q 'No images built' "$tmp/output"
 test ! -e "$tmp/safe-robotics"
 PATH="$tmp/bin:$PATH" ROBOTICS_ROOT="$tmp/safe-robotics" bash "$ROOT/scripts/ros2-env.sh" shell > "$tmp/shell-output"
-grep -q '^INTERACTIVE_SHELL_ARGS_OK
-python3 - "$ROOT/robotics/ros2/compose.yaml" <<'PY'
-import sys
-from pathlib import Path
-s=Path(sys.argv[1]).read_text()
-for forbidden in ('privileged: true', 'network_mode: host', '/var/run/docker.sock', '/dev/dri', '/tmp/.X11-unix'):
-    assert forbidden not in s, forbidden
-assert s.count('create_host_path: false') == 2
-assert 'ROS_AUTOMATIC_DISCOVERY_RANGE: LOCALHOST' in s
-print('[PASS] No host-device/network privilege in initial Compose profile')
-PY
-python3 - "$ROOT/robotics/ros2/Dockerfile" <<'PY'
-import sys
-from pathlib import Path
-s = Path(sys.argv[1]).read_text()
-packages = [line.strip().rstrip(chr(92)).strip() for line in s.splitlines()]
-for package in ('colcon', 'vcstool'):
-    assert package not in packages, f"conflicting package: {package}"
-for package in ('python3-colcon-core', 'python3-colcon-ros', 'python3-vcstool'):
-    assert package in packages, f"missing package: {package}"
-for command in ('colcon', 'vcs'):
-    assert 'command -v ' + command in s, f"missing binary check: {command}"
-print('[PASS] Dockerfile uses ROS-compatible colcon/vcs package names')
-PY
-echo '[PASS] Plan and interactive Bash shell arguments validated without sudo, files, or Docker daemon'
- "$tmp/shell-output"
+grep -q '^INTERACTIVE_SHELL_ARGS_OK$' "$tmp/shell-output"
 test ! -e "$tmp/safe-robotics"
 python3 - "$ROOT/robotics/ros2/compose.yaml" <<'PY'
 import sys
@@ -90,4 +65,4 @@ for command in ('colcon', 'vcs'):
     assert 'command -v ' + command in s, f"missing binary check: {command}"
 print('[PASS] Dockerfile uses ROS-compatible colcon/vcs package names')
 PY
-echo '[PASS] Plan validates interpolated configuration without files, sudo or Docker daemon'
+echo '[PASS] Plan and interactive Bash shell arguments validated without sudo, files, or Docker daemon'
