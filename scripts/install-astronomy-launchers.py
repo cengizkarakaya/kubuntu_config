@@ -25,6 +25,7 @@ MENU = CONFIG / "menus/applications-kmenuedit.menu"
 APP_DIR = DATA / "applications"
 WRAP_DIR = HOME / ".local/bin"
 CELESTIA_APPIMAGE = HOME / ".local/opt/celestia/Celestia.AppImage"
+CELESTIA_STABLE = HOME / ".local/opt/celestia-stable/bin/celestia"
 OPENSPACE_ROOT = HOME / ".local/opt/openspace"
 GAIA_ID = "space.gaiasky.GaiaSky.desktop"
 ASTRONOMY = re.compile(r"(?ms)^ <Menu>\n  <Name>Astronomy</Name>\n.*?^ </Menu>")
@@ -61,6 +62,8 @@ def gaia_available() -> bool:
 def celestia_executable() -> str | None:
     if CELESTIA_APPIMAGE.is_file() and os.access(CELESTIA_APPIMAGE, os.X_OK):
         return str(CELESTIA_APPIMAGE)
+    if CELESTIA_STABLE.is_file() and os.access(CELESTIA_STABLE, os.X_OK):
+        return str(CELESTIA_STABLE)
     return shutil.which("celestia")
 
 
