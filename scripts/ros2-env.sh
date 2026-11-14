@@ -64,6 +64,39 @@ rviz_display_preflight() {
     return 1
   }
 }
+# Persist the entire ~/.rviz2 directory as a host bind mount. When the
+# previous container exists, preserve its first-run persistent_settings file
+# before the new mount obscures the old container-local settings.
+rviz_prepare_config() {
+  local auth="$1" dest="$ROBOTICS_ROOT/rviz2-config" existing temp
+  if [[ -L "$dest" || ( -e "$dest" && ! -d "$dest" ) ]]; then
+    echo "[FAIL] RViz config destination is not a normal directory: $dest" >&2
+    return 1
+  fi
+  if [[ ! -d "$dest" ]]; then
+    (umask 077; mkdir -p -- "$dest")
+  fi
+  # Do not replace existing host settings. A failed import is reported,
+  # and the original container remains unchanged until the Compose restart.
+  if [[ ! -e "$dest/persistent_settings" ]]; then
+    existing="$(compose_rviz_sudo "$auth" ps -q rviz 2>/dev/null || true)"
+    if [[ -n "$existing" ]]; then
+      temp="$(mktemp "$dest/.persistent_settings.import.XXXXXXXX")"
+      if compose_rviz_sudo "$auth" exec --no-TTY rviz \
+          cat /home/rosdev/.rviz2/persistent_settings > "$temp" && [[ -s "$temp" ]]; then
+        mv -- "$temp" "$dest/persistent_settings"
+        echo '[OK] Existing RViz2 persistent_settings imported into host directory.'
+      else
+        rm -f -- "$temp"
+        echo '[WARN] Could not import old RViz2 settings; old container has not yet been recreated.' >&2
+        echo '[WARN] If preserving them is important, inspect and back them up before continuing.' >&2
+        return 1
+      fi
+    fi
+  fi
+  echo "[INFO] Persistent RViz2 configuration: $dest"
+}
+
 rviz_generate_cookie() {
   local auth_file auth_dir temp entries
   auth_file="$(rviz_auth_path)" || return 1
@@ -140,6 +173,7 @@ case "$mode" in
     nvidia-smi -L
     auth="$(rviz_generate_cookie)"
     echo "[INFO] Private Xauthority cookie: $auth"
+    rviz_prepare_config "$auth"
     # RViz joins dev's local DDS network and shared IPC; this may recreate dev.
     compose_rviz_sudo "$auth" up --detach --build --force-recreate rviz
     echo '[OK] RViz2 viewer service started. Run: bash scripts/ros2-env.sh rviz-check'
