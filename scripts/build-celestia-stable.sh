@@ -20,6 +20,7 @@ packages=(
   build-essential git autoconf automake libtool pkg-config
   gettext autopoint
   freeglut3-dev libglu1-mesa-dev libgl-dev libpng-dev libjpeg-dev
+  liblua5.3-dev
 )
 
 echo "Celestia $TAG (official stable source; GLUT UI)."
@@ -29,7 +30,8 @@ if [[ "$mode" == --plan ]]; then
   echo 'Dry-run: no software, packages or source files changed.'
   echo 'This version uses gettext/autopoint for AM_PO_SUBDIRS and AM_GNU_GETTEXT.'
   echo 'Generated Autotools files will be isolated in a new temporary build tree.'
-  echo 'Check packages: apt-cache policy gettext autopoint freeglut3-dev'
+  echo 'Check packages: apt-cache policy gettext autopoint freeglut3-dev liblua5.3-dev'
+  echo 'Lua 5.3 headers are required for Celestia CELX scripting (lua.hpp).'
   echo 'To build: bash scripts/build-celestia-stable.sh --build'
   exit 0
 fi
@@ -41,6 +43,19 @@ apt-get -s install --no-remove --no-install-recommends "${packages[@]}" || {
   exit 1
 }
 sudo apt-get install -y --no-remove --no-install-recommends "${packages[@]}"
+
+# Verify header resolution before Autotools: the include path is
+# /usr/include/lua5.3 (from pkg-config), not the generic /usr/include.
+if ! pkg-config --exists lua5.3; then
+  echo '[FAIL] pkg-config cannot resolve lua5.3 after liblua5.3-dev installation.' >&2
+  exit 1
+fi
+read -r -a lua_cflags <<< "$(pkg-config --cflags lua5.3)"
+if ! printf '#include <lua.hpp>\n' | c++ -x c++ -fsyntax-only "${lua_cflags[@]}" -; then
+  echo '[FAIL] Lua 5.3 C++ development header lua.hpp cannot be compiled.' >&2
+  exit 1
+fi
+echo "[CHECK] Lua 5.3 headers found: $(pkg-config --cflags lua5.3)"
 
 # Preserve any generated files left in SOURCE by previous attempts. Only read
 # the committed upstream tree via git archive; never git clean/reset it.
@@ -114,7 +129,7 @@ if ! sh -n ./configure; then
   echo '       Preserve the temporary build tree shown below for diagnosis.' >&2
   exit 1
 fi
-./configure --prefix="$PREFIX" --with-glut
+./configure --prefix="$PREFIX" --with-glut --with-lua
 make -j "${CELESTIA_BUILD_JOBS:-4}"
 make install
 
