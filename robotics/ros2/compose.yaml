@@ -1,0 +1,32 @@
+name: kubuntu-ros2
+
+services:
+  dev:
+    image: kubuntu-config/ros2-lyrical-dev:local
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        ROS_UID: "${ROS_UID:?ROS_UID is required; use scripts/ros2-env.sh}"
+        ROS_GID: "${ROS_GID:?ROS_GID is required; use scripts/ros2-env.sh}"
+    init: true
+    tty: true
+    stdin_open: true
+    command: ["sleep", "infinity"]
+    environment:
+      ROS_DOMAIN_ID: "42"
+      ROS_AUTOMATIC_DISCOVERY_RANGE: LOCALHOST
+      HOME: /home/rosdev
+    volumes:
+      - type: bind
+        source: "${ROBOTICS_ROOT:?ROBOTICS_ROOT is required; use scripts/ros2-env.sh}/tio_ws"
+        target: /workspaces/tio_ws
+        bind:
+          create_host_path: false
+      - type: bind
+        source: "${ROBOTICS_ROOT:?ROBOTICS_ROOT is required; use scripts/ros2-env.sh}/rova_ws"
+        target: /workspaces/rova_ws
+        bind:
+          create_host_path: false
+    # Only the Compose-managed default bridge network is used at this stage.
+    # No privileged mode, host network, devices, GPU or graphics socket mounts.
