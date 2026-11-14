@@ -11,7 +11,7 @@ scripts with `sudo`; they request sudo only for signed Ubuntu APT operations.
 | --- | --- | --- |
 | Gaia Sky | Maintained user Flatpak, `space.gaiasky.GaiaSky` | Flathub had v3.8.0 when checked; developer offers v3.9.2 (27 October 2026). The installer tracks Flathub stable, NOT necessarily the newest upstream release. |
 | Celestia | Official tagged **stable 1.6.4** source, built locally with GLUT | Stable release is older and its GLUT interface is limited. Celestia 1.7 Qt6 builds/OBS AppImage are development/experimental; intentionally not auto-installed or mixed into the 26.10 APT sources. |
-| OpenSpace | Official stable **releases/v0.22.1** source, built locally | Official stable Linux binary is not published. Build requires CMake >=4, GCC >=15, C++23, OpenGL 4.6, many libraries, >30 GiB free. Upstream reports testing Ubuntu 26.04, not necessarily 26.10. This build has NOT been verified on the target machine. |
+| OpenSpace | Official stable **releases/v0.22.1** source, built locally | Official stable Linux binary is not published. Pinned 0.22.1 build requires CMake >=4, GCC >=13, Qt >=6.8, GDAL and OpenGL 4.6, many libraries, >30 GiB free. Kubuntu 26.10 has not been verified locally. This build has NOT been verified on the target machine. |
 
 Sources:
 - [Gaia Sky official downloads](https://gaiasky.space/downloads/)
@@ -19,7 +19,8 @@ Sources:
 - [Celestia official Linux install guide](https://github.com/CelestiaProject/Celestia/blob/master/INSTALL.md)
 - [Celestia GitHub stable releases](https://github.com/CelestiaProject/Celestia/releases)
 - [OpenSpace release source](https://github.com/OpenSpace/OpenSpace/releases)
-- [OpenSpace Linux build requirements](https://docs.openspaceproject.com/latest/contribute/development/compiling/index.html)
+- [OpenSpace v0.22 Linux build requirements](https://docs.openspaceproject.com/releases-v0.22/contribute/development/compiling/)
+- [OpenSpace latest/master requirements (different dependency channel)](https://docs.openspaceproject.com/latest/contribute/development/compiling/index.html)
 
 ## 1. Gaia Sky — recommended first
 
@@ -89,11 +90,19 @@ bash scripts/build-openspace.sh --plan
 bash scripts/build-openspace.sh --build
 ```
 
-The script checks at least 30 GiB free space, APT package changes (no removals
-allowed), CMake and GCC prerequisites, then clones the official stable tag
-`releases/v0.22.1` with submodules. It builds at
-`~/.local/opt/openspace/build`, expecting
+The script checks at least 30 GiB free space and the **existing CMake
+(>=4.0) and GCC (>=13)** *before installing any APT packages*. It simulates
+APT changes without removals, installs official Ubuntu `qt6-base-dev`,
+`libgdal-dev` and the other dependencies documented for **OpenSpace 0.22**,
+then validates **Qt6Core >=6.8** and GDAL through pkg-config *before* cloning
+large submodules. It clones the official stable tag `releases/v0.22.1`
+with submodules and builds in `~/.local/opt/openspace/build`, expecting
 `~/.local/opt/openspace/bin/OpenSpace`.
+
+**Do not mix documentation channels:** The newer `latest` OpenSpace guide
+requires GCC >=15 and uses vcpkg/presets, while the pinned 0.22.1 source
+tree still uses Git submodules and the 0.22-specific Qt/GDAL requirements.
+Version numbers above are tailored to the **pinned tag**, not to master.
 
 **Important:** OpenSpace's large dependency graph and build flow may be
 incompatible with Kubuntu 26.10; do not consider the installation complete until
