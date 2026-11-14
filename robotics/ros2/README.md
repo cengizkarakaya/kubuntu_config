@@ -113,3 +113,57 @@ uses `docker compose exec dev bash -i`; the offline CI mocks the Compose call
 and verifies the correct arguments. The existing Docker image and container
 do not need to be rebuilt or restarted. Run `git pull --ff-only` and then
 `bash scripts/ros2-env.sh shell`.
+
+## Optional RViz2 + NVIDIA GPU viewer (Stage 4)
+
+The host NVIDIA GPU and runtime have been verified using `nvidia-smi`
+inside a Docker Ubuntu 26.04 container. **OpenGL and RViz2 are not yet verified**.
+
+RViz2 uses a separate Compose override and image. The working `dev`
+container still uses the original base Compose configuration unless the
+GUI is explicitly started.
+
+From the normal KDE Plasma Wayland desktop session:
+
+```bash
+command -v xauth  # if missing: sudo apt install --no-install-recommends xauth
+echo "DISPLAY=${DISPLAY:-unset}; XAUTHORITY=${XAUTHORITY:-unset}"
+bash scripts/ros2-env.sh rviz-plan
+bash scripts/ros2-env.sh rviz-up
+bash scripts/ros2-env.sh rviz-check
+bash scripts/ros2-env.sh rviz
+# Later, to stop only the viewer:
+bash scripts/ros2-env.sh rviz-stop
+```
+
+The opt-in `compose.rviz.yaml` creates an `rviz` service with the
+`ros-lyrical-rviz2` application, `glxinfo`, XWayland and NVIDIA GPU support.
+The NVIDIA runtime is requested with
+`NVIDIA_DRIVER_CAPABILITIES=graphics,display,utility,compute`.
+`QT_QPA_PLATFORM=xcb` routes Qt through XWayland.
+
+The helper requires the real local `DISPLAY` and an existing Xauthority
+cookie (see `xauth nlist "$DISPLAY"`). It creates a temporary
+`$XDG_RUNTIME_DIR/kubuntu-ros2/rviz.xauth` file with mode 0600,
+bind-mounted read-only at `/tmp/.Xauthority` inside the GUI container.
+**Never publish this cookie or its contents.** This procedure does not
+use a permissive X server access policy. If the cookie is unavailable,
+the helper fails and prints an explanation; it will not bypass access checks.
+
+To ensure ROS nodes can communicate between containers while keeping DDS
+discovery local, the GUI service shares `dev`'s network and IPC namespaces:
+`network_mode: service:dev`, `ipc: service:dev`; `dev` uses
+`ipc: shareable` when the overlay is active. **The first rviz-up may
+recreate dev** to enable this. All TIO/ROVA workspaces remain bind-mounted
+from the host. The viewer does not receive host networking, Docker socket,
+USB devices or general privileged mode.
+
+GPU and X11 access still increase the viewer's privileges: run only
+trusted applications. The `rviz-check` command requires an NVIDIA
+OpenGL renderer from `glxinfo -B`, not just `nvidia-smi`.
+If it reports `llvmpipe` or `could not open display`, investigate
+Xauthority/GLX rather than installing another graphics driver blindly.
+
+**Unverified until host test:** apt availability of
+`ros-lyrical-rviz2` during the viewer image build, GUI rendering,
+OpenGL vendor and RViz2 stability.

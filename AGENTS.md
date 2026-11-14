@@ -83,3 +83,19 @@ collection of shell commands to run unreviewed.
   onto the local network. Enable these only as separately reviewed stages.
 - A rootful Docker Engine is in use; the wrapper explicitly uses sudo instead
   of adding the user to the Docker group. It does not install Docker Engine.
+
+## GPU-accelerated RViz2 GUI overlay (Stage 4)
+
+- The host's NVIDIA Container Toolkit 1.19.1 and Docker GPU access have
+  been proven by an actual `nvidia-smi` container test. RViz2/OpenGL
+  rendering has **not yet** been verified.
+- Optional GUI graphics are kept in `compose.rviz.yaml`, never inserted
+  into the default ROS development service. The viewer may share dev's
+  network/IPC namespace but not the host network.
+- Request `graphics,display,utility,compute` driver capabilities for OpenGL;
+  do not confuse `nvidia-smi` success with accelerated GLX rendering.
+- On KDE Wayland use `QT_QPA_PLATFORM=xcb` and a private, read-only
+  Xauthority cookie. Never use blanket `xhost +`, mount user credentials
+  globally, or add the desktop user to the root-equivalent Docker group.
+- The GUI build, X11 authentication and hardware renderer must be tested
+  interactively before claiming that RViz2 has been installed successfully.

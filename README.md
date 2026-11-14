@@ -92,6 +92,23 @@ the config repository. This optional profile is **not** installed by
 RViz2, ROS navigation, Rust ROS nodes and device/network passthrough remain
 separate stages.
 
+## Optional NVIDIA RViz2 viewer
+
+After Docker NVIDIA GPU access is confirmed, the RViz2 GUI can be installed
+in a separate opt-in Compose service. It leaves the base ROS dev workflow
+unchanged until explicitly selected. Execute:
+
+```bash
+bash scripts/ros2-env.sh rviz-plan
+bash scripts/ros2-env.sh rviz-up
+bash scripts/ros2-env.sh rviz-check
+bash scripts/ros2-env.sh rviz
+```
+
+See [robotics/ros2/README.md](robotics/ros2/README.md) for XWayland
+authentication, GPU and ROS namespace details. RViz2's actual GUI and
+OpenGL renderer remain to be tested on the workstation.
+
 ## Post-format recovery: KDE menu, science tools, Firefox default
 
 The November 2026 workstation expansion is documented in

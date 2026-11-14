@@ -108,3 +108,22 @@ already provided the CLI. The Dockerfile now selects the Python/ROS packages
 and verifies both commands, without modifying the Kubuntu host packages.
 After pulling, retry `bash scripts/ros2-env.sh up` and `check`. The corrected
 image must still be tested on the actual workstation.
+
+### RViz2 NVIDIA GUI overlay (added 14 November 2026)
+
+The Kubuntu host successfully reported NVIDIA 615.71.09 and NVIDIA
+Container Toolkit 1.19.1. `sudo docker run --rm --runtime=nvidia
+--gpus all ubuntu:26.04 nvidia-smi` passed with the RTX 4080 SUPER.
+The ROS 2 Lyrical CLI dev container passed `bash scripts/ros2-env.sh check`
+after the Docker daemon was restarted.
+
+An optional graphical ROS image and Compose overlay are supplied under
+`robotics/ros2/Dockerfile.rviz` and `robotics/ros2/compose.rviz.yaml`.
+This configuration has **not yet been built or visually tested** on the host.
+Reinstall the signed Ubuntu `nvidia-container-toolkit` package on the new
+host (after verifying NVIDIA drivers), configure the Docker runtime with
+`sudo nvidia-ctk runtime configure --runtime=docker`, and plan the
+controlled Docker restart. Then run `rviz-plan`, `rviz-up`, `rviz-check`
+and `rviz` through `scripts/ros2-env.sh` from the KDE desktop user.
+The viewer uses a private Xauthority file; never commit runtime cookies.
+See `robotics/ros2/README.md` for details.

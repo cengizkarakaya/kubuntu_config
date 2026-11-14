@@ -1,0 +1,24 @@
+# Optional RViz2 + OpenGL/XWayland viewer; no host ROS packages.
+FROM kubuntu-config/ros2-lyrical-dev:local
+
+ARG ROS_UID=1000
+ARG ROS_GID=1000
+
+USER root
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        ros-lyrical-rviz2 \
+        mesa-utils \
+        xauth \
+    && rm -rf /var/lib/apt/lists/* \
+    && bash -lc 'source /opt/ros/lyrical/setup.bash && command -v rviz2 && ros2 pkg prefix rviz2' \
+    && command -v glxinfo \
+    && mkdir -p /tmp/runtime-rosdev \
+    && chown "${ROS_UID}:${ROS_GID}" /tmp/runtime-rosdev \
+    && chmod 0700 /tmp/runtime-rosdev
+
+ENV HOME=/home/rosdev
+ENV XDG_RUNTIME_DIR=/tmp/runtime-rosdev
+USER ${ROS_UID}:${ROS_GID}
+WORKDIR /workspaces
+CMD ["sleep", "infinity"]
