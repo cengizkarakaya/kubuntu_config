@@ -11,9 +11,11 @@ RUN apt-get update \
         build-essential \
         cmake \
         git \
-        colcon \
+        python3-colcon-core \
         python3-colcon-ros \
-        vcstool \
+        python3-vcstool \
+    && command -v colcon \
+    && command -v vcs \
     && rm -rf /var/lib/apt/lists/*
 
 # Use the host's numeric UID and GID so workspace bind mounts stay writable

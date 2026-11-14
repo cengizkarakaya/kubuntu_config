@@ -46,6 +46,7 @@ case "$mode" in
       test "$ROS_DISTRO" = lyrical
       command -v ros2
       command -v colcon
+      command -v vcs
       test "$(id -u)" != 0
       test -d /workspaces/tio_ws/src
       test -d /workspaces/rova_ws/src
