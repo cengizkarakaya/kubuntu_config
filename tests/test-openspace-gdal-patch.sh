@@ -66,6 +66,10 @@ printf 'staged-only\n' > staged-other.txt
 git add staged-other.txt
 cp other.txt "$TMP/other-before"
 cp staged-other.txt "$TMP/staged-before"
+git show HEAD:modules/globebrowsing/globebrowsingmodule.cpp > modules/globebrowsing/globebrowsingmodule.cpp
+python3 "$ROOT/scripts/patch-openspace-gdal.py" "$TMP/upstream" >"$TMP/other-first"
+grep -q '\[PATCH\]' "$TMP/other-first"
+cmp modules/globebrowsing/globebrowsingmodule.cpp "$TMP/patched"
 python3 "$ROOT/scripts/patch-openspace-gdal.py" "$TMP/upstream" >"$TMP/other-out"
 cmp other.txt "$TMP/other-before"
 cmp staged-other.txt "$TMP/staged-before"
