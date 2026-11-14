@@ -22,15 +22,20 @@ packages=(
   libxcb-xkb-dev libxcb-cursor-dev libegl-dev libgl-dev libdbus-1-dev
   libatspi2.0-dev libxrandr-dev libxxf86vm-dev libxinerama-dev
   libxcursor-dev libmpv-dev libnss3 libnspr4
+  qt6-base-dev libgdal-dev libcurl4-openssl-dev libasound2-dev
+  libpng-dev freeglut3-dev libvulkan-dev
 )
 echo "OpenSpace stable $TAG -> $DEST"
 echo 'Source: https://github.com/OpenSpace/OpenSpace'
-echo 'Requires CMake >=4.0, GCC >=15, OpenGL 4.6, >=30 GiB free disk space.'
-echo 'The vendor documents builds on Ubuntu 26.04, NOT yet Kubuntu 26.10.'
+echo 'Requires CMake >=4.0, GCC >=13, Qt >=6.8, OpenGL 4.6, >=30 GiB free disk space.'
+echo 'Pinned v0.22.1 uses Git submodules, not latest-master vcpkg presets.'
+echo 'The vendor documents builds on Ubuntu, but NOT specifically Kubuntu 26.10.'
 echo 'It will download third-party build dependencies via upstream build scripts.'
 if [[ "$mode" == --plan ]]; then
   command -v cmake >/dev/null && cmake --version | head -n 1 || true
   command -v g++ >/dev/null && g++ -dumpfullversion || true
+  command -v pkg-config >/dev/null && pkg-config --modversion Qt6Core 2>/dev/null || true
+  command -v pkg-config >/dev/null && pkg-config --modversion gdal 2>/dev/null || true
   df -h "$HOME" | tail -n 1
   printf 'APT prerequisites: %s\n' "${packages[*]}"
   echo 'Dry-run: no packages downloaded or installed.'
@@ -46,19 +51,43 @@ free_kb="$(df -Pk "$HOME" | awk 'NR==2 {print $4}')"
 if [[ -e "$DEST" && ! -d "$DEST/.git" ]]; then
   echo "[FAIL] Existing path not a Git checkout: $DEST" >&2; exit 1
 fi
+# Version-gate first: do not install a long list of development dependencies
+# only to discover that the existing compiler/CMake cannot build this tag.
+for tool in cmake g++ dpkg; do
+  command -v "$tool" >/dev/null || {
+    echo "[FAIL] Missing $tool. Run --plan and install it from a trusted channel." >&2
+    exit 1
+  }
+done
+cmake_version="$(cmake --version | awk 'NR==1 {print $3}')"
+gcc_version="$(g++ -dumpfullversion | cut -d. -f1)"
+if ! dpkg --compare-versions "$cmake_version" ge 4.0; then
+  echo "[FAIL] CMake >=4.0 required, detected $cmake_version. No APT modifications made." >&2
+  exit 1
+fi
+if ! [[ "$gcc_version" =~ ^[0-9]+$ ]] || (( gcc_version < 13 )); then
+  echo "[FAIL] GCC >=13 required for pinned v0.22.1, detected $gcc_version." >&2
+  exit 1
+fi
+echo "[CHECK] CMake $cmake_version / GCC $(g++ -dumpfullversion) validated."
+
 sudo apt-get update
 apt-get -s install --no-remove --no-install-recommends "${packages[@]}" || {
   echo '[FAIL] APT simulation failed; nothing installed by this script.' >&2; exit 1;
 }
 sudo apt-get install -y --no-remove --no-install-recommends "${packages[@]}"
-cmake_version="$(cmake --version | awk 'NR==1 {print $3}')"
-gcc_version="$(g++ -dumpfullversion | cut -d. -f1)"
-dpkg --compare-versions "$cmake_version" ge 4.0 || {
-  echo '[FAIL] CMake 4.0+ needed; no unsupported CMake update attempted.' >&2; exit 1;
-}
-((gcc_version >= 15)) || {
-  echo '[FAIL] GCC 15+ needed; no unapproved compiler repository added.' >&2; exit 1;
-}
+# Stable v0.22's launcher uses Qt >=6.8 and globe browsing uses GDAL.
+# Check actual headers/modules early, before fetching a large Git submodule tree.
+qt_version="$(pkg-config --modversion Qt6Core 2>/dev/null || true)"
+if [[ -z "$qt_version" ]] || ! dpkg --compare-versions "$qt_version" ge 6.8; then
+  echo "[FAIL] Qt6Core >=6.8 needed. pkg-config reports: ${qt_version:-missing}." >&2
+  exit 1
+fi
+if ! pkg-config --exists gdal; then
+  echo '[FAIL] GDAL pkg-config package missing after libgdal-dev install.' >&2
+  exit 1
+fi
+echo "[CHECK] Qt $qt_version / GDAL $(pkg-config --modversion gdal) detected."
 if [[ ! -d "$DEST/.git" ]]; then
   git clone --recursive --branch "$TAG" --single-branch \
     https://github.com/OpenSpace/OpenSpace.git "$DEST"
