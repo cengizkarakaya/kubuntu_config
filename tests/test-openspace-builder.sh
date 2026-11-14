@@ -26,7 +26,7 @@ s = Path(sys.argv[1]).read_text()
 before = s.index('free_kb="$(df -Pk "$HOME"')
 version_gate = s.index('cmake_version="$(cmake --version')
 apt_command = s.index('sudo apt-get update')
-pkg_check = s.index('pkg-config --modversion Qt6Core')
+pkg_check = s.index('qt_version="$(pkg-config --modversion Qt6Core')
 clone = s.index('git clone --recursive')
 assert before < version_gate < apt_command < pkg_check < clone
 assert 'dpkg --compare-versions "$cmake_version" ge 4.0' in s
