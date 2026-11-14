@@ -18,6 +18,10 @@ jobs:
         run: bash tests/test-installers.sh
       - name: Test sysup failure isolation, resume and safe cancellation (mocked)
         run: bash tests/test-sysup.sh
+      - name: Validate opt-in science plan and private KDE menu snapshot
+        run: |
+          bash tests/test-science-profile.sh
+          bash tests/test-menu-backup.sh
       - name: Test optional native KWin Alacritty rule (mocked config tools)
         run: bash tests/test-host-alacritty-rule.sh
       - name: Verify interactive Bash eza/zoxide integration and Alacritty TOML

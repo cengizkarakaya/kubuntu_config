@@ -1,0 +1,7 @@
+# NOT installed automatically. Review size and suitability on the actual host.
+# KiCad's 3D model library can consume multiple gigabytes.
+kicad-packages3d
+# GUI/documentation extras only when desired:
+kicad-demos
+kicad-doc-en
+# OpenFOAM postponed by explicit request; do not add to automatic installers.

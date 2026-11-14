@@ -3,10 +3,14 @@ set -Eeuo pipefail
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 CORE_ONLY=0
 SKIP_PLASMA=0
+WITH_SCIENCE=0
+RESTORE_LAUNCHERS=0
 for arg in "$@"; do
   case "$arg" in
     --core-only) CORE_ONLY=1 ;;
     --skip-plasma) SKIP_PLASMA=1 ;;
+    --with-science) WITH_SCIENCE=1 ;;
+    --restore-launchers) RESTORE_LAUNCHERS=1 ;;
     -h|--help) printf 'Usage: bash bootstrap.sh [--core-only] [--skip-plasma]\n'; exit 0 ;;
     *) printf 'Unknown argument: %s\n' "$arg" >&2; exit 2 ;;
   esac
@@ -48,6 +52,9 @@ if ((CORE_ONLY)); then echo '[OK] Core-only finished. Run bash bootstrap.sh to c
 stage 'VS Code' bash "$ROOT/scripts/install-vscode.sh"
 stage 'Official Yazi stable repository' bash "$ROOT/scripts/setup-yazi-apt.sh"
 stage 'APT package manifest' bash "$ROOT/scripts/install-apt.sh" "$ROOT/packages/apt.txt"
+if ((WITH_SCIENCE)); then
+  stage 'Opt-in science and electronics APT profile' bash "$ROOT/scripts/install-science.sh" --install
+fi
 stage 'Helix latest stable editor and runtime' bash "$ROOT/scripts/install-helix.sh"
 stage 'Bottom latest stable monitor' bash "$ROOT/scripts/install-bottom.sh"
 stage 'Rust toolchain' bash "$ROOT/scripts/install-rust.sh"
@@ -66,6 +73,9 @@ if ((SKIP_PLASMA == 0)); then
   stage 'SDDM Num Lock on login screen' bash "$ROOT/scripts/configure-sddm-numlock.sh"
   stage 'Native KWin (remove legacy tiling script)' bash "$ROOT/plasma/disable-polonium.sh"
   stage 'Global shortcut configuration' bash "$ROOT/plasma/shortcuts.sh"
+fi
+if ((RESTORE_LAUNCHERS)); then
+  stage 'Restore reviewed personal KDE Application Launcher backup' bash "$ROOT/scripts/menu-backup.sh" --restore
 fi
 stage 'User maintenance commands' install -Dm755 "$ROOT/scripts/sysup" "$HOME/.local/bin/sysup"
 if ((SKIP_PLASMA)); then export KUBUNTU_SKIP_PLASMA=1; fi

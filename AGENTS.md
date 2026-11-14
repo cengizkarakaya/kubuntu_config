@@ -51,3 +51,22 @@ collection of shell commands to run unreviewed.
 - Give a truthful, itemized result: installed versions, their channels,
   unmet checks, incompatibilities, and log locations. Never label a
   failed or untested operation successful.
+
+## November 2026 restore profile and launcher backups
+
+- The core bootstrap remains limited to the base manifest. Only `--with-science`
+  installs the optional signed APT profile in `packages/science-apt.txt`.
+  Always run a full APT simulation with no removals first. In particular,
+  never install `quantum-espresso-data` alongside `quantum-espresso-data-sssp`.
+- OpenFOAM and ROS 2 are deferred. KiCad large 3D models and external
+  AppImages, Conda environments, FreeCAD StepUp and special vendor software
+  require separate explicit installation and verification.
+- Firefox is the preferred default browser if its desktop entry is available;
+  Brave remains available but must not replace the user's default browser.
+- `scripts/menu-backup.sh --capture` saves user menu files privately. The repo
+  is PUBLIC: NEVER automatically commit/push private .desktop/.menu contents.
+  `--stage-repo` requires manual review and approval. Restore only after
+  checking plan, preserve conflicting files in dated backups and rebuild
+  the KDE cache. Never overwrite arbitrary home/config files.
+- Document settings whose exact on-machine values are unknown as manual
+  verification items, not as invented kwinrc/kscreenlockerrc edits.

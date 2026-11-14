@@ -1,0 +1,23 @@
+# Opt-in scientific/electronics APT profile for Kubuntu 26.10.
+# Install with: bash scripts/install-science.sh --plan | --install
+# No OpenFOAM (deferred), ROS 2, experimental PPAs or external toolchains.
+# Keep quantum-espresso-data OUT: it conflicts with quantum-espresso-data-sssp.
+qgis
+simulide
+wireshark
+octave
+octave-control
+octave-signal
+stellarium
+lammps
+lammps-examples
+quantum-espresso
+quantum-espresso-data-sssp
+qelectrotech
+qelectrotech-data
+qelectrotech-examples
+pulseview
+sigrok-cli
+ngspice
+# KiCad basic libraries are part of the electronics workstation.
+kicad-libraries

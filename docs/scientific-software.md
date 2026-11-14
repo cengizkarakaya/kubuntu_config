@@ -115,3 +115,23 @@ this issue.
 To migrate to a new machine with changed installation directories, update the
 corresponding wrapper assumptions in
 `scripts/setup-scientific-launchers.sh` after the new software is installed.
+
+## Additions observed 13–14 November 2026
+
+The category screenshots show QGIS, Octave, GeoGebra (Firefox web launcher),
+Stellarium, LAMMPS, Quantum ESPRESSO, QElectroTech, PulseView, Qucs-S and
+Arduino IDE. Screenshots establish menu entries, **not numerical test success**.
+Quantum ESPRESSO APT packages and SSSP library were independently confirmed
+installed by the user; `pw.x` was available. PulseView's Demo device was
+visible. The OpenFOAM phase was deferred.
+
+Use `packages/science-apt.txt` via `scripts/install-science.sh --plan` and
+`--install` for the ordinary Ubuntu-signed packages. This profile is optional
+and is not the source-build or Conda installation workflow. KStars is added to
+`packages/flatpak.tsv`. KiCad 3D models are large and remain manually opt-in.
+
+For **exact user category organization and custom shortcuts**, see
+`docs/application-launcher-layout.md` and
+`scripts/menu-backup.sh`. The latter captures a private snapshot locally,
+which must be reviewed and committed on the actual Kubuntu machine before it
+can be restored from GitHub.

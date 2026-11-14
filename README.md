@@ -16,7 +16,8 @@ sudo apt-get update && sudo apt-get install -y git
 git clone https://github.com/cengizkarakaya/kubuntu_config.git
 cd kubuntu_config
 bash bootstrap.sh --core-only   # fast first stage: Brave for ChatGPT
-bash bootstrap.sh               # install/update packages, theme and native KDE settings
+bash bootstrap.sh               # install/update core packages, theme and native KDE settings
+bash bootstrap.sh --with-science # OPTIONAL: signed scientific/electronics package profile
 bash verify.sh
 ```
 
@@ -70,6 +71,38 @@ remain disabled. Previously installed user extensions are not uninstalled.
 Required system dependencies and Flatpak runtimes may still be installed.
 No third-party automatic KWin tiling script is installed. See `applications/README.md`.
 
+## Post-format recovery: KDE menu, science tools, Firefox default
+
+The November 2026 workstation expansion is documented in
+[**post-format restore guide**](docs/reinstall-2026.md) and
+[**Application Launcher category inventory**](docs/application-launcher-layout.md).
+
+On the existing PC **before formatting**, privately capture current KMenuEdit
+entries and optionally stage a carefully reviewed snapshot for GitHub:
+
+```bash
+bash scripts/menu-backup.sh --capture
+bash scripts/menu-backup.sh --stage-repo    # only after manual privacy review; public repo
+```
+
+Then review the snapshot files and explicitly `git add`, `git commit`, `git push`.
+**The repository does not yet contain the actual local snapshot** until this is
+done from the PC. After reinstalling, use `--plan-restore` then `--restore`
+to restore the tracked files safely. Neither capture nor restore backs up
+Firefox profiles, passwords, monitor hardware identity or any personal data.
+
+The optional `packages/science-apt.txt` profile covers recent APT applications
+(QGIS, Octave, Stellarium, LAMMPS, Quantum ESPRESSO + SSSP,
+QElectroTech, PulseView, SimulIDE and related tools).
+Use `bash scripts/install-science.sh --plan` for a transaction simulation
+or `bash bootstrap.sh --with-science` for an explicit full install.
+Large KiCad 3D packages, OpenFOAM, ROS 2 and externally built applications
+are **not** installed automatically. KStars is in the user Flatpak manifest.
+
+**Firefox is preferred as the default browser when a valid Firefox desktop
+entry exists.** Brave remains an installed optional browser (legacy core
+prerequisite); the setup no longer resets the default to Brave.
+
 ## Scientific and engineering applications (optional)
 
 The host has a separate, manually managed scientific stack (ParaView, GNU
@@ -87,7 +120,8 @@ This user-scoped script avoids duplicate system/Flatpak entries and does not
 overwrite existing custom shortcuts. CLI-only solvers receive interactive
 terminal entries, not imaginary GUIs. The script **does not install** scientific
 software; large source builds and Conda environments are not part of the
-default `bootstrap.sh` or `sysup` workflows. See
+default `bootstrap.sh` or `sysup` workflows unless the opt-in
+`--with-science` APT profile is explicitly requested. See
 [scientific software inventory and launcher details](docs/scientific-software.md)
 for tested host paths, validation commands and reproduction limits.
 
