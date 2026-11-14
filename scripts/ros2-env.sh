@@ -37,7 +37,8 @@ case "$mode" in
     echo '[OK] ROS 2 dev service requested. Run: bash scripts/ros2-env.sh check'
     ;;
   --shell|shell)
-    compose_sudo exec dev bash --interactive
+    # Bash supports -i, not the long-form --interactive option.
+    compose_sudo exec dev bash -i
     ;;
   --check|check)
     compose_sudo exec --no-TTY dev bash -lc '

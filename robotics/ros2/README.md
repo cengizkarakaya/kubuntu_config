@@ -104,3 +104,12 @@ locks, or add unsupported PPAs as a workaround.
 check after pulling changes. `ROS_UID`, `ROS_GID` and the host workspace
 path are determined by the helper, not hard-coded to `/home/cengiz` or
 accidentally resolved to `/root` by sudo.
+
+### Interactive shell invocation fixed (14 November 2026)
+
+The initial `bash scripts/ros2-env.sh shell` command used `bash
+--interactive`, but Bash accepts `-i` (not that long option). The helper now
+uses `docker compose exec dev bash -i`; the offline CI mocks the Compose call
+and verifies the correct arguments. The existing Docker image and container
+do not need to be rebuilt or restarted. Run `git pull --ff-only` and then
+`bash scripts/ros2-env.sh shell`.
