@@ -1,0 +1,15 @@
+[Desktop Entry]
+Comment=Atomik ve moleküler dinamik simülasyonları için bilimsel hesaplama yazılımı.
+Exec=/usr/bin/alacritty --working-directory /home/cengiz/Workspaces/Scientific/LAMMPS -e /usr/bin/bash -i
+GenericName=Molecular Dynamics Simulator
+Icon=org.kde.plasma.calculator
+Name=LAMMPS (Terminal)
+NoDisplay=false
+Path=
+PrefersNonDefaultGPU=false
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-KDE-SubstituteUID=false
+X-KDE-Username=

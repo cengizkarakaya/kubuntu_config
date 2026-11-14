@@ -1,0 +1,15 @@
+[Desktop Entry]
+Comment=Etkileşimli geometri, cebir, CAS ve 3D matematik.
+Exec=/usr/bin/firefox --new-window https://www.geogebra.org/classic
+GenericName=Interactive Mathematics
+Icon=kgeography
+Name=GeoGebra Classic 6
+NoDisplay=false
+Path=
+PrefersNonDefaultGPU=false
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-KDE-SubstituteUID=false
+X-KDE-Username=

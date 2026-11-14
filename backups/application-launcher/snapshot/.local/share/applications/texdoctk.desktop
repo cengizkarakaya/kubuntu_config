@@ -1,0 +1,15 @@
+[Desktop Entry]
+Categories=Settings;
+Comment=Display TeX related documentation
+Exec=texdoctk
+Icon=accessories-text-editor
+Name=TeXdoctk
+NoDisplay=false
+Path=
+PrefersNonDefaultGPU=false
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-KDE-SubstituteUID=false
+X-KDE-Username=

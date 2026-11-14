@@ -1,0 +1,13 @@
+[Desktop Entry]
+Categories=Graphics;Qt;VectorGraphics;Science;Electricity;Engineering;
+Comment=Edit electrical diagrams.
+Exec=qelectrotech %F
+GenericName=Electrical diagram editor
+Icon=qelectrotech
+Keywords=Graphics;Science;Electricity;Engineering;
+MimeType=application/x-qet-project;application/x-qet-element;application/x-qet-titleblock;
+Name=QElectroTech-2
+Terminal=false
+TryExec=qelectrotech
+Type=Application
+Version=1.0

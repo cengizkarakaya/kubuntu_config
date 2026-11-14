@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=openEMS (Python Terminal)
+Comment=Bilimsel ve mühendislik uygulaması
+Exec=/home/cengiz/.local/bin/kubuntu-science-launchers/openems-python
+TryExec=/home/cengiz/.local/bin/kubuntu-science-launchers/openems-python
+Icon=utilities-terminal
+Terminal=true
+Categories=Science;
+StartupNotify=true
+X-Kubuntu-Science-Managed=true

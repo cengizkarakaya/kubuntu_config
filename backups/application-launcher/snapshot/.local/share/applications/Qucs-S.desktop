@@ -1,0 +1,15 @@
+[Desktop Entry]
+Comment=SPICE tabanlı elektronik devre tasarımı ve simülasyonu
+Exec=/home/cengiz/Applications/Qucs-S/Qucs-S-26.1.1-linux-x86_64.AppImage
+GenericName=Electronic Circuit Simulator
+Icon=qelectrotech
+Name=Qucs-S
+NoDisplay=false
+Path=
+PrefersNonDefaultGPU=false
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-KDE-SubstituteUID=false
+X-KDE-Username=

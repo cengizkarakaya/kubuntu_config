@@ -1,0 +1,15 @@
+[Desktop Entry]
+Comment=Scientific plotting and data analysis
+Exec=/usr/bin/labplot
+GenericName=Scientific Data Analysis
+Icon=labplot
+Name=LabPlot
+NoDisplay=false
+Path=
+PrefersNonDefaultGPU=false
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-KDE-SubstituteUID=false
+X-KDE-Username=

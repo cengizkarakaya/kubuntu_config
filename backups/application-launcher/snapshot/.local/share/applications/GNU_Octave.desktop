@@ -1,0 +1,15 @@
+[Desktop Entry]
+Comment=Sayısal analiz, lineer cebir, diferansiyel denklemler ve bilimsel hesaplama.
+Exec=/usr/bin/octave --gui
+GenericName=Numerical Computing Environment
+Icon=octave
+Name=GNU Octave
+NoDisplay=false
+Path=
+PrefersNonDefaultGPU=false
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-KDE-SubstituteUID=false
+X-KDE-Username=

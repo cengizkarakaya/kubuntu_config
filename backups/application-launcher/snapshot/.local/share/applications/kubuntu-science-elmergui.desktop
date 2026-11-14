@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=ElmerGUI (Elmer FEM)
+Comment=Bilimsel ve mühendislik uygulaması
+Exec=/home/cengiz/.local/bin/kubuntu-science-launchers/elmergui
+TryExec=/home/cengiz/.local/bin/kubuntu-science-launchers/elmergui
+Icon=applications-engineering
+Terminal=false
+Categories=Science;
+StartupNotify=true
+X-Kubuntu-Science-Managed=true

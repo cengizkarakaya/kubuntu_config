@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Webots
+Comment=Webots mobile robot simulator
+Exec=/home/cengiz/.local/opt/webots-R2025a/webots/webots
+Icon=/home/cengiz/.local/opt/webots-R2025a/webots/resources/icons/core/webots.png
+Terminal=false
+Type=Application

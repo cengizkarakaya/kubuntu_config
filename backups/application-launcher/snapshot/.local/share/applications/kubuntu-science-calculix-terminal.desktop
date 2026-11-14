@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=CalculiX (Terminal)
+Comment=Bilimsel ve mühendislik uygulaması
+Exec=/home/cengiz/.local/bin/kubuntu-science-launchers/calculix-terminal
+TryExec=/home/cengiz/.local/bin/kubuntu-science-launchers/calculix-terminal
+Icon=utilities-terminal
+Terminal=true
+Categories=Science;
+StartupNotify=true
+X-Kubuntu-Science-Managed=true

@@ -1,0 +1,15 @@
+[Desktop Entry]
+Comment=Gerçek zamanlı gökyüzü simülasyonu ve astronomi gözlemleri.
+Exec=/usr/bin/stellarium
+GenericName=Planetarium Software
+Icon=stellarium
+Name=Stellarium
+NoDisplay=false
+Path=
+PrefersNonDefaultGPU=false
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-KDE-SubstituteUID=false
+X-KDE-Username=

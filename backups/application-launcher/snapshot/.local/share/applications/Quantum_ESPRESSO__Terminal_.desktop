@@ -1,0 +1,15 @@
+[Desktop Entry]
+Comment=DFT ve kuantum malzeme hesaplamaları
+Exec=/usr/bin/alacritty --working-directory /home/cengiz/Workspaces/Scientific/QuantumESPRESSO -e /usr/bin/bash -i
+GenericName=Quantum Materials Simulation
+Icon=quassel-symbolic
+Name=Quantum ESPRESSO (Terminal)
+NoDisplay=false
+Path=
+PrefersNonDefaultGPU=false
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-KDE-SubstituteUID=false
+X-KDE-Username=

@@ -1,0 +1,18 @@
+[Desktop Entry]
+Comment=View the current status of the WARP Tunnel
+DBusActivatable=true
+Exec=/bin/warp-taskbar
+Icon=zero-trust-orange
+Keywords=warp teams cloudflare vpn
+Name=Cloudflare One Client (warp)
+NoDisplay=false
+Path=
+PrefersNonDefaultGPU=false
+StartupNotify=false
+StartupWMClass=warp-taskbar
+Terminal=false
+TerminalOptions=
+Type=Application
+Version=1.2
+X-KDE-SubstituteUID=false
+X-KDE-Username=

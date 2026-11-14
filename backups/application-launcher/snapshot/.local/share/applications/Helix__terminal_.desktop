@@ -1,0 +1,15 @@
+[Desktop Entry]
+Comment=Modern, modal ve terminal tabanlı kod editörü.
+Exec=/usr/bin/alacritty -e /home/cengiz/.local/bin/hx
+GenericName=Terminal Code Editor
+Icon=accessories-text-editor
+Name=Helix (terminal)
+NoDisplay=false
+Path=
+PrefersNonDefaultGPU=false
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-KDE-SubstituteUID=false
+X-KDE-Username=

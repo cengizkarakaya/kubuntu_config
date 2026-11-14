@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Kubuntu Alacritty
+Exec=alacritty
+Terminal=false
+StartupNotify=false
+X-KDE-GlobalAccel-CommandShortcut=true
+Icon=Alacritty
+Categories=System;TerminalEmulator;

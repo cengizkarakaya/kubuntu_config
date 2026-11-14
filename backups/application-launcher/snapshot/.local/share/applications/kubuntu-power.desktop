@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Kubuntu Power Menu
+Exec=/home/cengiz/.local/bin/kubuntu-power-menu
+Terminal=false
+StartupNotify=false
+X-KDE-GlobalAccel-CommandShortcut=true
+Icon=system-shutdown
+Categories=System;
