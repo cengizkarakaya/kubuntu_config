@@ -71,6 +71,23 @@ collection of shell commands to run unreviewed.
 - Document settings whose exact on-machine values are unknown as manual
   verification items, not as invented kwinrc/kscreenlockerrc edits.
 
+## Optional Astronomy simulators
+
+- Celestia, Gaia Sky, OpenSpace installations are opt-in; never add large
+  builds or datasets to the default bootstrap or sysup. On 14 November 2026,
+  Gaia Sky upstream v3.9.2 was newer than Flathub v3.8.0; document this
+  channel difference rather than pretending Flathub is the newest upstream.
+- Celestia's last released stable GitHub tag is 1.6.4; the 1.7 OBS AppImage
+  and daily builds are experimental and must not be installed automatically.
+- OpenSpace stable 0.22.1 requires a complex Linux source build (CMake 4+,
+  GCC 15+, OpenGL 4.6); the upstream Linux binary is not available as an
+  official stable download. A source-build script is not proof of on-host
+  success.
+- Use `scripts/install-astronomy-launchers.py --check` before `--install`.
+  Preserve Stellarium and KStars in the user's existing root Astronomy submenu.
+  Never generate a launcher for a missing binary or commit private menu backups.
+
+
 ## ROS 2 Docker development (optional, never in bootstrap)
 
 - ROS 2 Lyrical Publisher/Subscriber worked in the user's standalone Docker

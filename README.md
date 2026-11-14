@@ -193,6 +193,29 @@ are **not** installed automatically. KStars is in the user Flatpak manifest.
 entry exists.** Brave remains an installed optional browser (legacy core
 prerequisite); the setup no longer resets the default to Brave.
 
+## Astronomical universe simulators (optional)
+
+Celestia, Gaia Sky and OpenSpace have a separate, explicitly opt-in
+[installation and KDE launcher guide](docs/astronomy-simulators.md).
+Gaia Sky is installed/updated through the user Flathub; Celestia and OpenSpace
+have pinned upstream stable source-build options with on-machine verification.
+None are added to the default bootstrap or system update routine.
+
+```bash
+bash scripts/install-astronomy-gaia.sh --plan
+bash scripts/install-astronomy-gaia.sh --install
+bash scripts/build-celestia-stable.sh --plan
+bash scripts/build-openspace.sh --plan
+python3 scripts/install-astronomy-launchers.py --check
+python3 scripts/install-astronomy-launchers.py --install
+```
+
+The last command adds **only already-installed** programs to the existing
+Astronomy KMenuEdit submenu, retaining Stellarium and KStars; it saves a
+private backup before modifying the live menu. Source builds require separate
+explicit `--build` invocations and are not presumed successful.
+
+
 ## Scientific and engineering applications (optional)
 
 The host has a separate, manually managed scientific stack (ParaView, GNU
