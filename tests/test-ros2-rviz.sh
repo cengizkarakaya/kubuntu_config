@@ -25,5 +25,10 @@ assert 'NVIDIA_DRIVER_CAPABILITIES: graphics,display,utility,compute' in gfx
 assert 'XAUTHORITY: /tmp/.Xauthority' in gfx
 assert 'QT_QPA_PLATFORM: xcb' in gfx
 assert 'source: "${RVIZ_XAUTH:' in gfx
+assert 'source: "${ROBOTICS_ROOT:?Set via scripts/ros2-env.sh}/rviz2-config"' in gfx
+assert 'target: /home/rosdev/.rviz2' in gfx
+assert 'rviz_prepare_config "$auth"' in helper
+assert 'persistent_settings' in helper
+assert 'create_host_path: false' in gfx
 print('[PASS] RViz2 profile isolation, graphics env and explicit Xauthority guards')
 PY

@@ -33,6 +33,13 @@ services:
       HOME: /home/rosdev
       XDG_RUNTIME_DIR: /tmp/runtime-rosdev
     volumes:
+      # Persist RViz2 window, display and user configuration outside Docker.
+      # The helper creates this as a user-owned directory before first start.
+      - type: bind
+        source: "${ROBOTICS_ROOT:?Set via scripts/ros2-env.sh}/rviz2-config"
+        target: /home/rosdev/.rviz2
+        bind:
+          create_host_path: false
       - type: bind
         source: /tmp/.X11-unix
         target: /tmp/.X11-unix

@@ -94,6 +94,11 @@ separate stages.
 
 ## Optional NVIDIA RViz2 viewer
 
+RViz2 preferences are now kept on the host at
+`~/Workspaces/Robotics/rviz2-config/` and migrated from the previous
+container on first `rviz-up`. These private settings are not committed to
+GitHub; back them up separately before formatting.
+
 After Docker NVIDIA GPU access is confirmed, the RViz2 GUI can be installed
 in a separate opt-in Compose service. It leaves the base ROS dev workflow
 unchanged until explicitly selected. Execute:

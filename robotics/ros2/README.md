@@ -167,3 +167,42 @@ Xauthority/GLX rather than installing another graphics driver blindly.
 **Unverified until host test:** apt availability of
 `ros-lyrical-rviz2` during the viewer image build, GUI rendering,
 OpenGL vendor and RViz2 stability.
+
+## Persist RViz2 preferences and configurations (Stage 4 follow-up)
+
+The first RViz2 GUI on the actual host opened successfully with the NVIDIA
+RTX 4080 SUPER, hardware OpenGL 4.6 and direct rendering. RViz2 initially
+reported a missing `/home/rosdev/.rviz2/persistent_settings`, but a later
+inspection found that it had created the file (122 bytes, owned by UID 1000).
+This is consistent with a harmless first-run warning.
+
+To survive container recreation, the opt-in GUI service now binds:
+
+```text
+Host:      ~/Workspaces/Robotics/rviz2-config/
+Container: /home/rosdev/.rviz2/
+```
+
+On the first `bash scripts/ros2-env.sh rviz-up` after pulling this change,
+the helper creates the host configuration directory. If the old RViz2
+container is still present and no host `persistent_settings` exists, it
+copies that single file from the old container before Compose recreates it.
+**It never overwrites an existing host file**. On import failure it stops
+rather than silently losing old settings.
+
+```bash
+cd ~/kubuntu_config
+git pull --ff-only
+bash scripts/ros2-env.sh rviz-plan
+bash scripts/ros2-env.sh rviz-up
+bash scripts/ros2-env.sh rviz-check
+bash scripts/ros2-env.sh rviz
+ls -la ~/Workspaces/Robotics/rviz2-config
+```
+
+The host folder is outside the public `kubuntu_config` repository and will
+not be pushed to GitHub. **A bind mount persists data through container
+recreation, but not disk failure or formatting.** Include the folder in a
+private filesystem backup before reinstalling. For project-specific RViz
+layouts, also export named `.rviz` configuration files into a separately
+version-controlled robot project after checking for private paths.
