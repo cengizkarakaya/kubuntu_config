@@ -112,3 +112,22 @@ collection of shell commands to run unreviewed.
   re-launching the separately built RViz2 GUI viewer.
 - Static CI verifies XML syntax and no-overwrite behavior. Real colcon,
   Xacro expansion and RViz2 visualization require interactive host tests.
+
+## ROS 2 rqt + PlotJuggler desktop integration (opt-in)
+
+- Keep ROS GUIs in the existing optional GPU/XWayland `rviz` Compose
+  service; the headless `dev` must remain usable without GPU dependencies.
+  The ROS 2 PlotJuggler plugin package is for the **classic 3.x app**;
+  do not install/download unverified standalone variants.
+- App menu entries are created **only** with
+  `python3 scripts/install-ros2-launchers.py --install` by the desktop
+  user, never via bootstrap or sudo. Preserve the user KMenuEdit Robotics
+  category and Webots. Back up the existing .menu before patching; refuse
+  conflicting files, and never commit private live menu snapshots
+  automatically.
+- The launchers deliberately open Alacritty to provide an interactive
+  prompt for rootful Docker sudo; do not add the user to the Docker group
+  or install setuid/polkit bypasses.
+- CI checks installer non-destructive behavior but cannot prove actual
+  GPU Qt apps open. Verify by testing rqt, rqt Graph and PlotJuggler from
+  KDE after rebuilding the image and passing `rviz-check`.

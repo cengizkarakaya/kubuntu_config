@@ -95,6 +95,16 @@ rviz_prepare_config() {
     fi
   fi
   echo "[INFO] Persistent RViz2 configuration: $dest"
+  # Keep Qt/rqt/PlotJuggler settings in a separate host directory.
+  local gui_dest="$ROBOTICS_ROOT/ros-gui-config"
+  if [[ -L "$gui_dest" || ( -e "$gui_dest" && ! -d "$gui_dest" ) ]]; then
+    echo "[FAIL] ROS GUI configuration path is not a normal directory: $gui_dest" >&2
+    return 1
+  fi
+  if [[ ! -d "$gui_dest" ]]; then
+    (umask 077; mkdir -p -- "$gui_dest")
+  fi
+  echo "[INFO] Persistent Qt/rqt/PlotJuggler settings: $gui_dest"
 }
 
 rviz_generate_cookie() {
@@ -186,6 +196,10 @@ case "$mode" in
       source /opt/ros/lyrical/setup.bash
       test "$ROS_DISTRO" = lyrical
       command -v rviz2
+      for pkg in rqt_gui rqt_graph rqt_console rqt_image_view rqt_topic plotjuggler plotjuggler_ros; do
+        ros2 pkg prefix "$pkg" >/dev/null
+        printf "[OK] ROS 2 GUI package: %s\n" "$pkg"
+      done
       nvidia-smi -L
       glxinfo -B
       renderer="$(glxinfo -B | sed -n "s/^OpenGL renderer string: //p" | head -n 1)"
@@ -201,13 +215,32 @@ case "$mode" in
     echo '[INFO] Starting RViz2 GUI; Ctrl+C closes the GUI without deleting workspaces.'
     compose_rviz_sudo "$auth" exec rviz bash -lc 'source /opt/ros/lyrical/setup.bash && exec rviz2'
     ;;
+  --rqt|rqt|--rqt-graph|rqt-graph|--rqt-console|rqt-console|--rqt-image|rqt-image|--plotjuggler|plotjuggler)
+    auth="$(rviz_auth_path)"
+    [[ -f "$auth" ]] || {
+      echo '[FAIL] First run: bash scripts/ros2-env.sh rviz-up' >&2
+      exit 1
+    }
+    case "$mode" in
+      --rqt|rqt) gui_package=rqt_gui; gui_exec=rqt_gui ;;
+      --rqt-graph|rqt-graph) gui_package=rqt_graph; gui_exec=rqt_graph ;;
+      --rqt-console|rqt-console) gui_package=rqt_console; gui_exec=rqt_console ;;
+      --rqt-image|rqt-image) gui_package=rqt_image_view; gui_exec=rqt_image_view ;;
+      --plotjuggler|plotjuggler) gui_package=plotjuggler; gui_exec=plotjuggler ;;
+    esac
+    echo "[INFO] Starting ROS 2 GUI: $gui_package/$gui_exec (Ctrl+C to stop)"
+    compose_rviz_sudo "$auth" exec rviz bash -lc '
+      source /opt/ros/lyrical/setup.bash
+      exec ros2 run "$1" "$2"
+    ' _ "$gui_package" "$gui_exec"
+    ;;
   --rviz-stop|rviz-stop)
     auth="$(rviz_auth_path)"
     compose_rviz_sudo "$auth" stop rviz
     echo '[OK] RViz2 viewer stopped. The development service remains available.'
     ;;
   --help|-h|help)
-    printf 'Usage: bash scripts/ros2-env.sh [plan|up|check|shell|status|down]\n'
+    printf 'Usage: bash scripts/ros2-env.sh [plan|up|check|shell|status|down|rviz-plan|rviz-up|rviz-check|rviz|rqt|rqt-graph|rqt-console|rqt-image|plotjuggler|rviz-stop]\n'
     printf 'Workspace root (default): %s\n' "$ROBOTICS_ROOT"
     printf 'No ROS packages or NVIDIA devices are installed on Kubuntu host.\n'
     ;;

@@ -92,6 +92,28 @@ the config repository. This optional profile is **not** installed by
 RViz2, ROS navigation, Rust ROS nodes and device/network passthrough remain
 separate stages.
 
+## ROS 2 rqt, PlotJuggler and KDE Robotics launchers (opt-in)
+
+The GPU-enabled ROS 2 GUI image now includes `rqt`, `rqt_graph`,
+`rqt_console`, `rqt_image_view` and ROS-linked PlotJuggler 3.
+**These GUI additions require a new on-host Docker image build.**
+Run:
+
+```bash
+bash scripts/ros2-env.sh rviz-stop
+bash scripts/ros2-env.sh rviz-up
+bash scripts/ros2-env.sh rviz-check
+python3 scripts/install-ros2-launchers.py --check
+python3 scripts/install-ros2-launchers.py --install
+```
+
+The installer adds eight desktop launchers to the existing user **Robotics**
+KMenuEdit group without overwriting its Webots entry. It uses Alacritty to
+keep the Docker sudo prompt visible. **After a new login, start the GUI
+service** using the Robotics menu entry before launching its applications.
+KDE menu modifications are backed up privately before writing.
+See [docs/ros2-gui-launchers.md](docs/ros2-gui-launchers.md) for details.
+
 ## TIO's first ROS 2 visual model (opt-in)
 
 A provisional `robotics/tio_description/` package introduces four wheels,

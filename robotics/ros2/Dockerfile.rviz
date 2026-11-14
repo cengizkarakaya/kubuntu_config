@@ -8,10 +8,16 @@ USER root
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         ros-lyrical-rviz2 \
+        ros-lyrical-rqt \
+        ros-lyrical-rqt-graph \
+        ros-lyrical-rqt-console \
+        ros-lyrical-rqt-image-view \
+        ros-lyrical-rqt-topic \
+        ros-lyrical-plotjuggler-ros \
         mesa-utils \
         xauth \
     && rm -rf /var/lib/apt/lists/* \
-    && bash -lc 'source /opt/ros/lyrical/setup.bash && command -v rviz2 && ros2 pkg prefix rviz2' \
+    && bash -lc 'source /opt/ros/lyrical/setup.bash && command -v rviz2 && ros2 pkg prefix rviz2 && ros2 pkg prefix rqt_gui && ros2 pkg prefix plotjuggler && ros2 pkg prefix plotjuggler_ros' \
     && command -v glxinfo \
     && mkdir -p /tmp/runtime-rosdev \
     && chown "${ROS_UID}:${ROS_GID}" /tmp/runtime-rosdev \

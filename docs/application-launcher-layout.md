@@ -33,3 +33,15 @@ KiCad submenu already contains: KiCad, Schematic Editor (Standalone), PCB Editor
 - CLI utilities such as sigrok-cli can be hidden from the menu if they are normally invoked in Alacritty.
 
 **Do not remove installed software to clean a menu.** Use KDE Menu Editor's hide/visibility setting and compare Exec/desktop IDs first. The backup tool records the user's actual launcher files and menu structures; the markdown is an independent recovery reference if the exact export was missed.
+
+## Optional ROS 2 launchers (added as an installer; not in observed 14 Nov snapshot)
+
+The current live KMenuEdit backup contains a root Robotics group with
+Webots. The **opt-in** `scripts/install-ros2-launchers.py` adds eight
+entries: ROS 2 Development (Terminal), ROS 2 GUI — Start / Refresh,
+RViz2, rqt, rqt Graph, rqt Console, rqt Image View, and PlotJuggler.
+The script checks the actual live menu, preserves Webots and makes a
+private backup before updating. It is not run automatically and must
+not be confused with the observed menu at the top of this file.
+
+Full installer guide: `docs/ros2-gui-launchers.md`.

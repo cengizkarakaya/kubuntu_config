@@ -242,3 +242,28 @@ The TIO source is copied **only once** into
 refuses to overwrite an existing customized project. Build/Xacro/GUI
 validation must be performed on the actual ROS machine; static CI
 cannot prove these packages are available in the installed image.
+
+## rqt + PlotJuggler and KDE Application Launcher (Stage 6)
+
+The optional RViz2 Docker image now bundles
+`ros-lyrical-rqt`, `ros-lyrical-rqt-graph`,
+`ros-lyrical-rqt-console`, `ros-lyrical-rqt-image-view`,
+`ros-lyrical-rqt-topic`, and `ros-lyrical-plotjuggler-ros`.
+The existing headless ROS 2 `dev` image stays unchanged.
+The GUI helper supports `rqt`, `rqt-graph`, `rqt-console`,
+`rqt-image`, and `plotjuggler` subcommands.
+
+Preferences for Qt/rqt/PlotJuggler are persisted at
+`~/Workspaces/Robotics/ros-gui-config/` through the GUI Compose
+overlay. The `rviz-up` helper creates the directory before container
+startup. The existing `rviz2-config` bind remains intact.
+
+The workstation already passed NVidia/OpenGL/RViz2 GUI tests; these
+**new packages have not yet been built or launched on that machine**.
+After pulling, rerun `rviz-stop`, `rviz-up`, `rviz-check`.
+Install KDE Application Launcher shortcuts **only as the normal desktop user**
+using `python3 scripts/install-ros2-launchers.py --check` and
+`--install`. The installer preserves existing KMenuEdit Robotics/Webots,
+backs up the menu and never clobbers customized entries.
+
+See [docs/ros2-gui-launchers.md](../../docs/ros2-gui-launchers.md).

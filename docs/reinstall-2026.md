@@ -139,3 +139,19 @@ Robot source files, including edited Xacro, live under
 `~/Workspaces/Robotics/tio_ws/src/` and must be separately backed up.
 The template dimensions are tentative; robot dynamics/sensors/Gazebo remain
 future independent work. See `robotics/tio_description/README.md`.
+
+### ROS 2 tools and KDE Robotics menu shortcuts (14 Nov 2026)
+
+The optional `robotics/ros2/Dockerfile.rviz` adds rqt (graph, console,
+image view, topic plugin) and the ROS-linked PlotJuggler 3 package.
+After installing the host NVIDIA runtime and restoring the ROS base
+Docker environment, rebuild the GUI image with `rviz-up` and check it
+with `rviz-check`.
+
+Run `python3 scripts/install-ros2-launchers.py --check` followed by
+`--install` as the desktop user to add eight application shortcuts to
+the existing Robotics menu, preserving Webots. The helper backs up
+the live menu before writing, and the launchers use Alacritty so sudo
+prompts remain interactive. Do not run the installer from bootstrap
+or with sudo. Back up `~/Workspaces/Robotics/ros-gui-config` privately.
+Full steps in `docs/ros2-gui-launchers.md`.

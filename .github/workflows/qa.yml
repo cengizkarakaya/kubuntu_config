@@ -28,6 +28,8 @@ jobs:
         run: bash tests/test-ros2-rviz.sh
       - name: Validate provisional TIO description and safe initial copy
         run: bash tests/test-tio-description.sh
+      - name: Test ROS 2 graphical desktop launchers (mocked, non-destructive)
+        run: bash tests/test-ros2-launchers.sh
       - name: Test optional native KWin Alacritty rule (mocked config tools)
         run: bash tests/test-host-alacritty-rule.sh
       - name: Verify interactive Bash eza/zoxide integration and Alacritty TOML
