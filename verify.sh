@@ -191,7 +191,7 @@ if [[ -f "$HOME/.local/state/kubuntu-config/apt-unavailable.txt" ]]; then
 fi
 if has xdg-mime; then
   mime="$(xdg-mime query default x-scheme-handler/https 2>/dev/null)"
-  [[ "$mime" == *brave* ]] && ok default-app "HTTPS $mime" || warn default-app "HTTPS $mime"
+  [[ "$mime" == *firefox* ]] && ok default-app "HTTPS $mime" || warn default-app "HTTPS $mime (expected Firefox; check scripts/setup-defaults.sh)"
 fi
 echo '=== Note: verification cannot prove in-app GPU acceleration, shortcut activation or GUI stability. ==='
 printf '\nSUMMARY PASS=%d WARN=%d FAIL=%d\n' "$PASS" "$WARN" "$FAIL"
