@@ -23,7 +23,7 @@ bash -n "$builder"
 mkdir -p "$TMP/mockbin"
 cat > "$TMP/mockbin/apt-get" <<'MOCK'
 #!/usr/bin/env bash
-printf '%s\\n' "$*" > "$MOCK_APT_ARGS"
+printf '%s\n' "$*" > "$MOCK_APT_ARGS"
 [[ "$1" == -s ]] || exit 10
 [[ " $* " == *" --no-remove "* ]] || exit 11
 [[ " $* " == *" libjack-jackd2-dev "* ]] || exit 12
@@ -31,11 +31,11 @@ printf '%s\\n' "$*" > "$MOCK_APT_ARGS"
 [[ "${MOCK_APT_FAIL:-0}" != 1 ]]
 MOCK
 chmod +x "$TMP/mockbin/apt-get"
-MOCK_APT_ARGS="$TMP/apt-args" HOME="$TMP/home" PATH="$TMP/mockbin:$PATH" \\
+MOCK_APT_ARGS="$TMP/apt-args" HOME="$TMP/home" PATH="$TMP/mockbin:$PATH" \
   bash "$builder" --check-apt > "$TMP/apt-plan"
 grep -q 'libjack-jackd2-dev' "$TMP/apt-args"
 grep -q 'APT simulation succeeded' "$TMP/apt-plan"
-if MOCK_APT_FAIL=1 MOCK_APT_ARGS="$TMP/apt-args" HOME="$TMP/home" \\
+if MOCK_APT_FAIL=1 MOCK_APT_ARGS="$TMP/apt-args" HOME="$TMP/home" \
      PATH="$TMP/mockbin:$PATH" bash "$builder" --check-apt > "$TMP/apt-fail" 2>&1; then
   echo '[FAIL] OpenSpace must abort when APT simulation returns failure.' >&2
   exit 1
