@@ -34,6 +34,17 @@ KiCad submenu already contains: KiCad, Schematic Editor (Standalone), PCB Editor
 
 **Do not remove installed software to clean a menu.** Use KDE Menu Editor's hide/visibility setting and compare Exec/desktop IDs first. The backup tool records the user's actual launcher files and menu structures; the markdown is an independent recovery reference if the exact export was missed.
 
+## Optional astronomy simulators (not in the observed snapshot)
+
+The existing Astronomy submenu contains Stellarium and KStars. The opt-in
+`scripts/install-astronomy-launchers.py --check | --install` discovers
+installed Celestia, Gaia Sky and OpenSpace and inserts only their available
+desktop IDs into **the existing root Astronomy menu**. The live KMenuEdit
+file is privately backed up before modification; this is not an automatic
+bootstrap step. See `docs/astronomy-simulators.md` for safe installation
+channels, source-build caveats and launcher verification.
+
+
 ## Optional ROS 2 launchers (added as an installer; not in observed 14 Nov snapshot)
 
 The current live KMenuEdit backup contains a root Robotics group with
