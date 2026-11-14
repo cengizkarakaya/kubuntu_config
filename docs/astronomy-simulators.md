@@ -53,7 +53,12 @@ stable **GLUT** version; it does **not** offer the contemporary Qt6 interface.
 The script simulates APT installation without removals, aborting on dependency
 conflicts. It explicitly installs **gettext** and **autopoint**: Celestia's
 legacy `configure.ac` requires their `AM_PO_SUBDIRS` and `AM_GNU_GETTEXT`
-macros. Its Git checkout is verified against the pinned source commit.
+macros. The installer also installs **liblua5.3-dev** from the signed Ubuntu
+repository and verifies `lua.hpp` through the compiler using
+`pkg-config --cflags lua5.3` before invoking Autotools. The
+`--with-lua` configure flag explicitly retains CELX (.celx) scripting,
+rather than disabling Lua to avoid compile errors.
+Its Git checkout is verified against the pinned source commit.
 To recover safely from failed prior `autoreconf` attempts, it exports a clean
 copy of the tagged files via `git archive` to a temporary build directory.
 Before running Autotools, the script applies a narrow, verified fix to the
