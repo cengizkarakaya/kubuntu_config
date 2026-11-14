@@ -3,10 +3,11 @@
 # This build is complex, experimental on Kubuntu 26.10; run --plan first.
 set -Eeuo pipefail
 mode="${1:---plan}"
-case "$mode" in --plan|--check-apt|--build) ;; *)
-  echo "Usage: bash $0 --plan | --check-apt | --build" >&2; exit 2 ;;
+case "$mode" in --plan|--check-apt|--build|--resume) ;; *)
+  echo "Usage: bash $0 --plan | --check-apt | --build | --resume" >&2; exit 2 ;;
 esac
 (( EUID != 0 )) || { echo 'Run as the regular user, never as root.' >&2; exit 2; }
+SCRIPTS_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 TAG='releases/v0.22.1'
 DEST="$HOME/.local/opt/openspace"
 packages=(
@@ -43,6 +44,8 @@ if [[ "$mode" == --plan ]]; then
   echo 'Verify APT dependency resolution before installing anything:'
   echo '  bash scripts/build-openspace.sh --check-apt'
   echo 'To attempt a source build: bash scripts/build-openspace.sh --build'
+  echo 'To resume a failed build without APT, clone, or CMake configure:'
+  echo '  bash scripts/build-openspace.sh --resume'
   exit 0
 fi
 
@@ -89,11 +92,13 @@ if ! [[ "$gcc_version" =~ ^[0-9]+$ ]] || (( gcc_version < 13 )); then
 fi
 echo "[CHECK] CMake $cmake_version / GCC $(g++ -dumpfullversion) validated."
 
-sudo apt-get update
-apt-get -s install --no-remove --no-install-recommends "${packages[@]}" || {
+if [[ "$mode" == --build ]]; then
+  sudo apt-get update
+  apt-get -s install --no-remove --no-install-recommends "${packages[@]}" || {
   echo '[FAIL] APT simulation failed; nothing installed by this script.' >&2; exit 1;
 }
-sudo apt-get install -y --no-remove --no-install-recommends "${packages[@]}"
+  sudo apt-get install -y --no-remove --no-install-recommends "${packages[@]}"
+fi
 # Stable v0.22's launcher uses Qt >=6.8 and globe browsing uses GDAL.
 # Check actual headers/modules early, before fetching a large Git submodule tree.
 qt_version="$(pkg-config --modversion Qt6Core 2>/dev/null || true)"
@@ -107,19 +112,35 @@ if ! pkg-config --exists gdal; then
 fi
 echo "[CHECK] Qt $qt_version / GDAL $(pkg-config --modversion gdal) detected."
 if [[ ! -d "$DEST/.git" ]]; then
+  if [[ "$mode" == --resume ]]; then
+    echo "[FAIL] Cannot resume; source checkout missing: $DEST" >&2; exit 1
+  fi
   git clone --recursive --branch "$TAG" --single-branch \
     https://github.com/OpenSpace/OpenSpace.git "$DEST"
 else
   [[ "$(git -C "$DEST" describe --tags --exact-match HEAD)" == "$TAG" ]] || {
     echo '[FAIL] Existing checkout is not the pinned stable tag.' >&2; exit 1;
   }
-  git -C "$DEST" diff --quiet && git -C "$DEST" diff --cached --quiet || {
-    echo '[FAIL] Existing OpenSpace checkout has local changes.' >&2; exit 1;
-  }
-  git -C "$DEST" submodule update --init --recursive
+  if [[ "$mode" == --build ]]; then
+    git -C "$DEST" submodule update --init --recursive
+  fi
 fi
-cmake -S "$DEST" -B "$DEST/build" -G Ninja \
-  -DCMAKE_BUILD_TYPE=Release -DOPENSPACE_HAVE_TESTS=OFF
+
+# Strictly check upstream source against HEAD, allow ONLY the exact approved
+# GDAL const-correctness patch, and apply it idempotently in the existing tree.
+# This triggers recompilation of the changed translation unit but retains
+# all other Ninja objects from previous builds.
+python3 "$SCRIPTS_DIR/patch-openspace-gdal.py" "$DEST"
+
+if [[ "$mode" == --resume ]]; then
+  if [[ ! -f "$DEST/build/build.ninja" ]]; then
+    echo "[FAIL] Cannot resume; Ninja build.ninja does not exist." >&2; exit 1
+  fi
+  echo "[RESUME] Reusing existing Ninja build tree; no APT, Git clone or CMake configure."
+else
+  cmake -S "$DEST" -B "$DEST/build" -G Ninja \
+    -DCMAKE_BUILD_TYPE=Release -DOPENSPACE_HAVE_TESTS=OFF
+fi
 cmake --build "$DEST/build" --parallel "${OPENSPACE_BUILD_JOBS:-6}"
 test -x "$DEST/bin/OpenSpace" || {
   echo '[FAIL] OpenSpace executable was not generated in bin/OpenSpace.' >&2; exit 1;

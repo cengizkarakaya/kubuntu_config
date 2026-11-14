@@ -30,6 +30,8 @@ jobs:
         run: bash tests/test-tio-description.sh
       - name: Test Celestia source-build retry safety (offline)
         run: bash tests/test-celestia-builder.sh
+      - name: Test GDAL 3.13 source fix and incremental OpenSpace resume
+        run: bash tests/test-openspace-gdal-patch.sh
       - name: Test OpenSpace installer preflight (offline)
         run: bash tests/test-openspace-builder.sh
       - name: Test astronomy KDE launchers (mocked, non-destructive)
