@@ -3,8 +3,8 @@
 # This build is complex, experimental on Kubuntu 26.10; run --plan first.
 set -Eeuo pipefail
 mode="${1:---plan}"
-case "$mode" in --plan|--build) ;; *)
-  echo "Usage: bash $0 --plan | --build" >&2; exit 2 ;;
+case "$mode" in --plan|--check-apt|--build) ;; *)
+  echo "Usage: bash $0 --plan | --check-apt | --build" >&2; exit 2 ;;
 esac
 (( EUID != 0 )) || { echo 'Run as the regular user, never as root.' >&2; exit 2; }
 TAG='releases/v0.22.1'
@@ -21,7 +21,7 @@ packages=(
   libxcb-randr0-dev libxcb-render-util0-dev libxcb-util-dev libxcb-xinerama0-dev
   libxcb-xkb-dev libxcb-cursor-dev libegl-dev libgl-dev libdbus-1-dev
   libatspi2.0-dev libxrandr-dev libxxf86vm-dev libxinerama-dev
-  libxcursor-dev libmpv-dev libnss3 libnspr4
+  libxcursor-dev libjack-jackd2-dev libmpv-dev libnss3 libnspr4
   qt6-base-dev libgdal-dev libcurl4-openssl-dev libasound2-dev
   libpng-dev freeglut3-dev libvulkan-dev
 )
@@ -31,6 +31,7 @@ echo 'Requires CMake >=4.0, GCC >=13, Qt >=6.8, OpenGL 4.6, >=30 GiB free disk s
 echo 'Pinned v0.22.1 uses Git submodules, not latest-master vcpkg presets.'
 echo 'The vendor documents builds on Ubuntu, but NOT specifically Kubuntu 26.10.'
 echo 'It will download third-party build dependencies via upstream build scripts.'
+echo 'JACK2 provider explicitly selected: libjack-jackd2-dev (no JACK1 switch).'
 if [[ "$mode" == --plan ]]; then
   command -v cmake >/dev/null && cmake --version | head -n 1 || true
   command -v g++ >/dev/null && g++ -dumpfullversion || true
@@ -39,7 +40,24 @@ if [[ "$mode" == --plan ]]; then
   df -h "$HOME" | tail -n 1
   printf 'APT prerequisites: %s\n' "${packages[*]}"
   echo 'Dry-run: no packages downloaded or installed.'
+  echo 'Verify APT dependency resolution before installing anything:'
+  echo '  bash scripts/build-openspace.sh --check-apt'
   echo 'To attempt a source build: bash scripts/build-openspace.sh --build'
+  exit 0
+fi
+
+# Read-only APT transaction check. On Ubuntu 26.10 libmpv-dev depends on
+# virtual libjack-dev; explicitly selecting the JACK2 provider avoids APT's
+# otherwise preferred JACK1 development package, which would remove JACK2
+# runtime libraries (including i386) used by other programs.
+if [[ "$mode" == --check-apt ]]; then
+  echo '[CHECK] Simulating OpenSpace APT dependencies without root privileges.'
+  echo '[CHECK] Requested provider: libjack-jackd2-dev (preserve JACK2).'
+  if ! apt-get -s install --no-remove --no-install-recommends "${packages[@]}"; then
+    echo '[FAIL] APT cannot satisfy all dependencies without removing packages.' >&2
+    exit 1
+  fi
+  echo '[OK] APT simulation succeeded with --no-remove; nothing installed.'
   exit 0
 fi
 
