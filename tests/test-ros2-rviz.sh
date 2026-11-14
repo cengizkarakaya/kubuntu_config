@@ -20,6 +20,10 @@ for token in ('privileged: true', 'network_mode: host', '/var/run/docker.sock', 
 for token in ('rviz-up)', 'rviz-plan)', 'rviz-check)', 'rviz)', 'rviz-stop)', 'xauth nlist', "sed 's/^..../ffff/'"):
     assert token in helper, token
 assert 'ros-lyrical-rviz2' in docker
+assert 'ros-lyrical-plotjuggler' in docker
+assert 'ros-lyrical-rqt-plot' in docker
+assert 'ros-lyrical-plotjuggler-ros \\' not in docker
+assert 'plotjuggler_ros' not in docker.split('RUN apt-get update', 1)[1].split('&& rm -rf')[0]
 assert 'mesa-utils' in docker
 assert 'NVIDIA_DRIVER_CAPABILITIES: graphics,display,utility,compute' in gfx
 assert 'XAUTHORITY: /tmp/.Xauthority' in gfx

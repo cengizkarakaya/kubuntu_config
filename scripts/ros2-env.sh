@@ -196,10 +196,15 @@ case "$mode" in
       source /opt/ros/lyrical/setup.bash
       test "$ROS_DISTRO" = lyrical
       command -v rviz2
-      for pkg in rqt_gui rqt_graph rqt_console rqt_image_view rqt_topic plotjuggler plotjuggler_ros; do
+      for pkg in rqt_gui rqt_graph rqt_console rqt_image_view rqt_topic rqt_plot plotjuggler; do
         ros2 pkg prefix "$pkg" >/dev/null
         printf "[OK] ROS 2 GUI package: %s\n" "$pkg"
       done
+      if ros2 pkg prefix plotjuggler_ros >/dev/null 2>&1; then
+        echo '[INFO] Optional PlotJuggler ROS plugin detected.'
+      else
+        echo '[WARN] PlotJuggler ROS plugin not packaged for Lyrical; use rqt Plot for live ROS topics.'
+      fi
       nvidia-smi -L
       glxinfo -B
       renderer="$(glxinfo -B | sed -n "s/^OpenGL renderer string: //p" | head -n 1)"

@@ -1,4 +1,6 @@
-# Optional RViz2 + OpenGL/XWayland viewer; no host ROS packages.
+# Optional ROS 2 graphical tools (RViz2/rqt/PlotJuggler) using NVIDIA XWayland.
+# Lyrical plotjuggler_ros APT plugin package is NOT available (upstream issue #119).
+# PlotJuggler 3 is usable for offline data; rqt_plot handles live ROS data.
 FROM kubuntu-config/ros2-lyrical-dev:local
 
 ARG ROS_UID=1000
@@ -13,11 +15,12 @@ RUN apt-get update \
         ros-lyrical-rqt-console \
         ros-lyrical-rqt-image-view \
         ros-lyrical-rqt-topic \
-        ros-lyrical-plotjuggler-ros \
+        ros-lyrical-rqt-plot \
+        ros-lyrical-plotjuggler \
         mesa-utils \
         xauth \
     && rm -rf /var/lib/apt/lists/* \
-    && bash -lc 'source /opt/ros/lyrical/setup.bash && command -v rviz2 && ros2 pkg prefix rviz2 && ros2 pkg prefix rqt_gui && ros2 pkg prefix plotjuggler && ros2 pkg prefix plotjuggler_ros' \
+    && bash -lc 'source /opt/ros/lyrical/setup.bash && command -v rviz2 && ros2 pkg prefix rviz2 && ros2 pkg prefix rqt_gui && ros2 pkg prefix rqt_plot && ros2 pkg prefix plotjuggler' \
     && command -v glxinfo \
     && mkdir -p /tmp/runtime-rosdev \
     && chown "${ROS_UID}:${ROS_GID}" /tmp/runtime-rosdev \
