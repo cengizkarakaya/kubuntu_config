@@ -126,6 +126,45 @@ be required. If it fails, keep the current audio packages and inspect
 the complete solver output; **do not use `--allow-remove-essential`,
 `--force-yes`, `apt autoremove` or manual JACK1 replacement**.
 
+### GDAL 3.13 C++ compatibility and incremental resume (15 November 2026)
+
+The user's Kubuntu 26.10/OpenSpace v0.22.1 source build reached Ninja step
+`[4550/5534]` and failed in `modules/globebrowsing/globebrowsingmodule.cpp`
+because current GDAL 3.13 returns `CSLConstList` (`const char* const*`)
+from `GDALGetMetadata`, whereas the pinned source declared `char**`.
+The local `parseSubDatasets(char**, ...)` parameter also needs to accept
+the const-qualified string list.
+
+A narrowly scoped, source-verified compatibility patch is now applied
+to this exact OpenSpace tagged checkout by
+`scripts/patch-openspace-gdal.py`:
+- Convert the `GDALGetMetadata` result to `const char* const*`.
+- Convert `parseSubDatasets` argument to `const char* const*`.
+- **Do not use `-fpermissive`**, cast away const, or downgrade GDAL.
+- Refuse to touch a checkout with any unexpected tracked modifications.
+- Permit this exact same patch on subsequent runs without overwriting it.
+
+The patch intentionally modifies only that one tracked source file within
+`~/.local/opt/openspace`; this is expected and does **not** affect
+`kubuntu_config` itself. The build script recognizes the approved change
+on rerun. It does not run `git reset` or `git clean`.
+
+**For an existing, partially built source checkout**, after updating the
+`kubuntu_config` repo and confirming `build/build.ninja` exists:
+
+```bash
+cd ~/kubuntu_config
+bash scripts/build-openspace.sh --resume
+```
+
+`--resume` checks disk space, existing CMake/GCC/Qt/GDAL support, source
+tag and patch integrity, then invokes only the existing Ninja build. It
+skips sudo/APT, Git cloning/submodule updates, and CMake reconfiguration.
+Ninja recompiles the changed target and builds the remaining objects
+incrementally; other, already compiled objects are retained. More
+unrelated compilation errors are possible and should be diagnosed from the
+new log, without wiping the existing build directory.
+
 **Important:** OpenSpace's large dependency graph and build flow may be
 incompatible with Kubuntu 26.10; do not consider the installation complete until
 the executable runs and shows its Launcher. Upstream requires a recent compiler
