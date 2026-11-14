@@ -51,7 +51,7 @@ if ! pkg-config --exists lua5.3; then
   exit 1
 fi
 read -r -a lua_cflags <<< "$(pkg-config --cflags lua5.3)"
-if ! printf '#include <lua.hpp>\\n' | c++ -x c++ -fsyntax-only "${lua_cflags[@]}" -; then
+if ! printf '#include <lua.hpp>\n' | c++ -x c++ -fsyntax-only "${lua_cflags[@]}" -; then
   echo '[FAIL] Lua 5.3 C++ development header lua.hpp cannot be compiled.' >&2
   exit 1
 fi
