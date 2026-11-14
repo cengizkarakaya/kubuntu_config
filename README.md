@@ -92,6 +92,29 @@ the config repository. This optional profile is **not** installed by
 RViz2, ROS navigation, Rust ROS nodes and device/network passthrough remain
 separate stages.
 
+## TIO's first ROS 2 visual model (opt-in)
+
+A provisional `robotics/tio_description/` package introduces four wheels,
+front pan/tilt camera, recessed LiDAR, IMU and TF in the existing Lyrical
+development environment. Initial sizes are **not measured**. It can be
+copied once to the host's TIO workspace without overwriting later edits.
+
+```bash
+bash scripts/ros2-env.sh rviz-stop
+bash scripts/ros2-env.sh up
+bash scripts/ros2-env.sh check
+bash scripts/ros2-env.sh rviz-up
+bash scripts/ros2-env.sh rviz-check
+bash scripts/ros2-tio.sh plan
+bash scripts/ros2-tio.sh init
+bash scripts/ros2-tio.sh build
+bash scripts/ros2-tio.sh run # terminal 1, stays open
+bash scripts/ros2-env.sh rviz # terminal 2
+```
+
+For RViz settings, dimensions and limitations see
+[robotics/tio_description/README.md](robotics/tio_description/README.md).
+
 ## Optional NVIDIA RViz2 viewer
 
 RViz2 preferences are now kept on the host at

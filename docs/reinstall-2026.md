@@ -127,3 +127,15 @@ controlled Docker restart. Then run `rviz-plan`, `rviz-up`, `rviz-check`
 and `rviz` through `scripts/ros2-env.sh` from the KDE desktop user.
 The viewer uses a private Xauthority file; never commit runtime cookies.
 See `robotics/ros2/README.md` for details.
+
+### TIO URDF/Xacro starter (14 Nov 2026)
+
+The config repository includes an **opt-in** TIO description template under
+`robotics/tio_description/` and `scripts/ros2-tio.sh` commands:
+`plan`, `init`, `build`, `run`, `status`.
+Rebuild ROS dev + RViz2 after pulling to get Xacro/robot_state_publisher
+dependencies. The `init` step will not overwrite an existing TIO project.
+Robot source files, including edited Xacro, live under
+`~/Workspaces/Robotics/tio_ws/src/` and must be separately backed up.
+The template dimensions are tentative; robot dynamics/sensors/Gazebo remain
+future independent work. See `robotics/tio_description/README.md`.

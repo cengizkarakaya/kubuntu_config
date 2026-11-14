@@ -206,3 +206,39 @@ recreation, but not disk failure or formatting.** Include the folder in a
 private filesystem backup before reinstalling. For project-specific RViz
 layouts, also export named `.rviz` configuration files into a separately
 version-controlled robot project after checking for private paths.
+
+## TIO robot description starter (Stage 5)
+
+The first four-wheel TIO URDF/Xacro is supplied separately under
+`robotics/tio_description/`. It is a visual/kinematic draft with **tentative
+dimensions**, not a measured CAD model, and includes a lowered camera hood,
+two-axis camera gimbal, partly embedded LiDAR, four wheels and TF frames.
+
+The `dev` Dockerfile now adds optional description/launch dependencies:
+`ros-lyrical-ament-cmake`, `ros-lyrical-ros2launch`,
+`ros-lyrical-launch-ros`, `ros-lyrical-robot-state-publisher`,
+`ros-lyrical-joint-state-publisher`, and `ros-lyrical-xacro`.
+These packages are inside Docker only; do not change host APT packages.
+After pulling, rebuild `dev` and refresh the separate RViz image:
+
+```bash
+bash scripts/ros2-env.sh rviz-stop
+bash scripts/ros2-env.sh up
+bash scripts/ros2-env.sh check
+bash scripts/ros2-env.sh rviz-up
+bash scripts/ros2-env.sh rviz-check
+bash scripts/ros2-tio.sh plan
+bash scripts/ros2-tio.sh init
+bash scripts/ros2-tio.sh build
+```
+
+Then run `bash scripts/ros2-tio.sh run` in one terminal and
+`bash scripts/ros2-env.sh rviz` in another. In RViz2 choose Fixed Frame
+`base_footprint`, add RobotModel and set description topic
+`/robot_description`. See `robotics/tio_description/README.md`.
+
+The TIO source is copied **only once** into
+`~/Workspaces/Robotics/tio_ws/src/tio_description`. The helper
+refuses to overwrite an existing customized project. Build/Xacro/GUI
+validation must be performed on the actual ROS machine; static CI
+cannot prove these packages are available in the installed image.

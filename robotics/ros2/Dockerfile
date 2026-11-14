@@ -14,8 +14,15 @@ RUN apt-get update \
         python3-colcon-core \
         python3-colcon-ros \
         python3-vcstool \
+        ros-lyrical-ament-cmake \
+        ros-lyrical-ros2launch \
+        ros-lyrical-launch-ros \
+        ros-lyrical-robot-state-publisher \
+        ros-lyrical-joint-state-publisher \
+        ros-lyrical-xacro \
     && command -v colcon \
     && command -v vcs \
+    && bash -lc 'source /opt/ros/lyrical/setup.bash && command -v xacro && ros2 pkg prefix robot_state_publisher' \
     && rm -rf /var/lib/apt/lists/*
 
 # Use the host's numeric UID and GID so workspace bind mounts stay writable

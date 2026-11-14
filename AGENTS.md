@@ -99,3 +99,16 @@ collection of shell commands to run unreviewed.
   globally, or add the desktop user to the root-equivalent Docker group.
 - The GUI build, X11 authentication and hardware renderer must be tested
   interactively before claiming that RViz2 has been installed successfully.
+
+## TIO description template (Stage 5)
+
+- TIO's four-wheel URDF/Xacro in `robotics/tio_description` is only an
+  illustrative, dimensionally provisional robot description. Do not
+  present its placeholder dimensions, wheel drive or steering as finalized.
+- The opt-in `scripts/ros2-tio.sh init` copies once to the host TIO source;
+  never overwrite a customized `tio_ws/src/tio_description` automatically.
+- Description build/launch dependencies live in the ROS 2 Docker image,
+  not in host Kubuntu APT. Base image changes require a dev rebuild and
+  re-launching the separately built RViz2 GUI viewer.
+- Static CI verifies XML syntax and no-overwrite behavior. Real colcon,
+  Xacro expansion and RViz2 visualization require interactive host tests.
