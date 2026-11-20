@@ -15,9 +15,22 @@ while (( $# )); do
   esac
 done
 [[ -n "$out" ]] || exit 2
+[[ "${MOCK_CURL_FAIL:-0}" != 1 ]] || { echo 'curl: (22) HTTP 403 (mock)' >&2; exit 22; }
 cp "$MOCK_META" "$out"
 EOF
 chmod +x "$tmp/bin/curl"
+cat > "$tmp/bin/gh" <<'EOF'
+#!/usr/bin/env bash
+case "${1:-}" in
+  auth) [[ "${MOCK_GH_MODE:-disabled}" != disabled ]] ;;
+  api)
+    [[ "${MOCK_GH_MODE:-disabled}" == success ]] || exit 22
+    cat "$MOCK_META"
+    ;;
+  *) exit 2 ;;
+esac
+EOF
+chmod +x "$tmp/bin/gh"
 export PATH="$tmp/bin:$PATH"
 python3 - "$MOCK_META" <<'PY'
 import json,sys
@@ -63,4 +76,24 @@ PY
     echo "[FAIL] Unsafe release was accepted: $field" >&2; exit 1;
   fi
 done
+# Authenticated gh API must be used ahead of anonymous curl.
+export MOCK_GH_MODE=success MOCK_CURL_FAIL=1
+output="$(bash "$ROOT/scripts/latest-release.sh" example/tool test.bin)"
+[[ "$output" == 
+v3.4.5\thttps://github.com/example/tool/releases/download/v3.4.5/test.bin\t'$(printf 'a%.0s' {1..64}) ]] || {
+  echo '[FAIL] Authenticated gh API response not used' >&2; exit 1;
+}
+# If authenticated gh fails, retry anonymous curl (still validate metadata).
+export MOCK_GH_MODE=fail MOCK_CURL_FAIL=0
+output="$(bash "$ROOT/scripts/latest-release.sh" example/tool test.bin)"
+[[ "$output" == v3.4.5
+\t'* ]] || { echo '[FAIL] Anonymous fallback failed' >&2; exit 1; }
+# Fail closed when both authenticated and anonymous lookups are unavailable.
+export MOCK_GH_MODE=fail MOCK_CURL_FAIL=1
+if bash "$ROOT/scripts/latest-release.sh" example/tool test.bin >"$tmp/failed.stdout" 2>"$tmp/failed.stderr"; then
+  echo '[FAIL] Resolver accepted two unavailable metadata sources' >&2; exit 1;
+fi
+[[ ! -s "$tmp/failed.stdout" ]] || { echo '[FAIL] Resolver emitted untrusted metadata' >&2; exit 1; }
+grep -Fq 'gh auth status' "$tmp/failed.stderr"
+echo '[PASS] Authenticated lookup, safe anonymous fallback and explicit 403 failure checked'
 echo '[PASS] Latest-release resolver requires stable numeric tags, correct upstream URLs and GitHub SHA256 digests'
