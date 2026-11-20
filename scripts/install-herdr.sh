@@ -10,32 +10,7 @@ case "$(uname -m)" in
   *) echo "[FAIL] Unsupported Herdr architecture: $(uname -m)" >&2; exit 1 ;;
 esac
 release="$(bash "$ROOT/scripts/latest-release.sh" herdrdev/herdr "$asset")"
-IFS=
-[[ -n "${tag:-}" && -n "${url:-}" && -n "${digest:-}" ]] || {
-  echo '[FAIL] Could not resolve newest stable Herdr release' >&2; exit 1;
-}
-expected="herdr ${tag#v}"
-target="$HOME/.local/bin/herdr"
-if [[ -x "$target" && "$("$target" --version 2>/dev/null || true)" == "$expected" ]]; then
-  echo "[OK] Latest stable Herdr already installed: $expected"
-  exit 0
-fi
-tmp="$(mktemp -d)"
-trap 'rm -rf -- "$tmp"' EXIT
-curl --proto '=https' --tlsv1.2 -fL --retry 3 --connect-timeout 15 \
-  "$url" -o "$tmp/herdr"
-printf '%s  %s\n' "$digest" "$tmp/herdr" | sha256sum -c - || {
-  echo '[FAIL] Herdr release SHA-256 mismatch' >&2; exit 1;
-}
-chmod 755 "$tmp/herdr"
-[[ "$("$tmp/herdr" --version 2>/dev/null || true)" == "$expected" ]] || {
-  echo '[FAIL] Herdr executable version did not match upstream release' >&2; exit 1;
-}
-mkdir -p "$HOME/.local/bin"
-install -m755 "$tmp/herdr" "$HOME/.local/bin/.herdr-staged-$$"
-mv -f -- "$HOME/.local/bin/.herdr-staged-$$" "$target"
-echo "[OK] Installed verified latest stable Herdr $tag"
-\t' read -r tag url digest <<< "$release"
+IFS=$'\t' read -r tag url digest <<< "$release"
 [[ -n "${tag:-}" && -n "${url:-}" && -n "${digest:-}" ]] || {
   echo '[FAIL] Could not resolve newest stable Herdr release' >&2; exit 1;
 }
