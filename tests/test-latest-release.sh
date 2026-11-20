@@ -76,18 +76,27 @@ PY
     echo "[FAIL] Unsafe release was accepted: $field" >&2; exit 1;
   fi
 done
+# Restore valid metadata after the negative security tests.
+python3 - "$MOCK_META" <<'PY'
+import json,sys
+p=sys.argv[1]
+with open(p) as f: x=json.load(f)
+x["prerelease"]=False
+x["assets"][0]["name"]="test.bin"
+x["assets"][0]["digest"]="sha256:"+"a"*64
+x["assets"][0]["browser_download_url"]="https://github.com/example/tool/releases/download/v3.4.5/test.bin"
+with open(p,"w") as f: json.dump(x,f)
+PY
 # Authenticated gh API must be used ahead of anonymous curl.
 export MOCK_GH_MODE=success MOCK_CURL_FAIL=1
 output="$(bash "$ROOT/scripts/latest-release.sh" example/tool test.bin)"
-[[ "$output" == 
-v3.4.5\thttps://github.com/example/tool/releases/download/v3.4.5/test.bin\t'$(printf 'a%.0s' {1..64}) ]] || {
+[[ "$output" == $'v3.4.5\thttps://github.com/example/tool/releases/download/v3.4.5/test.bin\t'$(printf 'a%.0s' {1..64}) ]] || {
   echo '[FAIL] Authenticated gh API response not used' >&2; exit 1;
 }
 # If authenticated gh fails, retry anonymous curl (still validate metadata).
 export MOCK_GH_MODE=fail MOCK_CURL_FAIL=0
 output="$(bash "$ROOT/scripts/latest-release.sh" example/tool test.bin)"
-[[ "$output" == v3.4.5
-\t'* ]] || { echo '[FAIL] Anonymous fallback failed' >&2; exit 1; }
+[[ "$output" == v3.4.5$'\t'* ]] || { echo '[FAIL] Anonymous fallback failed' >&2; exit 1; }
 # Fail closed when both authenticated and anonymous lookups are unavailable.
 export MOCK_GH_MODE=fail MOCK_CURL_FAIL=1
 if bash "$ROOT/scripts/latest-release.sh" example/tool test.bin >"$tmp/failed.stdout" 2>"$tmp/failed.stderr"; then
