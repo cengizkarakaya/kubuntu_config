@@ -41,6 +41,15 @@ unconditionally replacing every Ubuntu package with upstream development HEAD.
 
 ## Constraints
 
+For GitHub release assets, `scripts/latest-release.sh` first uses the existing
+GitHub CLI (`gh`) login if available, then falls back to public HTTPS. This
+avoids the lower per-IP rate limit for authenticated users without requiring a
+GitHub token to be embedded in scripts or repository files. If a shared-IP HTTP
+403 persists, run `gh auth status --hostname github.com`; if necessary, sign
+in interactively with `gh auth login --hostname github.com` and retry
+`sysup resume`. Neither a failed API request nor an absent authentication
+session authorizes skipping stable-tag, official-asset URL or SHA-256 checks.
+
 The date of GitHub metadata lookup is the runtime timestamp; the repository
 does not hard-code a "latest" version. Outages, rate-limits, untrusted/missing
 hashes or incompatible releases must cause **clear failure**, not automatic
