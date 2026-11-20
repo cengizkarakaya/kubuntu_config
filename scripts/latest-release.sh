@@ -12,9 +12,30 @@ for cmd in curl python3; do
 done
 tmp="$(mktemp)"
 trap 'rm -f -- "$tmp"' EXIT
-curl --proto '=https' --tlsv1.2 -fsSL --retry 3 --connect-timeout 15 \
-  -H 'Accept: application/vnd.github+json' \
-  "https://api.github.com/repos/$repo/releases/latest" -o "$tmp"
+# Prefer an existing GitHub CLI login. Anonymous API lookups share the
+# per-IP limit (often exhausted on VPNs/shared networks); gh API calls are
+# authenticated without printing or storing the token in this repository.
+fetched=0
+if command -v gh >/dev/null 2>&1 && gh auth token --hostname github.com >/dev/null 2>&1; then
+  if gh api --hostname github.com -H 'Accept: application/vnd.github+json' \
+    "repos/$repo/releases/latest" > "$tmp"; then
+    fetched=1
+  else
+    echo '[WARN] Authenticated GitHub release lookup failed; trying public HTTPS.' >&2
+  fi
+fi
+if ((fetched == 0)); then
+  if ! curl --proto '=https' --tlsv1.2 -fsSL --retry 3 --connect-timeout 15 \
+    -H 'Accept: application/vnd.github+json' \
+    "https://api.github.com/repos/$repo/releases/latest" -o "$tmp"; then
+    echo '[FAIL] GitHub release metadata could not be retrieved; no application was changed.' >&2
+    echo '[HINT] HTTP 403 can mean an exhausted anonymous API limit or another access restriction.' >&2
+    echo '[HINT] Check: gh auth status --hostname github.com' >&2
+    echo '[HINT] If not signed in: gh auth login --hostname github.com' >&2
+    echo '[HINT] Then retry: sysup resume (or the individual installer).' >&2
+    exit 1
+  fi
+fi
 python3 - "$tmp" "$repo" "$asset" <<'PY'
 import json, re, sys
 path, repo, asset = sys.argv[1:]
