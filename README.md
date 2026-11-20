@@ -37,7 +37,7 @@ The default installation uses native KWin without an automatic tiler.
 - `packages/apt.txt`: CLI and terminal emulators (Alacritty plus optional-use Cool Retro Term), KDE (including `kde-spectacle`), graphic/engineering (including LabPlot and Cantor), desktop and virtualization applications
 - `scripts/install-helix.sh`: newest verified official stable Helix release with runtime assets (not available as Kubuntu 26.10 APT package)
 - `scripts/install-bottom.sh`: newest verified official stable Bottom (btm) release (not available as Kubuntu 26.10 APT package)
-- `packages/flatpak.tsv`: Obsidian, Zotero, OrcaSlicer and LocalSend
+- `packages/flatpak.tsv`: Obsidian, Zotero, OrcaSlicer, LocalSend, KStars and Anki
 - `scripts/install-rust.sh`: stable Rust via existing or APT-provided rustup; missing rustup is a hard error with manual recovery guidance
 - `scripts/setup-yazi-apt.sh`: official signed stable Yazi APT source (Yazi is not in the default Kubuntu archive)
 - `scripts/install-herdr.sh`: newest official STABLE Herdr Linux release, verified against GitHub-published SHA-256
@@ -70,6 +70,25 @@ are restored from Arch_Config. Other optional application/editor extensions
 remain disabled. Previously installed user extensions are not uninstalled.
 Required system dependencies and Flatpak runtimes may still be installed.
 No third-party automatic KWin tiling script is installed. See `applications/README.md`.
+
+### Anki (spaced-repetition learning)
+
+Anki is tracked as `net.ankiweb.Anki` in `packages/flatpak.tsv`. It uses
+Flathub's Linux packaging (distinct from the developer's direct Linux download),
+installed in **user** scope. Existing Flatpak install, audit and `sysup`
+maintenance workflows handle it automatically. To install only Anki on an
+existing workstation, **without rerunning the desktop bootstrap**:
+
+```bash
+flatpak install --user flathub net.ankiweb.Anki
+flatpak run net.ankiweb.Anki
+flatpak info --user net.ankiweb.Anki
+```
+
+KDE Application Launcher category: **Education** (adjust in KMenuEdit if
+necessary). This manifest tracks the application, **not** private flashcards,
+profiles or media; back up user data separately. A GitHub manifest change
+alone does not install software on the workstation.
 
 ## ROS 2 Lyrical Docker development (opt-in)
 
