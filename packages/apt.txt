@@ -67,7 +67,6 @@ gimp
 kicad
 blender
 kdenlive
-freecad
 thunderbird
 libreoffice
 vlc
