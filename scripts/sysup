@@ -156,7 +156,7 @@ if action != 'view':
                'elapsed_seconds': max(0, int((ended - begin).total_seconds())) if begin else 0,
                'counts': totals, 'warnings': warnings, 'stages': stages,
                'log': log_path}
-# Persist only version differences; never retain full installed-package lists.
+    # Persist only version differences; never retain full installed-package lists.
     updates = {}
     if snapshot_dir and os.path.isdir(snapshot_dir):
         for key in ('apt_upgrade', 'flatpak', 'snap', 'rustup',
@@ -274,9 +274,9 @@ else:
             kind = change.get('kind', 'updated')
             if kind in total:
                 total[kind] += 1
-            name = str(change.get('name', '?')).replace('\\n', ' ')[:70]
-            old = str(change.get('before', '?')).replace('\\n', ' ')[:100]
-            new = str(change.get('after', '?')).replace('\\n', ' ')[:100]
+            name = str(change.get('name', '?')).replace('\n', ' ')[:70]
+            old = str(change.get('before', '?')).replace('\n', ' ')[:100]
+            new = str(change.get('after', '?')).replace('\n', ' ')[:100]
             tag = {'updated': 'GÜNCELLENDİ', 'installed': 'YÜKLENDİ',
                    'removed': 'KALDIRILDI'}.get(kind, 'DEĞİŞTİ')
             print(f'    [{tag}] {name}: {old} → {new}')
