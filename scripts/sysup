@@ -24,6 +24,7 @@ STAGE="idle"
 STATUS="idle"
 DETAIL=""
 SYSUP_TTY_COLOR=0
+SNAP_DIR=""
 
 usage() {
     cat <<'HELP'
@@ -95,14 +96,14 @@ summary_report() {
     local action="$1" state="$2" color="$3"
     local saved_log=""
     if [[ "$action" != view ]]; then saved_log="$LOG"; fi
-    python3 - "$action" "$state/status.json" "$state/events.jsonl" "$state/summary.json" "$color" "$saved_log" <<'PY'
+    python3 - "$action" "$state/status.json" "$state/events.jsonl" "$state/summary.json" "$color" "$saved_log" "$SNAP_DIR" <<'PY'
 import datetime as dt
 import json
 import os
 import sys
 import tempfile
 
-action, status_path, events_path, summary_path, color, log_path = sys.argv[1:]
+action, status_path, events_path, summary_path, color, log_path, snapshot_dir = sys.argv[1:]
 if action != 'view':
     with open(status_path, encoding='utf-8') as handle:
         status = json.load(handle)
@@ -155,6 +156,23 @@ if action != 'view':
                'elapsed_seconds': max(0, int((ended - begin).total_seconds())) if begin else 0,
                'counts': totals, 'warnings': warnings, 'stages': stages,
                'log': log_path}
+# Persist only version differences; never retain full installed-package lists.
+    updates = {}
+    if snapshot_dir and os.path.isdir(snapshot_dir):
+        for key in ('apt_upgrade', 'flatpak', 'snap', 'rustup',
+                    'helix', 'bottom', 'herdr', 'codex'):
+            path = os.path.join(snapshot_dir, key + '-changes.json')
+            if os.path.isfile(path):
+                try:
+                    with open(path, encoding='utf-8') as handle:
+                        updates[key] = json.load(handle)
+                except (OSError, ValueError) as exc:
+                    updates[key] = {'status': 'unavailable', 'changes': [],
+                                    'error': str(exc)[:160]}
+    summary['updates'] = updates
+    # Ubuntu's reboot-required marker reports system state, not necessarily
+    # changes made by this particular sysup invocation.
+    summary['reboot_required'] = os.path.exists('/run/reboot-required')
     fd, tmp = tempfile.mkstemp(prefix='.sysup-summary-', dir=os.path.dirname(summary_path))
     try:
         with os.fdopen(fd, 'w', encoding='utf-8') as handle:
@@ -224,6 +242,54 @@ else:
     print(c('  Aşama başarılı olabilir; güncellenecek paket bulunmamış olabilir.', '90'))
 if summary.get('log'):
     print('  Log: ' + str(summary['log']))
+print(c('─' * 75, '90'))
+print(c('  GERÇEK PAKET / SÜRÜM DEĞİŞİKLİKLERİ', '1;36'))
+labels = [('apt_upgrade', 'APT'), ('flatpak', 'FLATPAK'),
+          ('snap', 'SNAP'), ('rustup', 'RUST'),
+          ('helix', 'HELIX'), ('bottom', 'BOTTOM'),
+          ('herdr', 'HERDR'), ('codex', 'CODEX')]
+updates = summary.get('updates')
+if updates is None:
+    print('  Bu çalışma için ayrıntılı sürüm kaydı yok (eski rapor).')
+else:
+    total = {'updated': 0, 'installed': 0, 'removed': 0}
+    stage_outcomes = {row.get('key'): row.get('outcome') for row in summary.get('stages', [])}
+    shown = 0
+    for key, label in labels:
+        if key not in stage_outcomes or stage_outcomes[key] == 'skipped':
+            continue
+        shown += 1
+        result = updates.get(key)
+        if not result or result.get('status') != 'ok':
+            print(f"  {label}: Sürüm karşılaştırması alınamadı.")
+            if result and result.get('error'):
+                print('    ' + str(result['error'])[:120])
+            continue
+        changes = result.get('changes', [])
+        if not changes:
+            print(f"  {label}: Güncellenen paket yok.")
+            continue
+        print(f"  {label}: {len(changes)} değişiklik")
+        for change in changes:
+            kind = change.get('kind', 'updated')
+            if kind in total:
+                total[kind] += 1
+            name = str(change.get('name', '?')).replace('\\n', ' ')[:70]
+            old = str(change.get('before', '?')).replace('\\n', ' ')[:100]
+            new = str(change.get('after', '?')).replace('\\n', ' ')[:100]
+            tag = {'updated': 'GÜNCELLENDİ', 'installed': 'YÜKLENDİ',
+                   'removed': 'KALDIRILDI'}.get(kind, 'DEĞİŞTİ')
+            print(f'    [{tag}] {name}: {old} → {new}')
+    if not shown:
+        print('  Bu çalışmada paket güncelleme aşaması yürütülmedi.')
+    print(f"  Toplam: {total['updated']} güncellendi, "
+          f"{total['installed']} yüklendi, {total['removed']} kaldırıldı.")
+if 'reboot_required' in summary:
+    print('  Yeniden başlatma (APT işareti): ' +
+          (c('GEREKLİ', '1;33') if summary['reboot_required']
+           else c('Gerekmiyor (işaret yok)', '32')))
+else:
+    print('  Yeniden başlatma durumu eski raporda kaydedilmemiş.')
 print(c('═' * 75, '36'))
 print()
 PY
@@ -284,6 +350,7 @@ setup_run_state() {
     fi
     # Every attempted run gets a new log; JSONL retains the historical events.
     LOG="$STATE/sysup-$RUN_ID.log"
+    SNAP_DIR="$(mktemp -d "$STATE/.sysup-snap-$RUN_ID-XXXXXX")" || return 1
     exec > >(tee -a "$LOG") 2>&1
     trap request_cancel USR1
     trap request_cancel INT
@@ -390,7 +457,7 @@ firmware_report() {
 
 run_stage() {
     local key="$1" label="$2" host="$3"; shift 3
-    local rc=0 started=$SECONDS
+    local rc=0 started=$SECONDS reportable=0
     STAGE="$key"
     if ((RESUME)) && grep -Fqx -- "$key" "$STATE/completed.txt" 2>/dev/null; then
         info "[SKIP] $label: previously completed"
@@ -414,6 +481,14 @@ run_stage() {
 
     # wait can be interrupted by SIGUSR1. Never mistake an interrupted wait
     # for child completion, and never send SIGKILL to apt/dpkg on cancel.
+    # Local read-only inventories: snapshots are temporary and private.
+    case "$key" in
+        apt_upgrade|flatpak|snap|rustup|helix|bottom|herdr|codex) reportable=1 ;;
+    esac
+    if ((reportable)); then
+        user_cmd python3 "$ROOT/scripts/sysup-report.py" capture "$key" \
+            > "$SNAP_DIR/$key-before.json" || warn "Initial $key inventory unavailable"
+    fi
     "$@" &
     RUN_STAGE_PID=$!
     (
@@ -434,6 +509,14 @@ run_stage() {
     RUN_STAGE_PID=""
     RUN_STAGE_HEARTBEAT=""
 
+    if ((reportable)); then
+        user_cmd python3 "$ROOT/scripts/sysup-report.py" capture "$key" \
+            > "$SNAP_DIR/$key-after.json" || warn "Final $key inventory unavailable"
+        python3 "$ROOT/scripts/sysup-report.py" compare "$key" \
+            "$SNAP_DIR/$key-before.json" "$SNAP_DIR/$key-after.json" \
+            > "$SNAP_DIR/$key-changes.json" || warn "$key comparison unavailable"
+    fi
+
     if ((rc == 3)) && [[ "$key" == flatpak ]]; then
         ((WARNINGS+=1))
     fi
@@ -448,6 +531,63 @@ run_stage() {
     fi
     write_status running "$label done (exit $rc)"
     return 0
+}
+
+# Keep reports compact: last summary.json replaces the previous one, and
+# retain only recent transaction logs/events. Never touch other application logs.
+prune_history() {
+    python3 - "$1" "$RUN_ID" <<'PY'
+import json, os, pathlib, re, shutil, sys, tempfile
+
+state = pathlib.Path(sys.argv[1])
+current_run = sys.argv[2]
+logs = [p for p in state.glob('sysup-*.log')
+        if p.is_file() and not p.is_symlink() and
+        re.fullmatch(r'sysup-\d{8}T\d{6}Z-\d+\.log', p.name)]
+logs.sort(key=lambda p: p.stat().st_mtime_ns, reverse=True)
+keep = {p.name for p in logs[:10]}
+keep.add('sysup-' + current_run + '.log')
+for path in logs:
+    if path.name not in keep:
+        path.unlink()
+
+event_path = state / 'events.jsonl'
+if event_path.is_file() and not event_path.is_symlink():
+    with event_path.open(encoding='utf-8') as handle:
+        lines = handle.readlines()
+    runs = []
+    for line in lines:
+        try:
+            run_id = json.loads(line).get('run_id')
+        except ValueError:
+            continue
+        if run_id and run_id not in runs:
+            runs.append(run_id)
+    retained = set(runs[-20:])
+    retained.add(current_run)
+    kept = []
+    for line in lines:
+        try:
+            if json.loads(line).get('run_id') in retained:
+                kept.append(line)
+        except ValueError:
+            pass
+    if len(kept) < len(lines):
+        fd, tmp = tempfile.mkstemp(prefix='.sysup-events-', dir=state)
+        try:
+            with os.fdopen(fd, 'w', encoding='utf-8') as handle:
+                handle.writelines(kept)
+            os.chmod(tmp, 0o600)
+            os.replace(tmp, event_path)
+        finally:
+            if os.path.exists(tmp):
+                os.unlink(tmp)
+
+# Clean stale snapshots from interrupted runs too; directories are mktemp-made.
+for path in state.glob('.sysup-snap-*'):
+    if path.is_dir() and not path.is_symlink():
+        shutil.rmtree(path)
+PY
 }
 
 finish_run() {
@@ -475,6 +615,7 @@ finish_run() {
     fi
     if [[ "$SYSUP_TTY_COLOR" == 1 ]]; then color=yes; fi
     summary_report save_print "$STATE" "$color" || warn 'Final summary unavailable'
+    prune_history "$STATE" || warn 'Old sysup logs could not be pruned'
     return "$rc"
 }
 
