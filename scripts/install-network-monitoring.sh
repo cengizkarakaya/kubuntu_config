@@ -45,7 +45,7 @@ PLAN
         dpkg-query -W -f='${Version}\n' iperf3
         command -v iperf3 >/dev/null
         verify_one sniffnet sniffnet
-        verify_one rustnet rustnet
+        verify_one rustnet-monitor rustnet
         bash "$ROOT/scripts/netalertx.sh" check
         exit 0
         ;;
@@ -109,10 +109,10 @@ install_official_deb() {
 }
 
 install_official_deb GyulyVGC/sniffnet "Sniffnet_LinuxDEB_${arch}.deb" sniffnet
-install_official_deb domcyrus/rustnet "Rustnet_LinuxDEB_${arch}.deb" rustnet
+install_official_deb domcyrus/rustnet "Rustnet_LinuxDEB_${arch}.deb" rustnet-monitor
 
 verify_one sniffnet sniffnet
-verify_one rustnet rustnet
+verify_one rustnet-monitor rustnet
 
 if [[ "$ACTION" == update ]]; then
     bash "$ROOT/scripts/netalertx.sh" update
