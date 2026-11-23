@@ -26,10 +26,10 @@ def record(version='', revision=''):
 def inventory(stage):
     items = {}
     if stage == 'apt_upgrade':
-        for line in run('dpkg-query', '-W', '-f=${binary:Package}\\t${Version}\\n').splitlines():
-            name, sep, version = line.partition('\t')
-            if sep and name:
-                items[name] = record(version)
+        for line in run('dpkg-query', '-W', '-f=${db:Status-Abbrev}\\t${binary:Package}\\t${Version}\\n').splitlines():
+            fields = line.split('\t', 2)
+            if len(fields) == 3 and len(fields[0]) > 1 and fields[0][1] == 'i':
+                items[fields[1]] = record(fields[2])
     elif stage == 'flatpak':
         # `active` is the installed commit, so same-version rebuilds count too.
         output = run('flatpak', 'list', '--user', '--columns=ref:full,version:full,active:full')
