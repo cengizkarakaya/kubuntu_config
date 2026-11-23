@@ -1,0 +1,46 @@
+# Opt-in network discovery: host network is required for LAN ARP scans.
+# Runs only after: bash scripts/netalertx.sh up
+# No Docker socket, privileged mode, host filesystem traversal or GPU mount.
+name: kubuntu-netalertx
+services:
+  netalertx:
+    image: ghcr.io/netalertx/netalertx:latest
+    container_name: kubuntu-netalertx
+    network_mode: host
+    read_only: true
+    cap_drop:
+      - ALL
+    # Upstream-required capabilities for host-network discovery + entrypoint UID drop.
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - NET_BIND_SERVICE
+      - CHOWN
+      - SETUID
+      - SETGID
+    environment:
+      PUID: "20211"
+      PGID: "20211"
+      PORT: "20211"
+      GRAPHQL_PORT: "20212"
+      LISTEN_ADDR: "127.0.0.1"
+      ALWAYS_FRESH_INSTALL: "false"
+    volumes:
+      - type: volume
+        source: netalertx_data
+        target: /data
+      - type: bind
+        source: /etc/localtime
+        target: /etc/localtime
+        read_only: true
+    tmpfs:
+      - "/tmp:mode=1700,uid=0,gid=0,rw,noexec,nosuid,nodev,async,noatime,nodiratime"
+    restart: unless-stopped
+    mem_limit: 2048m
+    pids_limit: 512
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+volumes:
+  netalertx_data:
