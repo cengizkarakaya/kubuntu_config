@@ -22,6 +22,38 @@ PATH="$TMP/bin:$PATH" bash "$ROOT/scripts/install-network-monitoring.sh" plan > 
 grep -q 'Sniffnet' "$TMP/install-plan.txt"
 grep -q 'RustNet' "$TMP/install-plan.txt"
 grep -q 'iperf3' "$TMP/install-plan.txt"
+# Docker and socket status are simulated; assert a backend bound to all
+# interfaces is warned about, while a localhost listener does not warn.
+cat > "$TMP/bin/docker" <<'MOCK'
+#!/usr/bin/env bash
+if [[ "$1" == inspect ]]; then
+  printf 'true\n'
+  exit 0
+fi
+[[ "$1" == compose ]] || exit 90
+exit 0
+MOCK
+cat > "$TMP/bin/sudo" <<'MOCK'
+#!/usr/bin/env bash
+[[ "$1" == docker ]] || exit 93
+shift
+exec docker "$@"
+MOCK
+cat > "$TMP/bin/ss" <<'MOCK'
+#!/usr/bin/env bash
+printf 'LISTEN 0 128 %s:20212 0.0.0.0:*\n' "${MOCK_LISTEN_ADDR:-0.0.0.0}"
+MOCK
+chmod +x "$TMP/bin/docker" "$TMP/bin/sudo" "$TMP/bin/ss"
+MOCK_LISTEN_ADDR=0.0.0.0 PATH="$TMP/bin:$PATH" \
+  bash "$ROOT/scripts/netalertx.sh" check > "$TMP/netalertx-wildcard.txt"
+grep -Fq '[WARN] NetAlertX API port 20212' "$TMP/netalertx-wildcard.txt"
+MOCK_LISTEN_ADDR=127.0.0.1 PATH="$TMP/bin:$PATH" \
+  bash "$ROOT/scripts/netalertx.sh" check > "$TMP/netalertx-local.txt"
+if grep -Fq '[WARN] NetAlertX API port 20212' "$TMP/netalertx-local.txt"; then
+  echo '[FAIL] Loopback-only API caused a false exposure warning' >&2
+  exit 1
+fi
+echo '[PASS] NetAlertX check warns on wildcard API socket without changing firewall'
 python3 - "$ROOT" <<'PY'
 from pathlib import Path
 import sys

@@ -46,6 +46,20 @@ case "$ACTION" in
             echo '[FAIL] NetAlertX container is not running' >&2; exit 1;
         }
         echo '[OK] NetAlertX container is running (application discovery must be checked in UI)'
+        # Upstream v26.10.28 hard-codes Flask/GraphQL to 0.0.0.0.
+        # LISTEN_ADDR=127.0.0.1 applies only to nginx, NOT the API.
+        # Report the binding without changing user-managed host firewall rules.
+        if command -v ss >/dev/null 2>&1; then
+            if ss -H -ltn 2>/dev/null | awk '
+                $1 == "LISTEN" && $4 ~ /:20212$/ &&
+                index($4, "127.0.0.1:") != 1 && index($4, "[::1]:") != 1 { found=1 }
+                END { exit !found }
+            '; then
+                echo '[WARN] NetAlertX API port 20212 listens on a non-loopback address.'
+                echo '[WARN] Upstream GraphQL binds 0.0.0.0; LISTEN_ADDR only controls the web UI.'
+                echo '[HINT] Review host firewall rules; see docs/network-monitoring.md.'
+            fi
+        fi
         ;;
     logs)
         compose_root logs --tail 100
