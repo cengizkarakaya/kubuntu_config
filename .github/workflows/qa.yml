@@ -18,6 +18,8 @@ jobs:
         run: bash tests/test-installers.sh
       - name: Test opt-in network-monitoring profile (no Docker daemon or APT changes)
         run: bash tests/test-network-monitoring.sh
+      - name: Test narrow NetAlertX API nftables guard (no host firewall writes)
+        run: bash tests/test-netalertx-api-guard.sh
       - name: Test sysup failure isolation, resume and safe cancellation (mocked)
         run: bash tests/test-sysup.sh
       - name: Validate opt-in science plan and private KDE menu snapshot

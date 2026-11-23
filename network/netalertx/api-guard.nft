@@ -1,0 +1,10 @@
+# Dedicated host firewall rule for NetAlertX v26.10.28 GraphQL API.
+# The upstream Flask backend binds 0.0.0.0:20212 even if nginx is localhost.
+# Permit localhost requests; drop *only* external input to TCP/20212.
+# No flush ruleset and no unrelated firewall chains or Docker networks changed.
+table inet kubuntu_netalertx_api_guard {
+    chain input {
+        type filter hook input priority -10; policy accept;
+        iifname != "lo" tcp dport 20212 counter drop
+    }
+}

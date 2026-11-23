@@ -1,0 +1,15 @@
+[Unit]
+Description=Keep NetAlertX API 20212 inaccessible from external network interfaces
+Documentation=https://github.com/cengizkarakaya/kubuntu_config/blob/main/docs/network-monitoring.md
+After=local-fs.target nftables.service
+Before=docker.service
+ConditionPathExists=/etc/kubuntu-config/netalertx-api-guard.nft
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/libexec/kubuntu-netalertx-api-guard apply
+ExecStop=/usr/local/libexec/kubuntu-netalertx-api-guard remove
+
+[Install]
+WantedBy=multi-user.target
