@@ -61,6 +61,8 @@ smartmontools
 # Hardware inventory and kernel RAS event monitoring
 inxi
 rasdaemon
+# Monitor DDC/CI and packaged I2C access rules for KDE PowerDevil
+ddcutil
 usbutils
 mesa-utils
 vulkan-tools
