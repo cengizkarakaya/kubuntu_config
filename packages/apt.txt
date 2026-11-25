@@ -58,6 +58,9 @@ playerctl
 wl-clipboard
 nvme-cli
 smartmontools
+# Hardware inventory and kernel RAS event monitoring
+inxi
+rasdaemon
 usbutils
 mesa-utils
 vulkan-tools
