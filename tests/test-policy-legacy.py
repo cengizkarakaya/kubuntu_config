@@ -1,4 +1,6 @@
+import tomllib
 from pathlib import Path
+
 root = Path(__file__).resolve().parents[1]
 assert (root / "packages/apt.txt").is_file()
 assert (root / "packages/flatpak.tsv").is_file()
@@ -45,7 +47,6 @@ removed = [
     "scripts/clean-obsolete-symlinks.sh",
 ]
 assert all(not (root / x).exists() for x in removed)
-import tomllib
 yazi_dir = root / "dotfiles/yazi/.config/yazi"
 with (yazi_dir / "package.toml").open("rb") as f:
     locked = tomllib.load(f)

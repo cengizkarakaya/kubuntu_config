@@ -237,7 +237,7 @@ jobs:
           # Start with syntax and high-confidence correctness checks, not style.
           "$ruff" check --isolated --select E9,F63,F7,F82 --output-format concise "${files[@]}"
           status=0
-          "$ruff" check --isolated --statistics "${files[@]}" || status=$?
+          "${ruff}" check --isolated --output-format concise "${files[@]}" || status=$?
           case "$status" in
             0) echo '[OK] Advisory default Ruff rules passed' ;;
             1) echo '[WARN] Advisory lint debt; review before broadening the blocking gate' ;;

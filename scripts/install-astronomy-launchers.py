@@ -7,15 +7,15 @@ Always run --check before --install, as the regular desktop user.
 from __future__ import annotations
 
 import argparse
-from datetime import datetime
 import os
-from pathlib import Path
 import re
 import shutil
 import stat
 import subprocess
 import sys
 import tempfile
+from datetime import datetime
+from pathlib import Path
 
 HOME = Path.home()
 DATA = Path(os.environ.get("XDG_DATA_HOME", str(HOME / ".local/share")))

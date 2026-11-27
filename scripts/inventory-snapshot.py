@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Private workstation inventory: no installs, sudo or network queries."""
+
 import argparse
 import json
 import os
-from pathlib import Path
 import shutil
 import subprocess
 import sys
+from pathlib import Path
 
 from recovery_common import ROOT, new_snapshot, ordinary_user, private_root, write_private
 
@@ -39,7 +40,7 @@ COMMANDS = {
 
 
 def execute(args):
-    return subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+    return subprocess.run(args, capture_output=True,
                           text=True, errors="replace", timeout=45, check=True,
                           env=dict(os.environ, LC_ALL="C")).stdout
 

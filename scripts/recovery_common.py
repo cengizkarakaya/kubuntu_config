@@ -1,8 +1,9 @@
 """Private local recovery artifacts. Never publish raw captures."""
+
 import datetime
 import os
-from pathlib import Path
 import tempfile
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -20,7 +21,7 @@ def new_snapshot(kind):
     root.mkdir(parents=True, mode=0o700, exist_ok=True)
     if root.stat().st_uid != os.getuid() or root.stat().st_mode & 0o077:
         raise ValueError(f"Private state directory must be owned by you and mode 0700: {root}")
-    stamp = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    stamp = datetime.datetime.now(datetime.UTC).strftime("%Y%m%dT%H%M%SZ")
     return Path(tempfile.mkdtemp(prefix=stamp + "-", dir=root))
 
 

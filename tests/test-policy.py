@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
 """Negative fixtures for policy failures; preserve independent safety checks."""
+
 import importlib.util
-from pathlib import Path
 import shutil
 import tempfile
 import unittest
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location("policy_checker", ROOT / "scripts/check-policy.py")

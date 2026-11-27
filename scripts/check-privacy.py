@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """Check Git index or a committed tree for common private recovery artifacts."""
+
 import argparse
-from collections import Counter
 import fnmatch
 import json
 import os
-from pathlib import Path
 import re
-import subprocess
 import stat
+import subprocess
 import sys
+from collections import Counter
+from pathlib import Path
 
 MAX_BYTES = 2 * 1024 * 1024
 # No actual owner identifiers belong in public rules.

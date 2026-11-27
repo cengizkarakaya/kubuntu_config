@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Explicit installation and execution of local, non-overwriting privacy hooks."""
+
 import argparse
 import importlib.util
 import os
-from pathlib import Path
 import re
 import subprocess
 import sys
+from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 FILES = ("pre-commit", "pre-push", "privacy-guard-run.py", "privacy-guard-check.py")
