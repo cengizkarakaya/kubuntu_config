@@ -26,6 +26,8 @@ if sudo test -e "$dest"; then
   previous=1
   backup="$HOME/.local/state/kubuntu-config/backups/grub-windows-$(date +%Y%m%d-%H%M%S)-$$.cfg"
   mkdir -p "$(dirname "$backup")"
+  # Read the root-owned source with sudo; the backup must be written as the caller.
+  # shellcheck disable=SC2024
   sudo cat "$dest" > "$backup"
   chmod 600 "$backup"
   echo "[INFO] Previous configuration backed up to $backup"

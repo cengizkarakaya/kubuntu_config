@@ -26,7 +26,12 @@ flock -n 9 || { echo 'Another bootstrap instance is running' >&2; exit 1; }
 LOG="$STATE/bootstrap-$(date +%Y%m%d-%H%M%S)-$$.log"
 exec > >(tee -a "$LOG") 2>&1
 CURRENT_STAGE='preflight'
-trap 'rc=$?; echo "[FAIL] Stage: $CURRENT_STAGE, exit: $rc, line: $LINENO" >&2; echo "See $LOG" >&2' ERR
+report_bootstrap_error() {
+  local rc="$1" line="$2"
+  echo "[FAIL] Stage: $CURRENT_STAGE, exit: $rc, line: $line" >&2
+  echo "See $LOG" >&2
+}
+trap 'report_bootstrap_error "$?" "$LINENO"' ERR
 source /etc/os-release
 [[ "${ID:-}" == ubuntu ]] || { echo 'Only Ubuntu-based Kubuntu is supported' >&2; exit 2; }
 dpkg --compare-versions "${VERSION_ID:-0}" ge 26.04 || { echo 'Requires Kubuntu 26.04 or newer' >&2; exit 2; }

@@ -63,7 +63,6 @@ add_launcher() {
   shift 5
   local target="$app_dir/kubuntu-science-${id}.desktop"
   local launcher="$wrapper_dir/${id}"
-  local marker=""
   if [[ -f "$target" ]]; then
     printf 'MEVCUT (yönetilen): %-25s %s\n' "$title" "$target"
     ((existing+=1)); return 0
@@ -111,7 +110,7 @@ skip_missing() { printf 'BULUNAMADI: %s (%s)\n' "$1" "$2"; ((missing+=1)); }
 launch_binary() {
   local id="$1" title="$2" icon="$3" candidates="$4"
   shift 4
-  local exe="" item="" body=""
+  local exe="" body=""
   local -a alternatives=()
   IFS=';' read -r -a alternatives <<< "$candidates"
   if ! exe="$(binary "${alternatives[@]}")"; then
