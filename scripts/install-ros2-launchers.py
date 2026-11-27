@@ -9,7 +9,6 @@ from __future__ import annotations
 import argparse
 import datetime
 import os
-from pathlib import Path
 import re
 import shlex
 import shutil
@@ -17,6 +16,7 @@ import stat
 import subprocess
 import sys
 import tempfile
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 HOME = Path.home()
@@ -60,7 +60,7 @@ def wrapper_text() -> str:
 
 
 def desktop_text(row: tuple[str, str, str, str, str]) -> str:
-    ident, title, desc, icon, action = row
+    _ident, title, desc, icon, action = row
     # Freedesktop Exec syntax quotes the executable path; does not use a shell.
     quoted = str(WRAPPER).replace("\\", "\\\\").replace('"', '\\"').replace("$", "\\$")
     return (

@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
 """Local hook tests against disposable worktrees and a local bare remote."""
+
 import os
-from pathlib import Path
 import subprocess
 import tempfile
 import unittest
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -32,7 +32,7 @@ class HookTests(unittest.TestCase):
         self.git("config", "core.autocrlf", "false")
 
     def run_cmd(self, *args, ok=True):
-        proc = subprocess.run(args, cwd=self.root, env=self.env, capture_output=True)
+        proc = subprocess.run(args, cwd=self.root, env=self.env, capture_output=True, check=False)
         if ok and proc.returncode:
             self.fail(proc.stderr.decode(errors="replace"))
         return proc

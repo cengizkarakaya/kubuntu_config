@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Read-only local version snapshots for sysup; no network or package changes."""
+
 import json
 import os
 import shutil
@@ -12,7 +13,7 @@ BINARIES = {'helix': 'hx', 'bottom': 'btm', 'herdr': 'herdr', 'codex': 'codex'}
 
 def run(*args):
     env = dict(os.environ, LC_ALL='C')
-    result = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+    result = subprocess.run(args, capture_output=True,
                             text=True, errors='replace', timeout=30, check=False, env=env)
     if result.returncode:
         raise RuntimeError(f'{args[0]} exited {result.returncode}: {result.stderr.strip()[:160]}')

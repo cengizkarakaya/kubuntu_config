@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
 """Independent fixtures for strict-mode policy; do not execute installers."""
+
 import importlib.util
-from pathlib import Path
 import subprocess
 import tempfile
 import unittest
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location("bash_policy", ROOT / "scripts/check-bash-modes.py")
@@ -62,7 +62,7 @@ class BashPolicyTests(unittest.TestCase):
                 ["bash", "--noprofile", "--norc", "-c",
                  flags + '; before=$-; pipe=$(set -o | grep "^pipefail"); '
                  'source "$1"; [[ $- == "$before" && $(set -o | grep "^pipefail") == "$pipe" ]]',
-                 "bash", str(ROOT / "scripts/ble-provider.sh")], capture_output=True)
+                 "bash", str(ROOT / "scripts/ble-provider.sh")], capture_output=True, check=False)
             self.assertEqual(proc.returncode, 0)
 
 

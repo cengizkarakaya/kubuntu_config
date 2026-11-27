@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Opt-in, encrypted Restic backup. No automatic publication or live restore."""
+
 import argparse
 import os
-from pathlib import Path
 import re
 import shutil
 import subprocess
 import sys
+from pathlib import Path
 
 from recovery_common import ROOT, ordinary_user
 

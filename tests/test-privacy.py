@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
 """Test privacy checks with synthetic Git objects, never real host data."""
+
 import importlib.util
-from pathlib import Path
 import subprocess
 import tempfile
 import unittest
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location("privacy_checker", ROOT / "scripts/check-privacy.py")
@@ -91,7 +91,7 @@ class PrivacyTests(unittest.TestCase):
     def test_public_diagnostics_redacted(self):
         self.write("inventory/synthetic-private-name.json", b"synthetic-private-value")
         proc = subprocess.run(["python3", str(ROOT / "scripts/check-privacy.py"),
-                               "--root", str(self.root), "--index"], capture_output=True)
+                               "--root", str(self.root), "--index"], capture_output=True, check=False)
         self.assertEqual(proc.returncode, 1)
         self.assertNotIn(b"synthetic-private", proc.stdout + proc.stderr)
         self.assertIn(b"private-path", proc.stderr)

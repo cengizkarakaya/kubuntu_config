@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """Explicit Conda environment recovery; no bootstrap or sysup integration."""
+
 import argparse
 import json
 import os
-from pathlib import Path
 import re
 import shutil
 import subprocess
 import sys
+from pathlib import Path
 
 from recovery_common import new_snapshot, ordinary_user, private_root, write_private
 

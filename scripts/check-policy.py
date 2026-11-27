@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Check declared repository policy; no installs or host access."""
+
 import argparse
-from pathlib import Path
 import sys
 import tomllib
+from pathlib import Path
 
 
 def manifest(path, flatpak=False):

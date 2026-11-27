@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 """Offline checker for common local Markdown links and heading anchors."""
+
 import argparse
-from collections import Counter
-from pathlib import Path
 import re
 import subprocess
 import sys
+from collections import Counter
+from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 INLINE = re.compile(r"!?\[[^\]\n]*\]\(\s*(<[^>\n]+>|[^\s)]+)(?:\s+[^)\n]*)?\)")
 REFERENCE = re.compile(r"^\s{0,3}\[[^\]\n]+\]:\s*(<[^>\n]+>|[^\s]+)")
 HEADING = re.compile(r"^\s{0,3}#{1,6}\s+(.+?)\s*#*\s*$")
-ANCHOR = re.compile(r"""<a\s+(?:name|id)=["']([^"']+)["']""", re.I)
+ANCHOR = re.compile(r"""<a\s+(?:name|id)=["']([^"']+)["']""", re.IGNORECASE)
 FENCE = re.compile(r"^\s{0,3}(\x60{3,}|~{3,})")
 CODE = re.compile(r"(\x60+).*?\1")
 

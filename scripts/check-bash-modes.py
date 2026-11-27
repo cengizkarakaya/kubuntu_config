@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """Enforce the reviewed Bash entrypoint/header baseline without executing scripts."""
+
 import argparse
-from pathlib import Path
 import re
 import subprocess
 import sys
 import tomllib
+from pathlib import Path
 
 BASH = re.compile(r"^#!\s*(?:/usr/bin/env(?:\s+-S)?\s+bash|/bin/bash|/usr/bin/bash)(?:\s|$)")
 STRICT = {"set -euo pipefail", "set -Eeuo pipefail"}

@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Render reviewed KDE menu snapshots without shell expansion or live capture."""
+
 import argparse
 import os
-from pathlib import Path
 import re
 import shutil
 import stat
 import tempfile
+from pathlib import Path
 
 TOKEN = b"@HOME@"
 KINDS = {
@@ -64,9 +65,10 @@ def template(root, home):
 def safe_target(home, relative):
     dest = home / relative
     for candidate in (home, *dest.parents):
-        if candidate == home or home in candidate.parents:
-            if candidate.is_symlink() or (candidate.exists() and not candidate.is_dir()):
-                raise ValueError(f"Unsafe destination parent: {candidate}")
+        if (candidate == home or home in candidate.parents) and (
+            candidate.is_symlink() or (candidate.exists() and not candidate.is_dir())
+        ):
+            raise ValueError(f"Unsafe destination parent: {candidate}")
     if dest.is_symlink() or (dest.exists() and not dest.is_file()):
         raise ValueError(f"Unsafe destination: {relative}")
     return dest

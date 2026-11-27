@@ -8,9 +8,9 @@ but rejects unexpected changes to the target file. Changes to unrelated tracked\
 from __future__ import annotations
 
 import argparse
-from pathlib import Path
 import subprocess
 import sys
+from pathlib import Path
 
 RELATIVE = "modules/globebrowsing/globebrowsingmodule.cpp"
 
