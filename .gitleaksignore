@@ -1,0 +1,2 @@
+# Reviewed historical false positive: expected_api is a Git commit SHA.
+5eebf883aef4857f670bd0e56836851cd26e40f0:plasma/install-polonium.sh:generic-api-key:48
