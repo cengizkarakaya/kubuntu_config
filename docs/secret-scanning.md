@@ -2,7 +2,7 @@
 
 CI scans the fetched Git history with Gitleaks, using a fixed official release asset verified against the SHA-256 published by the GitHub release API. The scan uses full redaction and does not upload reports or post PR comments. It fails on findings; never paste the detected secret into a public issue or log.
 
-This is an additional check, not permission to stage private files. Review every launcher snapshot, Conda export and inventory before staging. Keep all personal backups outside the repository.
+This is an additional check, not permission to stage private files. Never stage personal launcher snapshots, actual Conda exports or inventory, even if no credential is detected. Keep all personal backups outside the repository.
 
 If a real secret is exposed, revoke or rotate it immediately. Removing it in a new commit does not erase Git history. Review history cleanup separately. If a false positive is confirmed, use a narrowly scoped, documented exception rather than disabling a rule globally.
 

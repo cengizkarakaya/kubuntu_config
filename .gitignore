@@ -8,3 +8,6 @@ __pycache__/
 
 # Private recovery data must never enter Git.
 /backups/application-launcher/snapshot/
+/conda/environments/*.full.yml
+/conda/locks/*
+!/conda/locks/README.md
