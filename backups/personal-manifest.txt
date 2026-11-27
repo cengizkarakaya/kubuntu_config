@@ -1,0 +1,22 @@
+# CANDIDATE ONLY — review every entry; existence is not backup completeness.
+# Copy outside this public repository, review exact locations, then pass --manifest.
+# One explicit path relative to HOME per line. No globs, absolute paths or secrets.
+# Close applications first; encrypted browser profiles can contain credentials.
+.mozilla/firefox
+snap/firefox/common/.mozilla/firefox
+.local/share/Anki2
+# Example Flatpak Anki data directory.
+.var/app/net.ankiweb.Anki/data/Anki2
+.local/share/kicad
+.config/kicad
+.config/octave
+Zotero
+# Add the actual robotics workspace and GUI config paths privately.
+.local/state/kubuntu-config/conda
+.local/state/kubuntu-config/inventory
+.local/state/kubuntu-config/menu-current
+.local/state/kubuntu-config/menu-portable
+.local/state/kubuntu-config/privacy-guard
+# Add actual FreeCAD, QGIS, KiCad, Obsidian vault, Webots worlds and other project paths.
+# Add reviewed manually built software/source prefixes if genuinely unrecoverable.
+# Do not include the entire HOME, SSH keys, keyring, or public Git checkout.
