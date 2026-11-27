@@ -233,7 +233,20 @@ jobs:
           printf '%s  %s\n' '551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb' "$tmp/$asset" | sha256sum -c -
           tar -xzf "$tmp/$asset" -C "$tmp" gitleaks
           "$tmp/gitleaks" version
-          "$tmp/gitleaks" git --redact=100 --no-banner --log-opts="--all" .
+          status=0
+          "$tmp/gitleaks" git --redact=100 --no-banner --log-opts="--all" \
+            --report-format json --report-path "$tmp/findings.json" --exit-code 23 . || status=$?
+          if [[ "$status" == 23 ]]; then
+            # Print only location and rule metadata; never the match or secret.
+            python3 - "$tmp/findings.json" <<'PY'
+          import json, sys
+          with open(sys.argv[1], encoding="utf-8") as report:
+              for finding in json.load(report):
+                  print(json.dumps({key: finding.get(key) for key in
+                                    ("RuleID", "File", "StartLine", "Commit")}, ensure_ascii=True))
+          PY
+          fi
+          exit "$status"
 
   shell-lint:
     runs-on: ubuntu-latest
