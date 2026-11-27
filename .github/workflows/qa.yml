@@ -61,6 +61,10 @@ jobs:
         run: bash tests/test-conda-envs.sh
       - name: Test encrypted backup wrapper guards (mocked Restic)
         run: bash tests/test-backup-personal.sh
+      - name: Check local documentation links and heading anchors (offline)
+        run: |
+          python3 -B tests/test-doc-links.py
+          python3 -B scripts/check-doc-links.py
       - name: Assert independent legacy and declarative repository policy
         run: |
           python3 -B tests/test-policy-legacy.py
