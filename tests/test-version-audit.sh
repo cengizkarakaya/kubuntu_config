@@ -5,7 +5,7 @@ work="$(mktemp -d)"
 trap 'rm -rf -- "$work"' EXIT
 mkdir -p "$work/bin" "$work/root/scripts" "$work/root/packages" \
   "$work/home/.local/bin" "$work/home/.local/share/fonts/FiraCodeNerd"
-cp "$REPO/scripts/version-audit.sh" "$work/root/scripts/version-audit.sh"
+cp "$REPO/scripts/version-audit.sh" "$REPO/scripts/ble-provider.sh" "$work/root/scripts/"
 printf 'goodpkg\n' > "$work/root/packages/apt.txt"
 printf 'org.example.App\tExample\n' > "$work/root/packages/flatpak.tsv"
 printf 'v3.5.1\n' > "$work/home/.local/share/fonts/FiraCodeNerd/.kubuntu-config-version"
