@@ -7,3 +7,7 @@ python3 -B tests/test-policy-legacy.py
 python3 -B scripts/check-policy.py
 python3 -B tests/test-policy.py
 ```
+
+## Python quality gate
+
+All tracked Python source files (including tests and ROS launch files) are compiled by CI. Ruff is installed from a version-pinned official release asset checked against its published SHA-256. The blocking baseline is E9, F63, F7 and F82 (syntax, invalid constructs and undefined names). Default Ruff rules are reported as advisory statistics; tool failures remain blocking. Do not automatically reformat files or broaden the baseline until findings have been reviewed. Existing independent functional tests are retained. The CI tools are not installed by bootstrap or sysup.
