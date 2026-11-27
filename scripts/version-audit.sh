@@ -3,13 +3,24 @@ set -Eeuo pipefail
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 # Strict audit: current configured stable repositories only. This does NOT
 # claim Debian/Ubuntu package versions equal every developer's upstream release.
+# shellcheck source=scripts/ble-provider.sh
+source "$ROOT/scripts/ble-provider.sh"
 failures=0
+manual=0
 check() { echo "[OK] $*"; }
 problem() { echo "[FAIL] $*" >&2; ((failures+=1)); }
 while IFS= read -r pkg; do
   [[ -n "$pkg" && "$pkg" != \#* ]] || continue
+  if [[ "$pkg" == ble.sh ]]; then
+    ble_status=0
+    ble_local_status || ble_status=$?
+    case "$ble_status" in
+      0) manual=1; echo '[WARN] User-local ble.sh: not managed by APT; stable version/provenance not verified.'; continue ;;
+      2) problem 'Invalid user-local ble.sh override'; continue ;;
+    esac
+  fi
   installed="$(dpkg-query -W -f='${Version}' "$pkg" 2>/dev/null || true)"
-  candidate="$(apt-cache policy "$pkg" 2>/dev/null | awk '$1=="Candidate:" {print $2;exit}')"
+  candidate="$(apt-cache policy "$pkg" 2>/dev/null | awk '$1=="Candidate:" && !seen {print $2;seen=1}')" || candidate=''
   if [[ -z "$installed" || -z "$candidate" || "$candidate" == "(none)" ]]; then
     problem "APT $pkg version could not be resolved"
   elif dpkg --compare-versions "$installed" lt "$candidate"; then
@@ -20,7 +31,7 @@ while IFS= read -r pkg; do
 done < <(sed 's/#.*$//;s/^[[:space:]]*//;s/[[:space:]]*$//;/^$/d' "$ROOT/packages/apt.txt")
 for pkg in brave-browser code; do
   installed="$(dpkg-query -W -f='${Version}' "$pkg" 2>/dev/null || true)"
-  candidate="$(apt-cache policy "$pkg" 2>/dev/null | awk '$1=="Candidate:" {print $2;exit}')"
+  candidate="$(apt-cache policy "$pkg" 2>/dev/null | awk '$1=="Candidate:" && !seen {print $2;seen=1}')" || candidate=''
   if [[ -z "$installed" || -z "$candidate" || "$candidate" == "(none)" ]]; then
     problem "$pkg signed APT version could not be resolved"
   elif dpkg --compare-versions "$installed" lt "$candidate"; then
@@ -90,5 +101,9 @@ if ((failures)); then
   echo "[FAIL] $failures version mismatches. Stable releases can change while bootstrap runs." >&2
   exit 1
 fi
-echo '[OK] All configured install channels match their latest stable versions.'
+if ((manual)); then
+  echo '[OK] Managed install channels match their latest stable versions; user-local ble.sh remains unverified.'
+else
+  echo '[OK] All configured install channels match their latest stable versions.'
+fi
 echo '[INFO] Upstream-vs-Ubuntu package age is not guaranteed; use release/vendor verification before changing channels.'

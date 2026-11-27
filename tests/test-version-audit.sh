@@ -5,7 +5,7 @@ work="$(mktemp -d)"
 trap 'rm -rf -- "$work"' EXIT
 mkdir -p "$work/bin" "$work/root/scripts" "$work/root/packages" \
   "$work/home/.local/bin" "$work/home/.local/share/fonts/FiraCodeNerd"
-cp "$REPO/scripts/version-audit.sh" "$work/root/scripts/version-audit.sh"
+cp "$REPO/scripts/version-audit.sh" "$REPO/scripts/ble-provider.sh" "$work/root/scripts/"
 printf 'goodpkg\n' > "$work/root/packages/apt.txt"
 printf 'org.example.App\tExample\n' > "$work/root/packages/flatpak.tsv"
 printf 'v3.5.1\n' > "$work/home/.local/share/fonts/FiraCodeNerd/.kubuntu-config-version"
@@ -51,6 +51,16 @@ EOF
 chmod +x "$work/bin/"* "$work/home/.local/bin/herdr" "$work/home/.local/bin/hx" "$work/home/.local/bin/btm" "$work/root/scripts/latest-release.sh"
 export PATH="$work/bin:$PATH"
 bash "$work/root/scripts/version-audit.sh"
+mkdir -p "$HOME/.local/share/blesh"
+printf 'BLE_VERSION=0.4.0-devel-test\nexit 99\n' > "$HOME/.local/share/blesh/ble.sh"
+printf 'goodpkg\nble.sh\n' > "$work/root/packages/apt.txt"
+bash "$work/root/scripts/version-audit.sh" > "$work/local-audit"
+grep -Fq '[WARN] User-local ble.sh: not managed by APT' "$work/local-audit"
+grep -Fq 'user-local ble.sh remains unverified' "$work/local-audit"
+printf 'BLE_VERSION=(\n' > "$HOME/.local/share/blesh/ble.sh"
+if bash "$work/root/scripts/version-audit.sh"; then exit 1; fi
+rm "$HOME/.local/share/blesh/ble.sh"
+printf 'goodpkg\n' > "$work/root/packages/apt.txt"
 export MOCK_CANDIDATE=3.0
 if bash "$work/root/scripts/version-audit.sh"; then
   echo '[FAIL] Audit incorrectly accepted an outdated APT package' >&2

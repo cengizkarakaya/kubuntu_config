@@ -4,6 +4,8 @@ ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 # Mirror bootstrap.sh's user-local PATH so verification works in the same
 # terminal session without logout or re-sourcing ~/.bashrc.
 export PATH="$HOME/.cargo/bin:$HOME/.local/bin:$PATH"
+# shellcheck source=scripts/ble-provider.sh
+source "$ROOT/scripts/ble-provider.sh"
 SKIP_PLASMA=0
 for arg in "$@"; do
   case "$arg" in --skip-plasma) SKIP_PLASMA=1 ;; *) echo "Unknown argument: $arg" >&2; exit 2 ;; esac
@@ -81,6 +83,14 @@ else fail node 'node missing'; fi
 missing_apt=0
 while IFS= read -r pkg; do
   [[ -n "$pkg" && "$pkg" != \#* ]] || continue
+  if [[ "$pkg" == ble.sh ]]; then
+    ble_status=0
+    ble_local_status || ble_status=$?
+    case "$ble_status" in
+      0) warn shell 'Existing user-local ble.sh present; syntax checked; version/provenance and interactive behavior require manual review'; continue ;;
+      2) fail shell 'Invalid user-local ble.sh override; inspect before changing provider'; ((missing_apt+=1)); continue ;;
+    esac
+  fi
   if installed "$pkg"; then ok apt "$pkg"; else fail apt "$pkg absent"; ((missing_apt+=1)); fi
 done < <(sed 's/#.*$//; s/^[[:space:]]*//; s/[[:space:]]*$//; /^$/d' "$ROOT/packages/apt.txt")
 echo "APT manifest missing: $missing_apt"
@@ -102,7 +112,7 @@ fi
 [[ -s "$HOME/.local/share/icons/Nordzy-dark/index.theme" ]] && ok theme 'Nordzy-dark icons' || fail theme 'Nordzy-dark icons missing'
 if has kreadconfig6; then
   val="$(kreadconfig6 --file kdeglobals --group General --key ColorScheme 2>/dev/null)"
-  [[ "$val" == KubuntuNord ]] && ok kde 'Nord palette selected' || fail kde "ColorScheme=$val"
+  [[ "$val" == BreezeDark ]] && ok kde 'Breeze Dark palette selected (user preference)' || fail kde "ColorScheme=$val (expected BreezeDark)"
   if ((SKIP_PLASMA==0)); then
     val="$(kreadconfig6 --file kwinrc --group Desktops --key Number 2>/dev/null)"
     if [[ "$val" =~ ^[1-9][0-9]*$ ]]; then

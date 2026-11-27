@@ -85,6 +85,10 @@ assert "poloniumEnabled false" in (root / "plasma/disable-polonium.sh").read_tex
 assert not (root / "plasma/install-polonium.sh").exists()
 appearance = (root / 'themes/setup.sh').read_text()
 assert 'latest-release.sh' in appearance
+assert 'ColorScheme BreezeDark' in appearance
+assert 'plasma-apply-colorscheme BreezeDark' in appearance
+assert 'plasma-apply-colorscheme KubuntuNord' not in appearance
+assert '== BreezeDark' in verification
 assert "General --key font 'FiraCode Nerd Font,12,-1,5,50,0,0,0,0,0'" in appearance
 assert "General --key fixed 'FiraCode Nerd Font Mono,10,-1,5,50,0,0,0,0,0'" in appearance
 assert 'flatpak update --user --noninteractive -y "$id"' in (root / 'scripts/install-flatpaks.sh').read_text()

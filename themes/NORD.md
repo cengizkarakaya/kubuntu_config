@@ -5,7 +5,8 @@ Background #20242C, cyan #88C0D0, blue #81A1C1, FiraCode Nerd Font 10,
 Nordic GTK, Nordzy-dark icons.
 
 Installed automatically (these are appearance assets, not application add-ons):
-- Native KDE color palette in themes/KubuntuNord.colors
+- Alternate native KDE color palette in themes/KubuntuNord.colors (retained, not selected)
+- Active KDE palette: built-in BreezeDark, explicitly selected by the user
 - Latest stable SHA-256-checked FiraCode Nerd Font (resolved when installed)
 - Nordic GTK theme from pinned revision; no upstream installer execution
 - Nordzy-dark SVG icon theme from pinned revision; no upstream installer execution
