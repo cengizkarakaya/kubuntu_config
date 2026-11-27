@@ -6,7 +6,6 @@ umask 077
 
 SELF="$(readlink -f -- "${BASH_SOURCE[0]}")"
 CALLER_UID="$(id -u)"
-CALLER_HOME="$HOME"
 ROOT="${KUBUNTU_CONFIG_ROOT:-$HOME/kubuntu_config}"
 USER_STATE="$HOME/.local/state/kubuntu-config"
 SYSTEM_STATE_BASE="/var/lib/kubuntu-sysup"
@@ -21,8 +20,6 @@ WARNINGS=0
 RUN_STAGE_PID=""
 RUN_STAGE_HEARTBEAT=""
 STAGE="idle"
-STATUS="idle"
-DETAIL=""
 SYSUP_TTY_COLOR=0
 SNAP_DIR=""
 
@@ -52,8 +49,6 @@ warn()  { printf '[WARN] %s\n' "$*" >&2; }
 # Interactive runs keep files in the user's private state directory.
 write_status() {
     local phase="$1" detail="${2:-}"
-    STATUS="$phase"
-    DETAIL="$detail"
     python3 - "$STATE/status.json" "$RUN_ID" "$MODE" "$UNIT" "$$" "$STAGE" "$phase" "$detail" "$FAILED" "$WARNINGS" <<'PY'
 import json, os, sys, tempfile
 path, run_id, mode, unit, pid, stage, phase, detail, failures, warnings = sys.argv[1:]

@@ -4,7 +4,7 @@ ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 command -v flatpak >/dev/null || { echo '[FAIL] flatpak command missing' >&2; exit 1; }
 flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 failures=()
-while IFS=$'\t' read -r id name; do
+while IFS=$'\t' read -r id _name; do
   [[ -n "$id" && "$id" != \#* ]] || continue
   if [[ ! "$id" =~ ^[A-Za-z0-9_.-]+$ ]]; then echo "Invalid Flatpak app ID: $id" >&2; exit 2; fi
   if ! flatpak info --user "$id" >/dev/null 2>&1; then

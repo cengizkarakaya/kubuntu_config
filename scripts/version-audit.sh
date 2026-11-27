@@ -27,7 +27,7 @@ for pkg in brave-browser code; do
     problem "$pkg installed $installed is older than candidate $candidate"
   else check "$pkg installed $installed (candidate $candidate)"; fi
 done
-while IFS=$'\t' read -r app name; do
+while IFS=$'\t' read -r app _name; do
   [[ -n "$app" && "$app" != \#* ]] || continue
   local_sha="$(flatpak info --user --show-commit "$app" 2>/dev/null || true)"
   remote_sha="$(flatpak remote-info --user --show-commit flathub "$app" 2>/dev/null || true)"
@@ -42,7 +42,7 @@ for spec in "herdrdev/herdr $herdr_asset" 'ryanoasis/nerd-fonts FiraCode.tar.xz'
   line="$(bash "$ROOT/scripts/latest-release.sh" "$repo" "$asset")" || {
     problem "GitHub stable release lookup failed: $repo"; continue;
   }
-  IFS=$'\t' read -r tag url sha <<< "$line"
+  IFS=$'\t' read -r tag _url _sha <<< "$line"
   case "$repo" in
     herdrdev/herdr)
       actual="$("$HOME/.local/bin/herdr" --version 2>/dev/null || true)"

@@ -2,11 +2,15 @@ name: Static bootstrap checks
 on:
   push:
   pull_request:
+permissions:
+  contents: read
 jobs:
   bash-and-policy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
       - name: Bash syntax check
         run: |
           find . -name '*.sh' -type f -print0 | xargs -0 -r -n1 bash -n
@@ -151,7 +155,9 @@ jobs:
   herdr-release-install:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
       - name: Install newest stable Herdr release, verify checksum and idempotency
         run: |
           set -Eeuo pipefail
@@ -164,7 +170,9 @@ jobs:
   helix-bottom-official-releases:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
       - name: Install and verify latest Helix and Bottom upstream releases
         run: |
           set -Eeuo pipefail
@@ -181,7 +189,9 @@ jobs:
   yazi-package-install:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
       - name: Install signed upstream Yazi and pinned Arch packages
         run: |
           set -Eeuo pipefail
@@ -202,3 +212,57 @@ jobs:
           done
           test -d "$HOME/.config/yazi/flavors/nord.yazi"
           echo '[PASS] All 10 Arch Yazi plugins and Nord flavor installed from pinned manifest'
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Scan Git history with checksum-verified Gitleaks
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          tmp="$(mktemp -d)"
+          trap 'rm -rf -- "$tmp"' EXIT
+          asset=gitleaks_8.30.1_linux_x64.tar.gz
+          curl --fail --silent --show-error --location --proto '=https' --proto-redir '=https' \
+            "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/$asset" \
+            --output "$tmp/$asset"
+          printf '%s  %s\n' '551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb' "$tmp/$asset" | sha256sum -c -
+          tar -xzf "$tmp/$asset" -C "$tmp" gitleaks
+          "$tmp/gitleaks" version
+          status=0
+          "$tmp/gitleaks" git --redact=100 --no-banner --log-opts="--all" \
+            --report-format json --report-path "$tmp/findings.json" --exit-code 23 . || status=$?
+          if [[ "$status" == 23 ]]; then
+            # Print only location and rule metadata; never the match or secret.
+            python3 - "$tmp/findings.json" <<'PY'
+          import json, sys
+          with open(sys.argv[1], encoding="utf-8") as report:
+              for finding in json.load(report):
+                  print(json.dumps({key: finding.get(key) for key in
+                                    ("RuleID", "File", "StartLine", "Commit")}, ensure_ascii=True))
+          PY
+          fi
+          exit "$status"
+
+  shell-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Install ShellCheck from signed Ubuntu repositories
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends shellcheck
+      - name: ShellCheck warning baseline (blocking)
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          shellcheck --version
+          mapfile -d '' -t files < <(git ls-files -z -- '*.sh' scripts/sysup scripts/kubuntu-power-menu scripts/yazi-rg)
+          test "${#files[@]}" -gt 0
+          shellcheck -S warning -x "${files[@]}"

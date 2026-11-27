@@ -111,7 +111,7 @@ rviz_generate_cookie() {
   local auth_file auth_dir temp entries
   auth_file="$(rviz_auth_path)" || return 1
   auth_dir="$(dirname -- "$auth_file")"
-  (umask 077; mkdir -p -m 700 "$auth_dir")
+  (umask 077; mkdir -p -- "$auth_dir")
   temp="$(mktemp "$auth_dir/.rviz-auth.XXXXXXXX")"
   # FamilyWild (ffff) works despite differing X11 hostnames within the container.
   # Keep the original server cookie; do not weaken X server access control.
