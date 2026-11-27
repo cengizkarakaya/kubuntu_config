@@ -188,6 +188,60 @@ jobs:
           fi
           exit "$status"
 
+  shell-format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Install shfmt from signed Ubuntu repositories
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends shfmt
+          shfmt --version
+          dpkg-query -W shfmt
+      - name: Measure Bash formatting debt without rewriting source
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          tmp="$(mktemp -d)"
+          trap 'rm -rf -- "$tmp"' EXIT
+          git ls-files -z > "$tmp/paths"
+          checked=0
+          changed=0
+          errors=0
+          while IFS= read -r -d '' path; do
+            case "$path" in
+              dotfiles/*) continue ;;
+              *.sh|*.bash) ;;
+              *)
+                # Include extensionless commands with a Bash shebang.
+                if ! head -n 1 -- "$path" | grep -Eq '^#![[:space:]]*(/usr/bin/env([[:space:]]+-S)?[[:space:]]+bash|/bin/bash|/usr/bin/bash)([[:space:]]|$)'; then
+                  continue
+                fi
+                ;;
+            esac
+            checked=$((checked + 1))
+            # Explicit flags keep this independent of editor-local preferences.
+            if ! shfmt -ln=bash -i 2 < "$path" > "$tmp/formatted" 2>"$tmp/errors"; then
+              printf '[FAIL] Formatter could not parse %s\n' "$path"
+              errors=$((errors + 1))
+            elif cmp -s -- "$path" "$tmp/formatted"; then
+              :
+            else
+              status=$?
+              if [[ "$status" != 1 ]]; then
+                printf '[FAIL] Comparison failed for %s\n' "$path"
+                errors=$((errors + 1))
+              else
+                printf '[ADVISORY] Formatting differs: %s\n' "$path"
+                changed=$((changed + 1))
+              fi
+            fi
+          done < "$tmp/paths"
+          printf 'shfmt: checked=%d formatting-differences=%d errors=%d\n' "$checked" "$changed" "$errors"
+          (( checked > 0 && errors == 0 ))
+
   shell-lint:
     runs-on: ubuntu-latest
     steps:

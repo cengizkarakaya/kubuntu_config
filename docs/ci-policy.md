@@ -42,3 +42,7 @@ mode mechanically to sourced code or a status-collecting controller.
 ## Python security gate
 
 See [Bandit security analysis](python-security.md). High severity findings and incomplete scans fail CI; other findings are reviewed without automatic suppressions.
+
+## Shell formatting audit
+
+The separate shfmt job uses the signed Ubuntu package and records its version. It checks tracked Bash scripts (including sourced .bash files and extensionless Bash-shebang commands), except the Arch-parity dotfiles tree. It formats into a temporary file with explicit Bash dialect and two-space indentation, then compares without touching source. Formatting differences are advisory; formatter and comparison failures are blocking. No automatic rewrite, simplification, source diff upload or bootstrap dependency is introduced. Keep syntax checks, ShellCheck and behavior tests independent. Review future formatting changes in narrowly scoped commits.
