@@ -12,7 +12,9 @@ jobs:
         with:
           persist-credentials: false
       - name: Test private-data guard with synthetic Git repositories
-        run: python3 -B tests/test-privacy.py
+        run: |
+          python3 -B tests/test-privacy.py
+          python3 -B tests/test-privacy-hooks.py
       - name: Check committed tree without disclosing private values
         run: python3 -B scripts/check-privacy.py --tree HEAD
 

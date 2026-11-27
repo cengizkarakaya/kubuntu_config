@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import re
 import subprocess
+import stat
 import sys
 
 MAX_BYTES = 2 * 1024 * 1024
@@ -99,16 +100,58 @@ def content_findings(path, data):
     return result
 
 
-def scan(root, tree=None):
+def load_denylist(root, path):
+    """Read private literal values, never logging their contents."""
+    if path is None:
+        return ()
+    path = Path(path)
+    resolved = path.resolve()
+    root = root.resolve()
+    if (resolved == root or root in resolved.parents or
+            any((p / ".git").exists() for p in resolved.parents)):
+        raise ValueError("Denylist must be outside Git")
+    parent = path.parent.stat()
+    if parent.st_uid != os.getuid() or stat.S_IMODE(parent.st_mode) & 0o077:
+        raise ValueError("Denylist parent must be private")
+    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    with os.fdopen(fd, "rb") as stream:
+        info = os.fstat(stream.fileno())
+        if (not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or
+                stat.S_IMODE(info.st_mode) != 0o600 or info.st_size > 65536):
+            raise ValueError("Denylist must be an owned regular mode-0600 file")
+        data = stream.read(65537)
+    if len(data) > 65536 or b"\0" in data:
+        raise ValueError("Invalid denylist")
+    data.decode("utf-8")
+    terms = tuple(line.strip() for line in data.splitlines()
+                  if line.strip() and not line.lstrip().startswith(b"#"))
+    if len(terms) > 256 or any(len(term) < 4 for term in terms):
+        raise ValueError("Denylist requires 4+ byte literals, at most 256")
+    return terms
+
+
+def deny_match(data, terms):
+    return any(term in data for term in terms)
+
+
+def scan(root, tree=None, terms=(), cache=None):
     findings = []
     count = 0
+    if cache is None:
+        cache = {}
     for mode, oid, path in entries(root, tree):
         count += 1
+        if deny_match(os.fsencode(path), terms):
+            findings.append(("private-literal", path))
         if private_path(path):
             findings.append(("private-path", path))
             continue
         if mode not in {"100644", "100755"}:
             findings.append(("nonregular-entry", path))
+            continue
+        key = (path, oid)
+        if key in cache:
+            findings.extend((rule, path) for rule in cache[key])
             continue
         size = int(git(root, "cat-file", "-s", oid))
         if size > MAX_BYTES:
@@ -123,7 +166,11 @@ def scan(root, tree=None):
         if b"\0" in data:
             findings.append(("nontext-blob", path))
             continue
-        findings.extend((rule, path) for rule in sorted(content_findings(path, data)))
+        rules = content_findings(path, data)
+        if deny_match(data, terms):
+            rules.add("private-literal")
+        cache[key] = sorted(rules)
+        findings.extend((rule, path) for rule in cache[key])
     return count, findings
 
 
@@ -135,9 +182,11 @@ def main():
     modes.add_argument("--tree", help="scan a specific committed tree, e.g. HEAD")
     parser.add_argument("--local-details", action="store_true",
                         help="LOCAL ONLY: show escaped offending paths, never matching content")
+    parser.add_argument("--denylist", type=Path, help="LOCAL ONLY: private literal list")
     args = parser.parse_args()
     try:
-        count, findings = scan(args.root, args.tree)
+        terms = load_denylist(args.root, args.denylist)
+        count, findings = scan(args.root, args.tree, terms)
     except (OSError, ValueError, subprocess.SubprocessError):
         print("[FAIL] Privacy scan could not inspect Git objects.", file=sys.stderr)
         return 2

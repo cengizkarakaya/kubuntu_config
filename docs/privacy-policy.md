@@ -35,3 +35,40 @@ the initial disclosure. Local hooks are a separate opt-in safeguard.
 
 Historical deletion requires a separate reviewed rewrite and local backups.
 Never commit a list of real private identifiers as a public denylist.
+
+## Optional local Git hooks
+
+After reviewing the current source, explicitly install hooks from the checkout:
+
+```bash
+python3 -B scripts/privacy-hooks.py --install
+python3 -B scripts/privacy-hooks.py --status
+```
+
+Installation copies the scanner and runner into the existing Git hooks
+directory, so they do not depend on the staged or modified working-copy code.
+It refuses existing hooks/guard files or a configured core.hooksPath; no hooks
+are automatically installed by bootstrap/sysup. Status checks installed copies
+against current source. To update or remove them, first inspect and back up the
+four managed files (pre-commit, pre-push, privacy-guard-run.py,
+privacy-guard-check.py), then remove only those confirmed managed files and
+explicitly reinstall if needed. Never replace unrelated hooks.
+
+The optional literal denylist lives only at
+`${XDG_STATE_HOME:-$HOME/.local/state}/kubuntu-config/privacy-guard/denylist.txt`.
+Its parent must be owned by the user and private (0700 recommended); the file
+must be owned by the user, mode 0600, regular, UTF-8, outside Git.
+Use one case-sensitive literal per line (at least four bytes, max 256 entries,
+64 KiB total); blank and comment lines are ignored. No regex or public values
+are supplied. Edit locally, never paste the list into a command or public log.
+A missing list is allowed; an invalid or insecure existing list blocks the hook.
+
+The pre-commit hook scans the index; pre-push checks outgoing commit trees,
+including intermediate commits, plus denylist matches in commit metadata,
+pushed ref names and direct annotated tag messages. A new branch/tag is
+conservatively checked through its reachable history; legacy private content
+may block a new ref until history is cleaned. Missing old remote objects block
+push; inspect and fetch before retrying. Deleting refs transfers no new objects.
+This is a local safety net, not a security boundary: hooks can be bypassed
+or disabled, and other clones need their own installation. Never use
+--no-verify to evade a finding. It does not replace a full secret/history audit.
