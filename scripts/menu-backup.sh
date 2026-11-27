@@ -8,13 +8,14 @@ PRIVATE="$STATE/menu-current"
 PUBLIC="$ROOT/backups/application-launcher/snapshot"
 mode="${1:---help}"
 (( EUID != 0 )) || { echo 'Never run as root.' >&2; exit 2; }
-mkdir -p "$STATE"
+umask 077
+HELPER="$ROOT/scripts/menu-snapshot.py"
 
 copy_menu_files() {
-  local origin="$1" dest="$2" file relative
+  local origin="$1" dest="$2" logical="$3" file relative
   [[ -d "$origin" ]] || return 0
   while IFS= read -r -d '' file; do
-    relative="${file#"$HOME/"}"
+    relative="$logical/${file#"$origin/"}"
     mkdir -p "$dest/$(dirname -- "$relative")"
     cp -p -- "$file" "$dest/$relative"
   done < <(find "$origin" -type f \( -name '*.desktop' -o -name '*.directory' -o -name '*.menu' \) -print0)
@@ -22,11 +23,12 @@ copy_menu_files() {
 
 case "$mode" in
   --capture)
+    mkdir -p "$STATE"
     tmp="$(mktemp -d "$STATE/.menu-current.XXXXXXXX")"
     trap 'rm -rf -- "$tmp"' EXIT
-    copy_menu_files "${XDG_DATA_HOME:-$HOME/.local/share}/applications" "$tmp"
-    copy_menu_files "${XDG_DATA_HOME:-$HOME/.local/share}/desktop-directories" "$tmp"
-    copy_menu_files "${XDG_CONFIG_HOME:-$HOME/.config}/menus" "$tmp"
+    copy_menu_files "${XDG_DATA_HOME:-$HOME/.local/share}/applications" "$tmp" .local/share/applications
+    copy_menu_files "${XDG_DATA_HOME:-$HOME/.local/share}/desktop-directories" "$tmp" .local/share/desktop-directories
+    copy_menu_files "${XDG_CONFIG_HOME:-$HOME/.config}/menus" "$tmp" .config/menus
     if [[ -d "$PRIVATE" ]]; then
       archive="$STATE/menu-previous-$(date +%Y%m%d-%H%M%S)-$$"
       mv -- "$PRIVATE" "$archive"
@@ -41,7 +43,7 @@ case "$mode" in
     [[ -d "$PRIVATE" ]] || { echo 'Run --capture first.' >&2; exit 1; }
     echo 'CAUTION: This GitHub repository is PUBLIC.'
     echo 'Desktop entries may contain private paths, URLs, command arguments, tokens or secrets.'
-    if grep -RinEi '(password[=:]|access[_-]?token[=:]|api[_-]?key[=:]|authorization[=:]|client[_-]?secret[=:])' "$PRIVATE"; then
+    if grep -RilEi '(password[=:]|access[_-]?token[=:]|api[_-]?key[=:]|authorization[=:]|client[_-]?secret[=:])' "$PRIVATE"; then
       echo '[FAIL] Potential secret detected. Remove it from the private capture before publishing.' >&2
       exit 1
     fi
@@ -53,6 +55,7 @@ case "$mode" in
     tmp="$(mktemp -d "$(dirname -- "$PUBLIC")/.snapshot.XXXXXXXX")"
     trap 'rm -rf -- "$tmp"' EXIT
     cp -a "$PRIVATE/." "$tmp/"
+    python3 "$HELPER" template "$tmp" "$HOME"
     if [[ -e "$PUBLIC" ]]; then
       mv -- "$PUBLIC" "$STATE/menu-staged-previous-$(date +%Y%m%d-%H%M%S)-$$"
     fi
@@ -76,30 +79,11 @@ case "$mode" in
       backup="$STATE/menu-restore-before-$(date +%Y%m%d-%H%M%S)-$$"
       mkdir -p "$backup"
     fi
-    count=0
-    while IFS= read -r -d '' file; do
-      relative="${file#"$PUBLIC/"}"
-      case "$relative" in
-        .local/share/applications/*.desktop|.local/share/desktop-directories/*.directory|.config/menus/*.menu) ;;
-        *) echo "[SKIP] Unexpected path: $relative" >&2; continue ;;
-      esac
-      dest="$HOME/$relative"
-      [[ ! -L "$dest" ]] || { echo "[SKIP] Symlink target: $dest"; continue; }
-      if [[ -e "$dest" ]] && cmp -s "$file" "$dest"; then continue; fi
-      if [[ "$mode" == --plan-restore ]]; then
-        echo "[PLAN] $relative $( [[ -e "$dest" ]] && echo '(replace with backup)' || echo '(new)' )"
-      else
-        if [[ -e "$dest" ]]; then
-          mkdir -p "$backup/$(dirname -- "$relative")"
-          cp -p -- "$dest" "$backup/$relative"
-        fi
-        mkdir -p "$(dirname -- "$dest")"
-        cp -p -- "$file" "$dest"
-        echo "[RESTORED] $relative"
-      fi
-      ((count+=1))
-    done < <(find "$PUBLIC" -type f \( -name '*.desktop' -o -name '*.directory' -o -name '*.menu' \) -print0)
-    echo "Changed/needed: $count"
+    if [[ "$mode" == --plan-restore ]]; then
+      python3 "$HELPER" plan "$PUBLIC" "$HOME"
+    else
+      python3 "$HELPER" restore "$PUBLIC" "$HOME" --backup "$backup"
+    fi
     if [[ "$mode" == --restore ]]; then
       [[ ! -d "$backup" ]] || echo "Original conflicts backed up: $backup"
       if command -v kbuildsycoca6 >/dev/null; then

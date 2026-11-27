@@ -23,6 +23,7 @@ if [[ "$ACTION" == plan ]]; then
         ip -4 route show default || true
         ip -o -4 addr show scope global || true
     fi
+    echo 'Image is pinned to a reviewed release digest; update the repository before applying a new release.'
     echo 'Start: bash scripts/netalertx.sh up'
     exit 0
 fi
@@ -36,6 +37,7 @@ case "$ACTION" in
         compose_root ps
         ;;
     update)
+        echo '[INFO] Applying the reviewed image digest in the current Compose file (not a floating latest tag).'
         compose_root pull
         compose_root up -d --no-build
         compose_root ps

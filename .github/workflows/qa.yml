@@ -159,6 +159,8 @@ jobs:
         with:
           persist-credentials: false
       - name: Install newest stable Herdr release, verify checksum and idempotency
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -Eeuo pipefail
           tag="$(bash scripts/latest-release.sh herdrdev/herdr herdr-linux-x86_64 | cut -f1)"
@@ -174,6 +176,8 @@ jobs:
         with:
           persist-credentials: false
       - name: Install and verify latest Helix and Bottom upstream releases
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -Eeuo pipefail
           bash scripts/install-helix.sh

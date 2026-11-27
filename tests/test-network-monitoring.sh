@@ -54,14 +54,19 @@ if grep -Fq '[WARN] NetAlertX API port 20212' "$TMP/netalertx-local.txt"; then
   exit 1
 fi
 echo '[PASS] NetAlertX check warns on wildcard API socket without changing firewall'
+PATH="$TMP/bin:$PATH" bash "$ROOT/scripts/netalertx.sh" update > "$TMP/netalertx-update.txt"
+grep -Fq 'Applying the reviewed image digest' "$TMP/netalertx-update.txt"
 python3 - "$ROOT" <<'PY'
 from pathlib import Path
+import re
 import sys
 r = Path(sys.argv[1])
 compose = (r/'network/netalertx/compose.yaml').read_text()
 installer = (r/'scripts/install-network-monitoring.sh').read_text()
 wrapper = (r/'scripts/netalertx.sh').read_text()
-for expected in ('ghcr.io/netalertx/netalertx:latest','network_mode: host',
+assert re.search(r'^    image: ghcr\.io/netalertx/netalertx:\d+\.\d+\.\d+@sha256:[0-9a-f]{64}$', compose, re.M)
+assert 'netalertx:latest' not in compose
+for expected in ('network_mode: host',
                  'read_only: true', 'LISTEN_ADDR: "127.0.0.1"',
                  'NET_RAW', 'NET_ADMIN', 'netalertx_data',
                  'restart: unless-stopped', 'max-size: "10m"'):
