@@ -31,6 +31,10 @@ jobs:
           bash -n scripts/kubuntu-power-menu
           bash -n verify.sh
           bash -n bootstrap.sh
+      - name: Check Bash mode policy and independent fixtures
+        run: |
+          python3 -B scripts/check-bash-modes.py
+          python3 -B tests/test-bash-modes.py
       - name: Exercise installer failure paths without APT, Flatpak or sudo changes
         run: bash tests/test-installers.sh
       - name: Test opt-in network-monitoring profile (no Docker daemon or APT changes)
