@@ -38,3 +38,7 @@ changes, conditional errexit semantics, process substitutions or all nested
 shells. Existing independent Bash syntax, ShellCheck and functional tests
 remain required. Review any new exception before adding it; never apply strict
 mode mechanically to sourced code or a status-collecting controller.
+
+## Python security gate
+
+See [Bandit security analysis](python-security.md). High severity findings and incomplete scans fail CI; other findings are reviewed without automatic suppressions.

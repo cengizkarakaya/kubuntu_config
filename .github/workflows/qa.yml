@@ -207,6 +207,59 @@ jobs:
           test "${#files[@]}" -gt 0
           shellcheck -S warning -x "${files[@]}"
 
+  python-security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Install Bandit from signed Ubuntu repositories
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends bandit
+          bandit --version
+          dpkg-query -W bandit
+      - name: Scan tracked Python files and enforce high-severity baseline
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          tmp="$(mktemp -d)"
+          trap 'rm -rf -- "$tmp"' EXIT
+          git ls-files -z -- '*.py' > "$tmp/files"
+          mapfile -d '' -t files < "$tmp/files"
+          test "${#files[@]}" -gt 0
+          # Do not allow source-level nosec comments to suppress this initial review.
+          status=0
+          bandit --ignore-nosec -f json -o "$tmp/report.json" "${files[@]}" || status=$?
+          python3 - "$tmp/report.json" "$tmp/files" "$status" <<'PY'
+          import collections
+          import json
+          import pathlib
+          import sys
+
+          report = json.loads(pathlib.Path(sys.argv[1]).read_text())
+          expected = {x.decode() for x in pathlib.Path(sys.argv[2]).read_bytes().split(b"\0") if x}
+          metrics = report["metrics"]
+          scanned = set(metrics) - {"_totals"}
+          findings = report["results"]
+          status = int(sys.argv[3])
+          if report["errors"] or scanned != expected or status != int(bool(findings)):
+              print("[FAIL] Bandit did not complete the expected scan.")
+              sys.exit(2)
+          counts = collections.Counter(
+              (item["test_id"], item["issue_severity"], item["issue_confidence"])
+              for item in findings
+          )
+          for (rule, severity, confidence), count in sorted(counts.items()):
+              print(f"{rule}: {severity}/{confidence}: {count}")
+          # Source snippets and full JSON are deliberately not printed or uploaded.
+          for item in findings:
+              print(f'{item["test_id"]}: {item["filename"]}:{item["line_number"]}')
+          high = sum(item["issue_severity"] == "HIGH" for item in findings)
+          print(f"Bandit scanned {len(scanned)} files; {len(findings)} findings, {high} high severity.")
+          sys.exit(1 if high else 0)
+          PY
+
   python-lint:
     runs-on: ubuntu-latest
     steps:
