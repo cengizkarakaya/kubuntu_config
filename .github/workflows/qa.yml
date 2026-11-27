@@ -212,3 +212,25 @@ jobs:
           done
           test -d "$HOME/.config/yazi/flavors/nord.yazi"
           echo '[PASS] All 10 Arch Yazi plugins and Nord flavor installed from pinned manifest'
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Scan Git history with checksum-verified Gitleaks
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          tmp="$(mktemp -d)"
+          trap 'rm -rf -- "$tmp"' EXIT
+          asset=gitleaks_8.30.1_linux_x64.tar.gz
+          curl --fail --silent --show-error --location --proto '=https' --proto-redir '=https' \
+            "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/$asset" \
+            --output "$tmp/$asset"
+          printf '%s  %s\n' '551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb' "$tmp/$asset" | sha256sum -c -
+          tar -xzf "$tmp/$asset" -C "$tmp" gitleaks
+          "$tmp/gitleaks" version
+          "$tmp/gitleaks" git --redact=100 --no-banner --log-opts="--all" .
