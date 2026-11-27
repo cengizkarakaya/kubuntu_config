@@ -13,4 +13,4 @@ required = ["md.obsidian.Obsidian", "org.localsend.localsend_app", "org.freecad.
 forbidden = ["org.localsend.localsend", "net.cozic.joplin_desktop"]
 
 [bootstrap]
-forbidden = ["install-polonium.sh", "install-zellij.sh", "configure-alacritty-lg.sh", "backup-personal.sh", "conda-envs.sh", "inventory-snapshot.sh", "netalertx-api-guard.sh"]
+forbidden = ["install-polonium.sh", "install-zellij.sh", "configure-alacritty-lg.sh", "configure-alacritty-window.sh", "backup-personal.sh", "conda-envs.sh", "inventory-snapshot.sh", "netalertx-api-guard.sh"]

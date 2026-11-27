@@ -69,6 +69,8 @@ assert "install-yazi-plugins.sh" in bootstrap
 assert "disable-polonium.sh" in bootstrap
 assert 'configure-alacritty-lg.sh' not in bootstrap
 assert 'configure-alacritty-lg.sh' not in (root / 'scripts/sysup').read_text()
+assert 'configure-alacritty-window.sh' not in bootstrap
+assert 'configure-alacritty-window.sh' not in (root / 'scripts/sysup').read_text()
 shortcuts = (root / "plasma/shortcuts.sh").read_text()
 assert "setkey 'Window Maximize' 'Meta+F,Meta+PgUp,Maximize Window'" in shortcuts
 assert "setkey 'Window Fullscreen' 'Meta+Shift+F,none,Make Window Fullscreen'" in shortcuts

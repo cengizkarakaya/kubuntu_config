@@ -11,3 +11,8 @@ __pycache__/
 /conda/environments/*.full.yml
 /conda/locks/*
 !/conda/locks/README.md
+/hosts/private/
+/docs/host-acceptance-*.md
+/builds/private/
+/inventory/*
+!/inventory/README.md
