@@ -5,6 +5,17 @@ on:
 permissions:
   contents: read
 jobs:
+  privacy-policy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Test private-data guard with synthetic Git repositories
+        run: python3 -B tests/test-privacy.py
+      - name: Check committed tree without disclosing private values
+        run: python3 -B scripts/check-privacy.py --tree HEAD
+
   bash-and-policy:
     runs-on: ubuntu-latest
     steps:

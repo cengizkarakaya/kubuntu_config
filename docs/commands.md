@@ -31,6 +31,7 @@ can change software, configuration or data; read the corresponding guide first.
 | Inventory | `bash scripts/inventory-snapshot.sh --plan` | `--capture`, `--compare BEFORE AFTER` (private files) |
 | Conda | `bash scripts/conda-envs.sh plan`, `list` | `export NAME`, `restore NAME FILE --kind yaml --apply`, `verify NAME --profile fenicsx` (or sage; see guide) |
 | Restic | `bash scripts/backup-personal.sh --plan` | `--init`, `--backup`, `--verify`, `--list`, `--restore ID` with reviewed options |
+| Privacy | `python3 -B scripts/check-privacy.py --index` | None (read-only Git object scan) |
 | Repository checks | `python3 -B tests/test-policy-legacy.py`, `python3 -B scripts/check-policy.py`, `python3 -B tests/test-policy.py` | None (CI/fixture checks) |
 
 The full option syntax and prerequisites are in the
