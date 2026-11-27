@@ -2,7 +2,10 @@
 
 Bandit complements Ruff, syntax checks, Gitleaks and privacy policy.
 CI installs the Ubuntu-packaged Bandit from signed APT repositories and
-records its actual version. This follows the distribution's supported
+records its actual version and system Python version. The security job uses
+Ubuntu 24.04 LTS and its system Python explicitly to avoid old Bandit/new
+Python AST incompatibilities. A synthetic detection probe must succeed before
+the real scan. Internal scanner errors remain blocking. This follows the distribution's supported
 package rather than pinning an unreviewed PyPI dependency graph.
 
 The initial gate scans every tracked Python source file, including tests and

@@ -208,7 +208,7 @@ jobs:
           shellcheck -S warning -x "${files[@]}"
 
   python-security:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -217,7 +217,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends bandit
-          bandit --version
+          /usr/bin/python3 --version
+          /usr/bin/python3 /usr/bin/bandit --version
           dpkg-query -W bandit
       - name: Scan tracked Python files and enforce high-severity baseline
         shell: bash
@@ -230,7 +231,27 @@ jobs:
           test "${#files[@]}" -gt 0
           # Do not allow source-level nosec comments to suppress this initial review.
           status=0
-          bandit --ignore-nosec -f json -o "$tmp/report.json" "${files[@]}" || status=$?
+          # Smoke test an intentionally unsafe synthetic source file; never execute it.
+          printf '%s\n' 'import subprocess' 'subprocess.run("echo fixture", shell=True)' > "$tmp/probe.py"
+          probe_status=0
+          /usr/bin/python3 /usr/bin/bandit --ignore-nosec -f json -o "$tmp/probe.json" "$tmp/probe.py" || probe_status=$?
+          python3 - "$tmp/probe.json" "$probe_status" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          report = json.loads(pathlib.Path(sys.argv[1]).read_text())
+          if report["errors"] or sys.argv[2] != "1" or not any(
+              item["test_id"] == "B602" for item in report["results"]
+          ):
+              sys.exit("[FAIL] Bandit synthetic detection probe failed")
+          print("[PASS] Bandit synthetic detection probe")
+          PY
+          /usr/bin/python3 /usr/bin/bandit --ignore-nosec -f json -o "$tmp/report.json" "${files[@]}" 2>"$tmp/scanner.log" || status=$?
+          if grep -Eiq '\b(error|critical)\b' "$tmp/scanner.log"; then
+            echo '[FAIL] Bandit reported an internal scanner error; inspect privately.'
+            exit 2
+          fi
           python3 - "$tmp/report.json" "$tmp/files" "$status" <<'PY'
           import collections
           import json
@@ -240,11 +261,11 @@ jobs:
           report = json.loads(pathlib.Path(sys.argv[1]).read_text())
           expected = {x.decode() for x in pathlib.Path(sys.argv[2]).read_bytes().split(b"\0") if x}
           metrics = report["metrics"]
-          scanned = set(metrics) - {"_totals"}
+          scanned = {pathlib.Path(name).as_posix() for name in metrics if name != "_totals"}
           findings = report["results"]
           status = int(sys.argv[3])
           if report["errors"] or scanned != expected or status != int(bool(findings)):
-              print("[FAIL] Bandit did not complete the expected scan.")
+              print(f"[FAIL] Bandit incomplete: expected={len(expected)}, scanned={len(scanned)}, errors={len(report['errors'])}, exit={status}, findings={len(findings)}")
               sys.exit(2)
           counts = collections.Counter(
               (item["test_id"], item["issue_severity"], item["issue_confidence"])
