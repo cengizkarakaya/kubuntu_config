@@ -15,7 +15,7 @@ can change software, configuration or data; read the corresponding guide first.
 | GPU | `bash scripts/gpu-diagnostics.sh` | Manual driver management only |
 | Hardware | See [hardware diagnostics](hardware-diagnostics.md) | Manual service activation only |
 | Dual boot | `bash scripts/dualboot-diagnostics.sh`, `bash scripts/configure-dualboot.sh --dry-run` | `bash scripts/configure-dualboot.sh --apply` (typed confirmation) |
-| KDE menu | `bash scripts/menu-backup.sh --plan-restore` | `--capture`, `--stage-repo`, `--restore` (same script, separate actions) |
+| KDE menu | `bash scripts/menu-backup.sh --plan-restore` | `--capture`, `--prepare-private`, `--restore` (same script, separate actions) |
 | Science launchers | `bash scripts/setup-scientific-launchers.sh --check` | `bash scripts/setup-scientific-launchers.sh --install` |
 | Gaia Sky | `bash scripts/install-astronomy-gaia.sh --plan` | `bash scripts/install-astronomy-gaia.sh --install` |
 | Celestia | `bash scripts/build-celestia-stable.sh --plan` | `bash scripts/build-celestia-stable.sh --build` |

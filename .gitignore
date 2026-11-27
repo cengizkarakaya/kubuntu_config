@@ -5,3 +5,6 @@
 .env
 *.swp
 __pycache__/
+
+# Private recovery data must never enter Git.
+/backups/application-launcher/snapshot/
