@@ -1,0 +1,16 @@
+# Explicit package policy; independent regression tests preserve critical invariants.
+[apt]
+required = ["yazi", "kde-spectacle"]
+forbidden = [
+  "dolphin-plugins", "gimp-gmic", "kicad-packages3d", "frei0r-plugins",
+  "swh-plugins", "gstreamer1.0-plugins-base", "gstreamer1.0-plugins-good",
+  "gstreamer1.0-plugins-bad", "gstreamer1.0-plugins-ugly",
+  "gstreamer1.0-libav", "zathura-pdf-poppler", "zellij", "spectacle", "helix", "bottom",
+]
+
+[flatpak]
+required = ["md.obsidian.Obsidian", "org.localsend.localsend_app", "org.freecad.FreeCAD", "net.ankiweb.Anki"]
+forbidden = ["org.localsend.localsend", "net.cozic.joplin_desktop"]
+
+[bootstrap]
+forbidden = ["install-polonium.sh", "install-zellij.sh", "configure-alacritty-lg.sh", "backup-personal.sh", "conda-envs.sh", "inventory-snapshot.sh", "netalertx-api-guard.sh"]
