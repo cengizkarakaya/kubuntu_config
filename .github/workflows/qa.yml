@@ -61,102 +61,15 @@ jobs:
         run: bash tests/test-conda-envs.sh
       - name: Test encrypted backup wrapper guards (mocked Restic)
         run: bash tests/test-backup-personal.sh
-      - name: Assert manifest and no-extra-plugin policy
+      - name: Check local documentation links and heading anchors (offline)
         run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          root = Path(".")
-          assert (root / "packages/apt.txt").is_file()
-          assert (root / "packages/flatpak.tsv").is_file()
-          apt = (root / "packages/apt.txt").read_text().splitlines()
-          pkg = {x.split("#",1)[0].strip() for x in apt if x.strip() and not x.lstrip().startswith("#")}
-          forbidden = {
-              "dolphin-plugins","gimp-gmic","kicad-packages3d","frei0r-plugins",
-              "swh-plugins","gstreamer1.0-plugins-base","gstreamer1.0-plugins-good",
-              "gstreamer1.0-plugins-bad","gstreamer1.0-plugins-ugly",
-              "gstreamer1.0-libav","zathura-pdf-poppler"
-          }
-          assert not pkg & forbidden, pkg & forbidden
-          assert 'yazi' in pkg and 'zellij' not in pkg
-          assert 'kde-spectacle' in pkg
-          verification = (root / 'verify.sh').read_text()
-          assert 'export PATH="$HOME/.cargo/bin:$HOME/.local/bin:$PATH"' in verification
-          assert 'if [[ -L "$HOME/.config/helix/runtime" ]]' in verification
-          assert "has fd || has fdfind" in verification
-          assert "fc-list -f '%{family}\\n' | grep -Fi 'FiraCode Nerd Font' >/dev/null" in verification
-          assert "fc-list : family | grep -Fqi" not in verification
-          assert not {'spectacle', 'helix', 'bottom'} & pkg
-          assert 'install-helix.sh' in (root / 'bootstrap.sh').read_text()
-          assert 'install-bottom.sh' in (root / 'bootstrap.sh').read_text()
-          assert 'latest-release.sh' in (root / 'scripts/install-helix.sh').read_text()
-          assert 'latest-release.sh' in (root / 'scripts/install-bottom.sh').read_text()
-          assert 'setup-yazi-apt.sh' in (root / 'bootstrap.sh').read_text()
-          assert 'install-herdr.sh' in (root / 'bootstrap.sh').read_text()
-          assert 'install-zellij.sh' not in (root / 'bootstrap.sh').read_text()
-          herdr = (root / 'scripts/install-herdr.sh').read_text()
-          assert 'latest-release.sh' in herdr
-          assert 'sha256sum -c' in herdr
-          assert (root / 'scripts/latest-release.sh').exists()
-          assert (root / 'scripts/version-audit.sh').exists()
-          assert not (root / 'scripts/install-zellij.sh').exists()
-          assert not (root / 'dotfiles/zellij/.config/zellij/config.kdl').exists()
-          flatpaks = (root / 'packages/flatpak.tsv').read_text()
-          assert 'md.obsidian.Obsidian\tObsidian' in flatpaks
-          assert 'org.localsend.localsend_app\tLocalSend' in flatpaks
-          assert 'org.localsend.localsend\tLocalSend' not in flatpaks
-          assert 'net.cozic.joplin_desktop' not in flatpaks
-          removed = [
-              "plasma/install-krohnkite.sh", "applications/addons.tsv",
-              "applications/vscode-extensions.txt", "scripts/install-vscode-extensions.sh",
-              "scripts/clean-obsolete-symlinks.sh",
-          ]
-          assert all(not (root / x).exists() for x in removed)
-          import tomllib
-          yazi_dir = root / "dotfiles/yazi/.config/yazi"
-          with (yazi_dir / "package.toml").open("rb") as f:
-              locked = tomllib.load(f)
-          expected = ["git", "full-border", "toggle-pane", "smart-enter",
-                      "jump-to-char", "smart-filter", "smart-paste", "chmod", "mount", "diff"]
-          assert [x["use"] for x in locked["plugin"]["deps"]] == [f"yazi-rs/plugins:{x}" for x in expected]
-          assert len(locked["flavor"]["deps"]) == 1
-          assert locked["flavor"]["deps"][0]["use"] == "AdithyanA2005/nord"
-          for x in locked["plugin"]["deps"] + locked["flavor"]["deps"]:
-              assert x["rev"] and x["hash"]
-          assert (yazi_dir / "init.lua").is_file()
-          assert '[flavor]' in (yazi_dir / "theme.toml").read_text()
-          keymap = (yazi_dir / "keymap.toml").read_text()
-          assert all(f'plugin {x}' in keymap for x in
-                     ["toggle-pane", "smart-enter", "jump-to-char", "smart-filter",
-                      "smart-paste", "chmod", "mount", "diff"])
-          assert 'yazi-rg' in keymap
-          assert (root / "scripts/install-yazi-plugins.sh").is_file()
-          bootstrap = (root / "bootstrap.sh").read_text()
-          assert "install-yazi-plugins.sh" in bootstrap
-          assert "disable-polonium.sh" in bootstrap
-          assert 'configure-alacritty-lg.sh' not in bootstrap
-          assert 'configure-alacritty-lg.sh' not in (root / 'scripts/sysup').read_text()
-          shortcuts = (root / "plasma/shortcuts.sh").read_text()
-          assert "setkey 'Window Maximize' 'Meta+F,Meta+PgUp,Maximize Window'" in shortcuts
-          assert "setkey 'Window Fullscreen' 'Meta+Shift+F,none,Make Window Fullscreen'" in shortcuts
-          assert "setkey 'Window Fullscreen' 'Meta+F," not in shortcuts
-          assert 'configure-sddm-numlock.sh' in bootstrap
-          sddm = (root / 'scripts/configure-sddm-numlock.sh').read_text()
-          assert '--file /etc/sddm.conf --group General --key Numlock on' in sddm
-          assert '--file kcminputrc --group Keyboard --key NumLock 0' in sddm
-          assert 'sudo -u sddm' in sddm
-          assert 'systemctl restart' not in sddm
-          assert "install-polonium.sh" not in bootstrap
-          assert "install-polonium.sh" not in (root / "scripts/sysup").read_text()
-          assert "poloniumEnabled false" in (root / "plasma/disable-polonium.sh").read_text()
-          assert not (root / "plasma/install-polonium.sh").exists()
-          appearance = (root / 'themes/setup.sh').read_text()
-          assert 'latest-release.sh' in appearance
-          assert "General --key font 'FiraCode Nerd Font,12,-1,5,50,0,0,0,0,0'" in appearance
-          assert "General --key fixed 'FiraCode Nerd Font Mono,10,-1,5,50,0,0,0,0,0'" in appearance
-          assert 'flatpak update --user --noninteractive -y "$id"' in (root / 'scripts/install-flatpaks.sh').read_text()
-          assert 'apt-cache policy "$pkg"' in (root / 'scripts/install-apt.sh').read_text()
-          print("Latest-stable upgrade channels with pinned Arch Yazi plugins: OK")
-          PY
+          python3 -B tests/test-doc-links.py
+          python3 -B scripts/check-doc-links.py
+      - name: Assert independent legacy and declarative repository policy
+        run: |
+          python3 -B tests/test-policy-legacy.py
+          python3 -B scripts/check-policy.py
+          python3 -B tests/test-policy.py
 
   herdr-release-install:
     runs-on: ubuntu-latest
