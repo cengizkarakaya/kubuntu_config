@@ -4,7 +4,8 @@
 name: kubuntu-netalertx
 services:
   netalertx:
-    image: ghcr.io/netalertx/netalertx:latest
+    # Official multi-platform index for stable 26.10.28; review version/digest together.
+    image: ghcr.io/netalertx/netalertx:26.10.28@sha256:ebce55cdbccc0f71544e6997541fe81db803b8c8bec3079435b8cd0a40d49b7e
     container_name: kubuntu-netalertx
     network_mode: host
     read_only: true
