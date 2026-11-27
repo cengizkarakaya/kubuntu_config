@@ -189,3 +189,40 @@ jobs:
           mapfile -d '' -t files < <(git ls-files -z -- '*.sh' scripts/sysup scripts/kubuntu-power-menu scripts/yazi-rg)
           test "${#files[@]}" -gt 0
           shellcheck -S warning -x "${files[@]}"
+
+  python-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Compile tracked Python source (blocking)
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git ls-files -z -- '*.py' | xargs -0 -r python3 -m compileall -q
+      - name: Ruff correctness gate and advisory baseline
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          tmp="$(mktemp -d)"
+          trap 'rm -rf -- "$tmp"' EXIT
+          asset=ruff-x86_64-unknown-linux-gnu.tar.gz
+          curl --fail --silent --show-error --location --proto '=https' --proto-redir '=https' \
+            "https://github.com/astral-sh/ruff/releases/download/0.17.6/$asset" \
+            --output "$tmp/$asset"
+          printf '%s  %s\n' '94b33791f48cd54ab35ad673a443a5c001d3e6d87effeaba9899070b700d45f3' "$tmp/$asset" | sha256sum -c -
+          tar -xzf "$tmp/$asset" -C "$tmp" ruff-x86_64-unknown-linux-gnu/ruff
+          ruff="$tmp/ruff-x86_64-unknown-linux-gnu/ruff"
+          "$ruff" --version
+          mapfile -d '' -t files < <(git ls-files -z -- '*.py')
+          test "${#files[@]}" -gt 0
+          # Start with syntax and high-confidence correctness checks, not style.
+          "$ruff" check --isolated --select E9,F63,F7,F82 --output-format concise "${files[@]}"
+          status=0
+          "$ruff" check --isolated --statistics "${files[@]}" || status=$?
+          case "$status" in
+            0) echo '[OK] Advisory default Ruff rules passed' ;;
+            1) echo '[WARN] Advisory lint debt; review before broadening the blocking gate' ;;
+            *) exit "$status" ;;
+          esac
