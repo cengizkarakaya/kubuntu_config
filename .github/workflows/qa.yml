@@ -57,6 +57,8 @@ jobs:
         run: bash tests/test-version-audit.sh
       - name: Test private inventory capture and comparison
         run: bash tests/test-inventory-snapshot.sh
+      - name: Test Conda recovery with mocked CLI (no installs)
+        run: bash tests/test-conda-envs.sh
       - name: Assert manifest and no-extra-plugin policy
         run: |
           python3 - <<'PY'
