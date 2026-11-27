@@ -71,6 +71,24 @@ if bash "$ROOT/scripts/install-apt.sh" "$work/apt.txt"; then
 fi
 grep -q missingpkg "$HOME/.local/state/kubuntu-config/apt-unavailable.txt"
 echo '[PASS] APT installer fails and reports missing packages'
+# A user-local ble.sh must not be executed, overwritten or duplicated by APT.
+mkdir -p "$HOME/.local/share/blesh"
+printf 'BLE_VERSION=0.4.0-devel-test\nexit 99\n' > "$HOME/.local/share/blesh/ble.sh"
+printf 'goodpkg\nble.sh\n' > "$work/apt.txt"
+: > "$MOCK_LOG"
+bash "$ROOT/scripts/install-apt.sh" "$work/apt.txt" > "$work/local-ble"
+grep -Fq 'Preserving existing user-local ble.sh' "$work/local-ble"
+grep -Fq 'sudo: apt-get install' "$MOCK_LOG"
+if grep -Fq 'ble.sh' "$MOCK_LOG"; then exit 1; fi
+test ! -e "$HOME/.local/state/kubuntu-config/apt-unavailable.txt"
+printf 'BLE_VERSION=(\n' > "$HOME/.local/share/blesh/ble.sh"
+: > "$MOCK_LOG"
+if bash "$ROOT/scripts/install-apt.sh" "$work/apt.txt"; then exit 1; fi
+test ! -s "$MOCK_LOG"
+rm "$HOME/.local/share/blesh/ble.sh"
+if bash "$ROOT/scripts/install-apt.sh" "$work/apt.txt"; then exit 1; fi
+grep -Fq 'ble.sh' "$HOME/.local/state/kubuntu-config/apt-unavailable.txt"
+echo '[PASS] Local ble.sh is preserved; broken or missing provider is not silently accepted'
 bash "$ROOT/scripts/install-flatpaks.sh"
 [[ -e "$MOCK_FLAT_STATE/org.localsend.localsend_app" ]] || { echo "[FAIL] Expected official LocalSend Flathub ID" >&2; exit 1; }
 [[ ! -e "$MOCK_FLAT_STATE/org.localsend.localsend" ]] || { echo "[FAIL] Obsolete LocalSend ID was used" >&2; exit 1; }

@@ -20,7 +20,7 @@ while IFS= read -r pkg; do
     esac
   fi
   installed="$(dpkg-query -W -f='${Version}' "$pkg" 2>/dev/null || true)"
-  candidate="$(apt-cache policy "$pkg" 2>/dev/null | awk '$1=="Candidate:" && !seen {print $2;seen=1}' || true)"
+  candidate="$(apt-cache policy "$pkg" 2>/dev/null | awk '$1=="Candidate:" && !seen {print $2;seen=1}')" || candidate=''
   if [[ -z "$installed" || -z "$candidate" || "$candidate" == "(none)" ]]; then
     problem "APT $pkg version could not be resolved"
   elif dpkg --compare-versions "$installed" lt "$candidate"; then
@@ -31,7 +31,7 @@ while IFS= read -r pkg; do
 done < <(sed 's/#.*$//;s/^[[:space:]]*//;s/[[:space:]]*$//;/^$/d' "$ROOT/packages/apt.txt")
 for pkg in brave-browser code; do
   installed="$(dpkg-query -W -f='${Version}' "$pkg" 2>/dev/null || true)"
-  candidate="$(apt-cache policy "$pkg" 2>/dev/null | awk '$1=="Candidate:" && !seen {print $2;seen=1}' || true)"
+  candidate="$(apt-cache policy "$pkg" 2>/dev/null | awk '$1=="Candidate:" && !seen {print $2;seen=1}')" || candidate=''
   if [[ -z "$installed" || -z "$candidate" || "$candidate" == "(none)" ]]; then
     problem "$pkg signed APT version could not be resolved"
   elif dpkg --compare-versions "$installed" lt "$candidate"; then
