@@ -85,8 +85,12 @@ fi
 : > "$MOCK_TRACE"
 export MOCK_FLATPAK_FAIL=0
 bash "$SYSUP" __execute interactive "$WORK/repo" "$(id -u)" 1 '' 'test-resumed'
-! grep -q 'apt-get' "$MOCK_TRACE"
-! grep -q '^snap$' "$MOCK_TRACE"
+if grep -q 'apt-get' "$MOCK_TRACE"; then
+    echo '[FAIL] Unexpected stage executed' >&2; exit 1
+fi
+if grep -q '^snap$' "$MOCK_TRACE"; then
+    echo '[FAIL] Unexpected stage executed' >&2; exit 1
+fi
 grep -q '^flatpak$' "$MOCK_TRACE"
 [[ "$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["status"])' "$HOME/.local/state/kubuntu-config/status.json")" == completed ]]
 
@@ -111,14 +115,16 @@ for _ in {1..100}; do
     sleep 0.02
 done
 kill -USR1 "$runpid"
-set +e
-wait "$runpid"
-rc=$?
-set -e
+rc=0
+wait "$runpid" || rc=$?
 [[ "$rc" == 130 ]] || { echo "cancel exit=$rc"; cat "$WORK/cancel.out"; exit 1; }
 grep -q 'apt-get .*update' "$MOCK_TRACE"
-! grep -q 'full-upgrade' "$MOCK_TRACE"
-! grep -q '^snap$' "$MOCK_TRACE"
+if grep -q 'full-upgrade' "$MOCK_TRACE"; then
+    echo '[FAIL] Unexpected stage executed' >&2; exit 1
+fi
+if grep -q '^snap$' "$MOCK_TRACE"; then
+    echo '[FAIL] Unexpected stage executed' >&2; exit 1
+fi
 [[ "$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["status"])' "$HOME/.local/state/kubuntu-config/status.json")" == cancelled ]]
 
 python3 - "$HOME/.local/state/kubuntu-config/summary.json" <<'PY'

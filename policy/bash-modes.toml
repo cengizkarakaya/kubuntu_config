@@ -1,0 +1,11 @@
+# Header policy, not a proof of runtime failure handling.
+# All other tracked Bash entrypoints and shell tests must fail fast.
+[exceptions]
+"verify.sh" = { mode = "collect", reason = "Aggregate PASS/WARN/FAIL and return final status" }
+"scripts/check-shell-terminal.sh" = { mode = "collect", reason = "Aggregate independent checks and return final status" }
+"scripts/sysup" = { mode = "collect", reason = "Explicit stage status, checkpoint and cancellation handling" }
+"scripts/dualboot-diagnostics.sh" = { mode = "collect", reason = "Read-only best-effort diagnostics, not a verification gate" }
+"scripts/gpu-diagnostics.sh" = { mode = "collect", reason = "Read-only best-effort diagnostics, not a verification gate" }
+"scripts/ble-provider.sh" = { mode = "sourced", reason = "Caller owns shell options; helper returns explicit status" }
+"shell/interactive.bash" = { mode = "sourced", reason = "Interactive shell integration must preserve caller strict options" }
+"scripts/yazi-rg" = { mode = "interactive", reason = "Preserve rg/fzf selection and cancellation pipeline behavior" }

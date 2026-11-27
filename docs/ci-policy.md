@@ -15,3 +15,26 @@ All tracked Python source files (including tests and ROS launch files) are compi
 ## Private-data gate
 
 The independent [privacy policy](privacy-policy.md) checks committed Git objects and runs synthetic positive and negative fixtures. It complements Gitleaks and does not establish that history or all personal information is clean. CI diagnostics omit paths and matching values.
+
+## Bash execution modes
+
+The baseline in `policy/bash-modes.toml` applies to tracked .sh/.bash files and
+Bash-shebang commands (including extensionless commands). Entrypoints and tests
+must begin with `set -euo pipefail` or `set -Eeuo pipefail`; known exceptions
+are individually documented. Collectors deliberately retain `set -uo pipefail`
+for explicit status handling; best-effort diagnostics are not acceptance gates.
+Sourced helpers must not change the caller's strict options. The interactive
+Yazi search retains its existing selection/cancellation semantics. Version
+checks retain their existing fail-fast header and explicit mismatch handling.
+
+```bash
+python3 -B scripts/check-bash-modes.py
+python3 -B tests/test-bash-modes.py
+```
+
+This is a static header and simple option-declaration check, not a shell parser
+or proof of runtime failure propagation. It does not analyze indirect option
+changes, conditional errexit semantics, process substitutions or all nested
+shells. Existing independent Bash syntax, ShellCheck and functional tests
+remain required. Review any new exception before adding it; never apply strict
+mode mechanically to sourced code or a status-collecting controller.
