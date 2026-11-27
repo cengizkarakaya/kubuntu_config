@@ -9,7 +9,13 @@ import subprocess
 import sys
 from pathlib import Path
 
-from recovery_common import ROOT, new_snapshot, ordinary_user, private_root, write_private
+from recovery_common import (
+    ROOT,
+    new_snapshot,
+    ordinary_user,
+    private_root,
+    write_private,
+)
 
 STAGES = {
     "apt": ("dpkg-query", "apt_upgrade"),

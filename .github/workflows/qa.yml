@@ -218,7 +218,7 @@ jobs:
         run: |
           set -Eeuo pipefail
           git ls-files -z -- '*.py' | xargs -0 -r python3 -m compileall -q
-      - name: Ruff correctness gate and advisory baseline
+      - name: Ruff correctness and default rules (blocking)
         shell: bash
         run: |
           set -Eeuo pipefail
@@ -236,10 +236,4 @@ jobs:
           test "${#files[@]}" -gt 0
           # Start with syntax and high-confidence correctness checks, not style.
           "$ruff" check --isolated --select E9,F63,F7,F82 --output-format concise "${files[@]}"
-          status=0
-          "${ruff}" check --isolated --output-format concise "${files[@]}" || status=$?
-          case "$status" in
-            0) echo '[OK] Advisory default Ruff rules passed' ;;
-            1) echo '[WARN] Advisory lint debt; review before broadening the blocking gate' ;;
-            *) exit "$status" ;;
-          esac
+          "$ruff" check --isolated --output-format concise "${files[@]}"
