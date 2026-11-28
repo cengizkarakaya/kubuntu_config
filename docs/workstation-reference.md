@@ -395,6 +395,86 @@ allows GRUB OS probing after verifying Windows and an explicit typed
 confirmation. It never installs GRUB or modifies partitions. Always back up
 EFI and personal data before editing boot settings.
 
+### Optional compact Windows 11 Pro GRUB menu
+
+This manual opt-in configuration is an alternative to
+`scripts/configure-dualboot.sh --apply`, which enables automatic probing.
+Never run it as part of bootstrap or sysup. Keep real UUIDs and EFI backups
+outside the public checkout. Verify that both OSes boot via the firmware
+menu and that Windows uses its own EFI System Partition (ESP). Back up
+personal data and EFI configuration privately; save the BitLocker recovery
+key privately if encryption is enabled.
+
+Read-only discovery:
+
+```bash
+lsblk -o NAME,SIZE,MODEL,FSTYPE,UUID,PARTUUID,MOUNTPOINTS
+sudo efibootmgr
+sudo os-prober
+sudo grep -nE 'GRUB_DISABLE_MEMTEST' /etc/grub.d/*memtest*
+ls -l /etc/grub.d/
+```
+
+Identify the Windows ESP by disk model, partition type, and Microsoft loader.
+Use its filesystem UUID, not PARTUUID or the Linux device name. Stop if
+ambiguous. Back up the affected configuration files privately, outside the
+generator directory. Preserve unrelated settings and custom entries.
+
+Using sudoedit, set these values in /etc/default/grub without duplicate
+assignments:
+
+```ini
+GRUB_DEFAULT=0
+GRUB_TIMEOUT_STYLE=menu
+GRUB_TIMEOUT=10
+GRUB_DISABLE_OS_PROBER=true
+GRUB_DISABLE_MEMTEST=true
+```
+
+Use the memtest setting only if the installed generator supports it.
+Review overrides in /etc/default/grub.d/, including any previous optional
+OS-prober configuration. Do not disable unrelated generators.
+
+Create a new root-owned /etc/grub.d/25_windows with sudoedit (stop if an
+unexpected file already exists). Replace the UUID placeholder locally:
+
+```sh
+#!/bin/sh
+exec tail -n +3 "$0"
+menuentry 'Windows 11 Pro' --class windows --class os --id windows11-pro {
+    insmod part_gpt
+    insmod fat
+    search --no-floppy --fs-uuid --set=root <WINDOWS_ESP_FS_UUID>
+    chainloader /EFI/Microsoft/Boot/bootmgfw.efi
+}
+```
+
+Remove only the duplicate Windows entry from /etc/grub.d/40_custom if
+present, preserving its header and unrelated entries. Then:
+
+```bash
+sudo chmod 755 /etc/grub.d/25_windows
+sudo update-grub
+sudo grub-script-check /boot/grub/grub.cfg
+sudo grep -E '^[[:space:]]*(menuentry|submenu) ' /boot/grub/grub.cfg
+```
+
+Stop on errors; restore the reviewed backups, remove the newly created
+generator if appropriate, and regenerate GRUB. Never edit generated
+grub.cfg directly or reinstall GRUB for this menu change.
+
+The intended top-level order is Kubuntu, Advanced options for Kubuntu,
+Windows 11 Pro, and UEFI Firmware Settings. Other legitimate firmware
+entries may appear. The distribution Linux generator emits the main entry
+and advanced submenu together; preserving that order avoids modifying
+distribution-owned scripts. Kernel and recovery entries remain available.
+
+Verify Kubuntu is first in firmware boot order using current boot IDs,
+then test both OSes via GRUB, the default selection, and 10-second timeout.
+The firmware menu remains the fallback. If the Windows ESP is reformatted,
+rediscover its filesystem UUID. Syntax validation is not a boot test;
+the compact menu has not been boot-tested by repository CI.
+
 Ventoy is a manually installed, portable multiboot USB tool. See
 [Ventoy installation and safe USB preparation](ventoy.md) before
 preparing Windows 11 or rescue media. Neither bootstrap nor sysup writes to USB disks.
