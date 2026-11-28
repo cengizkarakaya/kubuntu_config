@@ -100,3 +100,7 @@ declaring an application or a recovery workflow verified.
 For historical detail and all former README sections, use the
 [workstation reference](docs/workstation-reference.md). Commands in that
 reference are still run from the repository root unless stated otherwise.
+
+## License
+
+Original project code and documentation are available under the [MIT License](LICENSE), subject to contributor rights. Imported Arch parity configurations and third-party materials have separate or unresolved licensing; see [third-party notices and scope](THIRD_PARTY_NOTICES.md). External applications retain their upstream terms.
