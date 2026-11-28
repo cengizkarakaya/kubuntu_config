@@ -399,6 +399,21 @@ jobs:
 
           echo '[PASS] Official ROS 2 image reference and digest format.'
 
+      - name: Validate RViz2 local base reference
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          mapfile -t refs < <(
+            awk 'toupper($1) == "FROM" {print $2}' \
+              robotics/ros2/Dockerfile.rviz
+          )
+
+          test "${#refs[@]}" -eq 1
+          test "${refs[0]}" = "kubuntu-config/ros2-lyrical-dev:local"
+
+          echo '[PASS] RViz2 derives from the locally built ROS image.'
+
       - name: Detect ROS 2 relevant changes
         id: changes
         shell: bash
@@ -486,6 +501,7 @@ jobs:
             --build-arg ROS_UID=1000 \
             --build-arg ROS_GID=1000 \
             --tag kubuntu-config/ros2-ci:local \
+            --tag kubuntu-config/ros2-lyrical-dev:local \
             robotics/ros2
 
       - name: Run isolated non-root ROS 2 smoke test
@@ -517,6 +533,65 @@ jobs:
               ros2 pkg prefix robot_state_publisher
 
               echo "[PASS] Isolated ROS 2 runtime smoke test."
+            '
+
+      - name: Build RViz2 graphical overlay without cache
+        if: steps.changes.outputs.required == 'true'
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          test "$(docker image inspect \
+            --format '{{.Id}}' kubuntu-config/ros2-ci:local)" = \
+            "$(docker image inspect \
+            --format '{{.Id}}' kubuntu-config/ros2-lyrical-dev:local)"
+
+          docker build \
+            --platform linux/amd64 \
+            --pull=false \
+            --no-cache \
+            --build-arg ROS_UID=1000 \
+            --build-arg ROS_GID=1000 \
+            --file robotics/ros2/Dockerfile.rviz \
+            --tag kubuntu-config/ros2-rviz-ci:local \
+            robotics/ros2
+
+          echo '[PASS] RViz2 graphical overlay build.'
+
+      - name: Run isolated non-root RViz2 package smoke test
+        if: steps.changes.outputs.required == 'true'
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          docker run \
+            --rm \
+            --network none \
+            --cap-drop ALL \
+            --security-opt no-new-privileges \
+            kubuntu-config/ros2-rviz-ci:local \
+            bash -lc '
+              set -eo pipefail
+
+              source /opt/ros/lyrical/setup.bash
+
+              test "$ROS_DISTRO" = lyrical
+              test "$(id -u)" = 1000
+              test "$(id -g)" = 1000
+
+              command -v rviz2
+              command -v glxinfo
+
+              for pkg in rviz2 rqt_gui rqt_graph rqt_console rqt_image_view rqt_topic rqt_plot plotjuggler; do
+                ros2 pkg prefix "$pkg"
+              done
+
+              test "$XDG_RUNTIME_DIR" = /tmp/runtime-rosdev
+              test -d "$XDG_RUNTIME_DIR"
+              test -w "$XDG_RUNTIME_DIR"
+              test "$(stat -c "%a:%u:%g" "$XDG_RUNTIME_DIR")" = "700:1000:1000"
+
+              echo "[PASS] Isolated RViz2 package and runtime-directory checks."
             '
 
       - name: Report lightweight validation
