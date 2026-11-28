@@ -365,3 +365,160 @@ jobs:
           # Start with syntax and high-confidence correctness checks, not style.
           "$ruff" check --isolated --select E9,F63,F7,F82 --output-format concise "${files[@]}"
           "$ruff" check --isolated --output-format concise "${files[@]}"
+
+  ros2-image-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Validate official immutable ROS 2 image reference
+        id: pin
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          mapfile -t refs < <(
+            awk 'toupper($1) == "FROM" {print $2}' \
+              robotics/ros2/Dockerfile
+          )
+
+          test "${#refs[@]}" -eq 1
+
+          image="${refs[0]}"
+
+          if [[ ! "$image" =~ ^ros:lyrical-ros-base@sha256:[a-f0-9]{64}$ ]]; then
+            echo '[FAIL] Expected an immutable official ROS Lyrical image.'
+            exit 1
+          fi
+
+          printf 'image=docker.io/library/%s\n' "$image" >> "$GITHUB_OUTPUT"
+
+          echo '[PASS] Official ROS 2 image reference and digest format.'
+
+      - name: Detect ROS 2 relevant changes
+        id: changes
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PUSH_BEFORE: ${{ github.event.before }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -Eeuo pipefail
+
+          required=true
+          base=""
+
+          case "$EVENT_NAME" in
+            pull_request) base="$PR_BASE" ;;
+            push) base="$PUSH_BEFORE" ;;
+          esac
+
+          changed="$(mktemp)"
+          trap 'rm -f -- "$changed"' EXIT
+
+          if [[ "$base" =~ ^[a-f0-9]{40}$ ]] &&
+             git cat-file -e "${base}^{commit}" 2>/dev/null &&
+             git diff --no-renames --name-only -z "$base" HEAD -- > "$changed"
+          then
+            required=false
+
+            while IFS= read -r -d '' path; do
+              case "$path" in
+                robotics/ros2/*|\
+                robotics/tio_description/*|\
+                scripts/ros2-*|\
+                scripts/install-ros2-*|\
+                tests/test-ros2-*|\
+                tests/test-tio-description.sh|\
+                .github/workflows/qa.yml)
+                  required=true
+                  break
+                  ;;
+              esac
+            done < "$changed"
+          else
+            echo '[INFO] Change history unavailable; require full validation.'
+          fi
+
+          printf 'required=%s\n' "$required" >> "$GITHUB_OUTPUT"
+
+          echo "ROS 2 full validation required: $required"
+
+      - name: Verify registry digest and supported architectures
+        if: steps.changes.outputs.required == 'true'
+        shell: bash
+        env:
+          ROS_IMAGE: ${{ steps.pin.outputs.image }}
+        run: |
+          set -Eeuo pipefail
+
+          digest="${ROS_IMAGE##*@}"
+
+          docker buildx imagetools inspect "$ROS_IMAGE" \
+            --format '{{json .Manifest}}' |
+          jq -e --arg digest "$digest" '
+            .digest == $digest and
+            (.manifests | type == "array") and
+            any(.manifests[];
+              .platform.os == "linux" and
+              .platform.architecture == "amd64") and
+            any(.manifests[];
+              .platform.os == "linux" and
+              .platform.architecture == "arm64")
+          ' > /dev/null
+
+          echo '[PASS] Immutable multi-platform ROS 2 manifest.'
+
+      - name: Build ROS 2 development image without cache
+        if: steps.changes.outputs.required == 'true'
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          docker build \
+            --platform linux/amd64 \
+            --pull \
+            --no-cache \
+            --build-arg ROS_UID=1000 \
+            --build-arg ROS_GID=1000 \
+            --tag kubuntu-config/ros2-ci:local \
+            robotics/ros2
+
+      - name: Run isolated non-root ROS 2 smoke test
+        if: steps.changes.outputs.required == 'true'
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          docker run \
+            --rm \
+            --network none \
+            --cap-drop ALL \
+            --security-opt no-new-privileges \
+            kubuntu-config/ros2-ci:local \
+            bash -lc '
+              set -eo pipefail
+
+              source /opt/ros/lyrical/setup.bash
+
+              test "$ROS_DISTRO" = lyrical
+              test "$(id -u)" = 1000
+              test "$(id -g)" = 1000
+
+              command -v ros2
+              command -v colcon
+              command -v vcs
+              command -v xacro
+
+              ros2 pkg prefix robot_state_publisher
+
+              echo "[PASS] Isolated ROS 2 runtime smoke test."
+            '
+
+      - name: Report lightweight validation
+        if: steps.changes.outputs.required == 'false'
+        run: echo '[PASS] Static ROS image pin validation; no relevant build changes.'
