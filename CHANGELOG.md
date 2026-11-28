@@ -42,6 +42,12 @@ Changes to repository configuration and tooling are recorded here. This is not a
   status check, including administrator enforcement.
   Unrelated changes receive lightweight static pin validation
   without downloading or building the ROS image.
+- Extend conditional ROS 2 CI to build the RViz2 graphical overlay
+  without cache using the locally validated development image.
+  Verify graphical package availability, non-root execution and
+  runtime-directory permissions without GPU or display access.
+  Physical OpenGL and interactive GUI validation remain separate
+  acceptance requirements.
 
 ## v1.0.0 — repository milestone
 
