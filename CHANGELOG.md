@@ -33,6 +33,11 @@ Changes to repository configuration and tooling are recorded here. This is not a
   multi-platform digest and add weekly Dependabot Docker monitoring.
   Host rebuild and runtime verification remain separate acceptance
   requirements.
+- Add conditional ROS 2 image CI validation: immutable reference
+  checks, registry digest and architecture verification, an uncached
+  amd64 build and an isolated non-root runtime smoke test.
+  Physical host, arm64 build and graphical runtime validation remain
+  separate acceptance requirements.
 
 ## v1.0.0 — repository milestone
 
