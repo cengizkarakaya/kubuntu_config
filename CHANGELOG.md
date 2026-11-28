@@ -38,6 +38,10 @@ Changes to repository configuration and tooling are recorded here. This is not a
   amd64 build and an isolated non-root runtime smoke test.
   Physical host, arm64 build and graphical runtime validation remain
   separate acceptance requirements.
+- Require ros2-image-validation as the eleventh protected-main
+  status check, including administrator enforcement.
+  Unrelated changes receive lightweight static pin validation
+  without downloading or building the ROS image.
 
 ## v1.0.0 — repository milestone
 
