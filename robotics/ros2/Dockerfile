@@ -1,6 +1,6 @@
 # TIO / ROVA development base; no GPU, Gazebo or host device passthrough yet.
 # Rebuild deliberately when updating the upstream Lyrical image and APT tools.
-FROM ros:lyrical-ros-base
+FROM ros:lyrical-ros-base@sha256:c69a7a39142b0a19c8cc5e80a35e9087e2ae46080dfa0a59961ff72287fdc5f6
 
 ARG ROS_UID=1000
 ARG ROS_GID=1000
