@@ -4,6 +4,19 @@ Changes to repository configuration and tooling are recorded here. This is not a
 
 ## Unreleased
 
+No changes recorded.
+
+## v1.0.0 — repository milestone
+
+This milestone documents the reviewed configuration and privacy migration. It is not a frozen upstream package snapshot, a clean-install acceptance record, or a verified disaster-recovery release.
+
+### Privacy migration
+
+- Rewrite the public branch history to remove targeted personal records and retire obsolete branches; keep private recovery copies outside the public checkout.
+- Restore the reviewed configuration tree and update the exact historical Gitleaks false-positive fingerprint.
+- Enable main-branch protection with required pull requests, status checks and no force pushes.
+- Old hosting-service pull-request references and caches may retain earlier objects; complete server-side removal has not been established.
+
 ### Licensing
 
 - Add MIT licensing for original project material, preserve the Nord license notice, and document third-party dependencies and unresolved import provenance.
@@ -24,7 +37,7 @@ Changes to repository configuration and tooling are recorded here. This is not a
 
 - Add a redacted committed-tree and staged-index privacy gate with synthetic Git fixtures; block known private artifacts and high-confidence personal path patterns.
 
-- Add blocking compilation of all tracked Python files and checksum-pinned Ruff correctness checks; report default Ruff lint debt without automatic formatting.
+- Add blocking compilation of all tracked Python files and checksum-pinned Ruff correctness and default-rule checks.
 
 - Pin NetAlertX to the official stable release and immutable multi-platform digest; document reviewed upgrades.
 
@@ -48,7 +61,7 @@ Changes to repository configuration and tooling are recorded here. This is not a
 
 - Add private workstation inventory/comparison, Conda export/recovery, manual build records and explicit encrypted Restic backup with recovery checklist. Actual host data and backup/restore validation remain outstanding.
 
-- Template reviewed KDE launcher home paths and render them on explicit restore.
+- Template launcher HOME paths in private portable snapshots and render them on explicit restore.
 
 - Add non-reformatting EditorConfig defaults; preserve Arch-compatible dotfiles.
 
@@ -60,4 +73,5 @@ Changes to repository configuration and tooling are recorded here. This is not a
 
 - Keep detailed host acceptance records private; CI success does not establish clean-install or encrypted recovery success.
 
-- CI and host verification are tracked separately. A release or tag labelled verified requires recorded on-host acceptance checks; no such tag is created by this change.
+- CI and host verification are tracked separately. Clean-install acceptance, independent physical backup and full encrypted recovery remain unverified. See [compatibility matrix](docs/compatibility.md) and [release policy](docs/release-policy.md).
+- Imported Arch parity provenance and the Yazi Nord flavor license remain unresolved; see [third-party notices](THIRD_PARTY_NOTICES.md). This milestone is not a comprehensive license clearance.
