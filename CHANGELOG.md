@@ -4,6 +4,10 @@ Changes to repository configuration and tooling are recorded here. This is not a
 
 ## Unreleased
 
+### Licensing
+
+- Add MIT licensing for original project material, preserve the Nord license notice, and document third-party dependencies and unresolved import provenance.
+
 ### CI and security
 
 - Convert remaining personal setup reports and observed application lists into generic recovery guidance; keep actual acceptance records private.

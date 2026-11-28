@@ -197,6 +197,8 @@ The rules below are mandatory; optional profiles remain explicitly opt-in.
 
 ## 11. Repository changes and validation
 
+- Apply the root MIT license only to original project material for which contributors have licensing rights. Preserve upstream notices, document third-party source revisions and terms in [third-party notices](THIRD_PARTY_NOTICES.md), and never assume unresolved imports are relicensed. Do not vendor external software without reviewing its license.
+
 - Treat shfmt formatting differences as advisory; parser failures are blocking. Do not bulk-reformat scripts or Arch-parity dotfiles, and retain independent behavioral tests.
 
 - Review Bandit findings under [Python security policy](docs/python-security.md); do not introduce blanket security rule exclusions or install CI dependencies through bootstrap/sysup.
