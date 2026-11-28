@@ -4,7 +4,35 @@ Changes to repository configuration and tooling are recorded here. This is not a
 
 ## Unreleased
 
-No changes recorded.
+### Privacy migration follow-up
+
+- Replace the previous hosting repository with an independent
+  repository while preserving the audited Git history and v1.0.0 tag.
+- Delete the retired repository; historical pull-request records
+  were not migrated.
+- Verify anonymous API access, raw-file access and mirror cloning.
+  Known superseded sensitive objects and historical PR references
+  were inaccessible through the replacement public repository.
+- Hosting-provider backups and previously downloaded third-party
+  copies remain outside the verification scope.
+- Remove obsolete local Git recovery copies while retaining the
+  reviewed clean bundle and private workstation recovery archives.
+
+### CI and security
+
+- Require full commit SHA pinning for GitHub Actions and retain
+  read-only default workflow token permissions.
+- Enable secret scanning, push protection, Dependabot vulnerability
+  alerts and security updates.
+- Protect main with ten required CI checks, strict status checks,
+  administrator enforcement and force-push/deletion restrictions.
+- Upgrade actions/checkout to v7.0.1 with successful CI validation.
+- Correct the NetAlertX Dependabot ecosystem to docker-compose and
+  verify successful updater execution.
+- Pin the ROS 2 Lyrical base image to an immutable upstream
+  multi-platform digest and add weekly Dependabot Docker monitoring.
+  Host rebuild and runtime verification remain separate acceptance
+  requirements.
 
 ## v1.0.0 — repository milestone
 
@@ -14,8 +42,8 @@ This milestone documents the reviewed configuration and privacy migration. It is
 
 - Rewrite the public branch history to remove targeted personal records and retire obsolete branches; keep private recovery copies outside the public checkout.
 - Restore the reviewed configuration tree and update the exact historical Gitleaks false-positive fingerprint.
-- Enable main-branch protection with required pull requests, status checks and no force pushes.
-- Old hosting-service pull-request references and caches may retain earlier objects; complete server-side removal has not been established.
+- Configure main-branch protection with required status checks and no force pushes.
+- At this milestone, historical hosting-service PR references remained an unresolved exposure path. See the subsequent privacy migration follow-up above.
 
 ### Licensing
 
